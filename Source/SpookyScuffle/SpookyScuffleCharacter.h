@@ -2,65 +2,74 @@
 
 #pragma once
 
+#include "CharacterInterface.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "SpookyScuffleCharacter.generated.h"
 
 UCLASS(config=Game)
-class ASpookyScuffleCharacter : public ACharacter
+class ASpookyScuffleCharacter : public ACharacter, public ICharacterInterface
 {
+
 	GENERATED_BODY()
 
-	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
+protected:
 
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FollowCamera;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+	E_TEAMS team;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+	int maxLife;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+	int life;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+	int damage;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+	bool isAlive;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+	bool isAttacking;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX", meta = (AllowPrivateAccess = "true"))
+	UParticleSystem* onHitParticle;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		int _test;
+	class USpringArmComponent* cameraBoom;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* followCamera;
+
+	virtual void Tick(float _deltaTime) override;
+
+	virtual void BeginPlay() override;
+
+	void MoveForward(float _value);
+	void MoveRight(float _value);
+	void TurnAtRate(float _rate);
+	void LookUpAtRate(float _rate);
+
+	virtual void SetupPlayerInputComponent(class UInputComponent* _playerInputComponent) override;
+
 public:
+
 	ASpookyScuffleCharacter();
 
-	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseTurnRate;
-
-	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
+	float baseTurnRate;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseLookUpRate;
+	float baseLookUpRate;
 
-protected:
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return cameraBoom; }
+	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return followCamera; }
 
-	/** Called for forwards/backward input */
-	void MoveForward(float Value);
+	int GetDamage() override { return damage; }
+	int GetLife() override { return life; }
+	E_TEAMS GetTeam() override { return team; }
+	bool IsAlive() { return isAlive; }
+	void ModifyLife(int _lifePoint, E_TEAMS _team) override;
 
-	/** Called for side to side input */
-	void MoveRight(float Value);
-
-	/** 
-	 * Called via input to turn at a given rate. 
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
-	void TurnAtRate(float Rate);
-
-	/**
-	 * Called via input to turn look up/down at a given rate. 
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
-	void LookUpAtRate(float Rate);
-
-protected:
-	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	// End of APawn interface
-
-public:
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
-	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 };
 
