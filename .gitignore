@@ -53,9 +53,12 @@ Plugins/*/Binaries/*
 Build/*
 
 # Ignore Content
+
 Content/*
-Content/*/**
-!Content/Blueprint/**
+!Content/Blueprints
+!Content/Blueprints/**
+!Content/Animations
+!Content/Animations/**
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
 !Build/*/
