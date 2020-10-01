@@ -16,20 +16,10 @@
 
 
 ASpookyScuffleCharacter::ASpookyScuffleCharacter()
+	: ATwoHandedSwordCharacter{}
 {
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;
-
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
-	bUseControllerRotationRoll = false;
-
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); 
-	GetCharacterMovement()->JumpZVelocity = 600.f;
-	GetCharacterMovement()->AirControl = 0.2f;
 
 	cameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	cameraBoom->SetupAttachment(RootComponent);
@@ -45,20 +35,11 @@ ASpookyScuffleCharacter::ASpookyScuffleCharacter()
 void ASpookyScuffleCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	life = maxLife;
-	isAlive = true;
 }
 
 void ASpookyScuffleCharacter::Tick(float _deltaTime)
 {
 	Super::Tick(_deltaTime);
-
-	if (life <= 0)
-	{
-		isAlive = false;
-	}
-
 }
 
 void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -66,6 +47,7 @@ void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* P
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("LeftClick", IE_Pressed, this, &ASpookyScuffleCharacter::Attack);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASpookyScuffleCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASpookyScuffleCharacter::MoveRight);
@@ -87,41 +69,20 @@ void ASpookyScuffleCharacter::LookUpAtRate(float _rate)
 
 void ASpookyScuffleCharacter::MoveForward(float _value)
 {
-	if ((Controller != NULL) && (_value != 0.0f))
-	{
-		// find out which way is forward
-		const FRotator _rotation = Controller->GetControlRotation();
-		const FRotator _yawRotation(0, _rotation.Yaw, 0);
-
-		// get forward vector
-		const FVector _direction = FRotationMatrix(_yawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(_direction, _value);
-	}
+	Super::MoveForward(_value);
 }
 
 void ASpookyScuffleCharacter::MoveRight(float _value)
 {
-	if ( (Controller != NULL) && (_value != 0.0f) )
-	{
-		// find out which way is right
-		const FRotator _rotation = Controller->GetControlRotation();
-		const FRotator _yawRotation(0, _rotation.Yaw, 0);
-	
-		// get right vector 
-		const FVector _direction = FRotationMatrix(_yawRotation).GetUnitAxis(EAxis::Y);
-		AddMovementInput(_direction, _value);
-	}
+	Super::MoveRight(_value);
 }
 
 void ASpookyScuffleCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 {
-	if (_lifePoint < 0 && team != _team)
-	{
-		life += _lifePoint;
+	Super::ModifyLife(_lifePoint, _team);
+}
 
-		if (onHitParticle)
-		{
-			UGameplayStatics::SpawnEmitterAttached(onHitParticle, GetRootComponent());
-		}
-	}
+void ASpookyScuffleCharacter::Attack()
+{
+	Super::Attack();
 }

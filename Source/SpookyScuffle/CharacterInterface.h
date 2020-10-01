@@ -32,11 +32,10 @@ public:
 	ICharacterInterface() {}
 
 
+	virtual int GetLife() = 0;
+	virtual int GetDamage() = 0;
+	virtual bool IsAlive() = 0;
+	virtual E_TEAMS GetTeam() = 0;
 	virtual void ModifyLife(int _lifePoint, E_TEAMS _team) = 0;
 
-	virtual int GetLife() = 0;
-
-	virtual E_TEAMS GetTeam() = 0;
-
-	virtual int GetDamage() = 0;
 };
