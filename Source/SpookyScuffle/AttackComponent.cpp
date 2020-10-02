@@ -3,7 +3,7 @@
 
 #include "AttackComponent.h"
 #include "Engine/Engine.h"
-#include "CharacterInterface.h"
+#include "GeneralCharacter.h"
 
 UAttackComponent::UAttackComponent()
 {
@@ -20,6 +20,6 @@ void UAttackComponent::BeginPlay()
 
 void UAttackComponent::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ICharacterInterface* Attacker = Cast<ICharacterInterface>(GetOwner());
-	Cast<ICharacterInterface>(OtherActor)->ModifyLife(-Attacker->GetDamage(), Attacker->GetTeam());
+	AGeneralCharacter* Attacker = Cast<AGeneralCharacter>(GetOwner());
+	Cast<AGeneralCharacter>(OtherActor)->ModifyLife(-Attacker->GetDamage(), Attacker->GetTeam());
 }
