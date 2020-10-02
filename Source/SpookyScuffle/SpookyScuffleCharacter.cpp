@@ -13,6 +13,9 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
+#include "GameFramework/FloatingPawnMovement.h"
+#include "GameFramework/Actor.h"
+#include "TimerManager.h"
 
 
 ASpookyScuffleCharacter::ASpookyScuffleCharacter()
@@ -35,11 +38,13 @@ ASpookyScuffleCharacter::ASpookyScuffleCharacter()
 void ASpookyScuffleCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
 }
 
 void ASpookyScuffleCharacter::Tick(float _deltaTime)
 {
 	Super::Tick(_deltaTime);
+
 }
 
 void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -47,7 +52,8 @@ void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* P
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-	PlayerInputComponent->BindAction("LeftClick", IE_Pressed, this, &ASpookyScuffleCharacter::Attack);
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ASpookyScuffleCharacter::Attack);
+	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ASpookyScuffleCharacter::ActivateDash);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASpookyScuffleCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASpookyScuffleCharacter::MoveRight);
@@ -55,6 +61,7 @@ void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* P
 	PlayerInputComponent->BindAxis("TurnRate", this, &ASpookyScuffleCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ASpookyScuffleCharacter::LookUpAtRate);
+	
 }
 
 void ASpookyScuffleCharacter::TurnAtRate(float _rate)
@@ -85,4 +92,49 @@ void ASpookyScuffleCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 void ASpookyScuffleCharacter::Attack()
 {
 	Super::Attack();
+}
+
+void ASpookyScuffleCharacter::ActivateDash()
+{
+	if (!isDash)
+	{
+		isDash = true;
+		savePosDash = GetActorLocation();
+		GetWorldTimerManager().SetTimer(outHandleDash, this, &ASpookyScuffleCharacter::DashMovement, GetWorld()->GetDeltaSeconds(), true);
+	}
+}
+
+void ASpookyScuffleCharacter::DashMovement()
+{
+	if (!isCoolDownDash)
+	{
+		// Movement Of Dash
+		timerDash += GetWorld()->DeltaTimeSeconds;
+		
+		if ((savePosDash - GetActorLocation()).Size() < distanceDash)
+		{
+			GetCharacterMovement()->Velocity = GetActorForwardVector() * speedDash * 10;
+			GetCharacterMovement()->MaxAcceleration = speedDash * 10;
+		}
+		if (timerDash > distanceDash / 1000.f || (savePosDash - GetActorLocation()).Size() >= distanceDash)
+		{
+			isCoolDownDash = true;
+			timerDash = 0;
+			GetCharacterMovement()->MaxAcceleration = 2048; // default value 
+			GetCharacterMovement()->Velocity = GetActorForwardVector() * 0;
+		}
+	}
+	else
+	{
+		// CoolDown Of Dash
+		timerCoolDownDash += GetWorld()->DeltaTimeSeconds;
+	
+		if (timerCoolDownDash > coolDownDash)
+		{
+			isCoolDownDash = false;
+			timerCoolDownDash = 0.f;
+			isDash = false;
+			GetWorldTimerManager().ClearTimer(outHandleDash);
+		}
+	}
 }

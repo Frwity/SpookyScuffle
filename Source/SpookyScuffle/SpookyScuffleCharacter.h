@@ -12,6 +12,32 @@ class ASpookyScuffleCharacter : public ATwoHandedSwordCharacter
 
 	GENERATED_BODY()
 
+private:
+
+	// ================================== DASH ================================== //
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true", 
+			  ClampMin = "0.0", ClampMax = "1000.0", UIMin = "0.0", UIMax = "1000.0"))
+		float distanceDash = 500.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
+		float speedDash = 300;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
+		float coolDownDash = 1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
+		float isDash = false;
+
+		float timerDash = 0;
+		float timerCoolDownDash = 0;
+		bool isCoolDownDash = false;
+
+		FVector savePosDash;
+		FTimerHandle outHandleDash;
+
+		// ================================== .... ================================== //
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -19,6 +45,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* followCamera;
+
+	
 
 	virtual void Tick(float _deltaTime) override;
 	virtual void BeginPlay() override;
@@ -28,6 +56,8 @@ protected:
 	void MoveRight(float _value) override;
 	void TurnAtRate(float _rate);
 	void LookUpAtRate(float _rate);
+	void ActivateDash();
+	void DashMovement();
 
 
 public:
