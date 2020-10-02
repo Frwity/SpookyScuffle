@@ -12,4 +12,6 @@ ASpookyScuffleGameMode::ASpookyScuffleGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+
+	state = E_GAMESTATE::STARTING;
 }
