@@ -16,6 +16,7 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/Actor.h"
 #include "TimerManager.h"
+#include "DrawDebugHelpers.h"
 
 
 ASpookyScuffleCharacter::ASpookyScuffleCharacter()
@@ -38,7 +39,6 @@ ASpookyScuffleCharacter::ASpookyScuffleCharacter()
 void ASpookyScuffleCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void ASpookyScuffleCharacter::Tick(float _deltaTime)
@@ -54,6 +54,8 @@ void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* P
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ASpookyScuffleCharacter::Attack);
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ASpookyScuffleCharacter::ActivateDash);
+	PlayerInputComponent->BindAction("Lock", IE_Pressed, this, &ASpookyScuffleCharacter::ActivateLock);
+	PlayerInputComponent->BindAction("Lock", IE_Released, this, &ASpookyScuffleCharacter::DisableLock);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASpookyScuffleCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASpookyScuffleCharacter::MoveRight);
@@ -137,4 +139,79 @@ void ASpookyScuffleCharacter::DashMovement()
 			GetWorldTimerManager().ClearTimer(outHandleDash);
 		}
 	}
+}
+
+void ASpookyScuffleCharacter::ActivateLock()
+{
+	if (!loadLock)
+	{
+		loadLock = true;
+
+		TArray<AActor*> enemiesTwoHanded;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATwoHandedSwordCharacter::StaticClass(), enemiesTwoHanded);
+
+		angleLock = 60;
+
+		for (AActor* enemOfList : enemiesTwoHanded)
+		{
+			ATwoHandedSwordCharacter* enemy = Cast<ATwoHandedSwordCharacter>(enemOfList);
+
+			if (enemy != nullptr && enemy != this)
+			{
+				
+				if (CheckEnemyToLock(enemy->GetActorLocation(), GetActorLocation()))
+					enemyToLock = enemy;
+			
+			}
+
+		}
+
+	}
+
+	// we find enemy 
+
+	if (enemyToLock != nullptr)
+	{
+		enemyToLock->Jump();
+	}
+
+
+}
+
+bool ASpookyScuffleCharacter::CheckEnemyToLock(FVector enemy, FVector posPlayer)
+{
+
+		if ((enemy - posPlayer).Size() < distanceMaxLock)
+		{
+			FVector _forwardVec = { GetActorForwardVector().X,GetActorForwardVector().Y, 0};
+			FVector _playerToEnemy = { (enemy - posPlayer).X, (enemy - posPlayer).Y, 0 };
+
+			float  _calcAngle = FVector::DotProduct(_forwardVec.GetSafeNormal(), _playerToEnemy.GetSafeNormal());
+			float _newAngle = (acosf(_calcAngle)) * 180 / PI;
+
+
+			if (_newAngle < angleLock)
+			{
+				angleLock = _newAngle;
+				return true;
+			}
+		}
+		else
+		{
+			return false;
+		}
+
+		return false;
+	
+}
+
+void ASpookyScuffleCharacter::DisableLock()
+{
+	if (enemyToLock != nullptr)
+	{
+		enemyToLock->StopJumping() ;
+		enemyToLock = nullptr;
+	}
+	
+	loadLock = false;
 }

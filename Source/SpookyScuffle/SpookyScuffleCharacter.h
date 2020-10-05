@@ -36,7 +36,13 @@ private:
 		FVector savePosDash;
 		FTimerHandle outHandleDash;
 
-		// ================================== .... ================================== //
+	// ================================== Lock ================================== //
+
+		bool loadLock = false;
+		class AGeneralCharacter* enemyToLock;
+		float distanceMaxLock = 2000;
+		float angleLock = 60;
+
 
 protected:
 
@@ -58,6 +64,9 @@ protected:
 	void LookUpAtRate(float _rate);
 	void ActivateDash();
 	void DashMovement();
+	void ActivateLock();
+	void DisableLock();
+	bool CheckEnemyToLock(FVector enemy, FVector posPlayer);
 
 
 public:
