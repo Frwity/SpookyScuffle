@@ -38,10 +38,20 @@ private:
 
 	// ================================== Lock ================================== //
 
-		bool loadLock = false;
-		class AGeneralCharacter* enemyToLock;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock , meta = (AllowPrivateAccess = "true"))
+			bool loadLock = false;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock , meta = (AllowPrivateAccess = "true"))
+			class AGeneralCharacter* enemyToLock;
+
 		float distanceMaxLock = 2000;
 		float angleLock = 60;
+		float speedCameraLock = 100;
+		float saveArmLength;
+		bool passToDisable = false;
+		
+
+		FTimerHandle outHandleLock;
+		FTimerHandle outHandleExitLock;
 
 
 protected:
@@ -67,6 +77,8 @@ protected:
 	void ActivateLock();
 	void DisableLock();
 	bool CheckEnemyToLock(FVector enemy, FVector posPlayer);
+	void LockEnemy();
+	void ExitLock();
 
 
 public:
