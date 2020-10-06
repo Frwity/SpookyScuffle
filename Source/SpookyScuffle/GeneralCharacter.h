@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "CharacterInterface.h"
 #include "CoreMinimal.h"
 #include "Delegates/Delegate.h"
 #include "GameFramework/Character.h"
@@ -10,8 +9,15 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMultiDynDelegate);
 
+UENUM()
+enum class E_TEAMS
+{
+	Ally,
+	Enemy
+};
+
 UCLASS()
-class SPOOKYSCUFFLE_API AGeneralCharacter : public ACharacter, public ICharacterInterface
+class SPOOKYSCUFFLE_API AGeneralCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -58,12 +64,12 @@ public:
 	AGeneralCharacter();
 
 	
-	virtual int GetLife() override { return life; }
-	virtual int GetDamage() override { return damage; }
-	virtual bool IsAlive() override { return isAlive; }
-	virtual E_TEAMS GetTeam() override { return team; }
+	virtual int GetLife() { return life; }
+	virtual int GetDamage() { return damage; }
+	virtual bool IsAlive() { return isAlive; }
+	virtual E_TEAMS GetTeam() { return team; }
 
-	virtual void ModifyLife(int _lifePoint, E_TEAMS _team) override;
+	virtual void ModifyLife(int _lifePoint, E_TEAMS _team);
 
 	UFUNCTION()
 	virtual void Attack();
