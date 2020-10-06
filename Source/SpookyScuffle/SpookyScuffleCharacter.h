@@ -36,7 +36,23 @@ private:
 		FVector savePosDash;
 		FTimerHandle outHandleDash;
 
-		// ================================== .... ================================== //
+	// ================================== Lock ================================== //
+
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock , meta = (AllowPrivateAccess = "true"))
+			bool loadLock = false;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock , meta = (AllowPrivateAccess = "true"))
+			class AGeneralCharacter* enemyToLock;
+
+		float distanceMaxLock = 2000;
+		float angleLock = 60;
+		float speedCameraLock = 100;
+		float saveArmLength;
+		bool passToDisable = false;
+		
+
+		FTimerHandle outHandleLock;
+		FTimerHandle outHandleExitLock;
+
 
 protected:
 
@@ -58,6 +74,11 @@ protected:
 	void LookUpAtRate(float _rate);
 	void ActivateDash();
 	void DashMovement();
+	void ActivateLock();
+	void DisableLock();
+	bool CheckEnemyToLock(FVector enemy, FVector posPlayer);
+	void LockEnemy();
+	void ExitLock();
 
 
 public:
