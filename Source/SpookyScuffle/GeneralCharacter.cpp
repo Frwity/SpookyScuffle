@@ -88,6 +88,8 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 		invulnerabilityCD = invulnerabilityTime;
 		life += _lifePoint;
 
+
+		// particle
 		if (onHitParticle)
 		{
 			UGameplayStatics::SpawnEmitterAttached(onHitParticle, GetRootComponent());

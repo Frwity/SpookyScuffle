@@ -24,7 +24,7 @@ class ASpookyScuffleGameMode : public AGameModeBase
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	E_GAMESTATE state;
+		E_GAMESTATE state;
 
 public:
 	ASpookyScuffleGameMode();

@@ -61,6 +61,7 @@ protected:
 	virtual void MoveRight(float _value);
 
 public:	
+
 	AGeneralCharacter();
 
 	
