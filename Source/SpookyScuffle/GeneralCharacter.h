@@ -74,6 +74,10 @@ public:
 
 	UFUNCTION()
 	virtual void Attack();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void GameOverEvent();
+		void GameOverEvent_Implementation();
 };
 
 	

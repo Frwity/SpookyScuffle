@@ -24,7 +24,7 @@ AGeneralCharacter::AGeneralCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
 	GetCharacterMovement()->JumpZVelocity = 600.f;
-	GetCharacterMovement()->AirControl = 0.2f;
+	GetCharacterMovement()->AirControl = 0.6f;
 
 }
 
@@ -40,11 +40,6 @@ void AGeneralCharacter::BeginPlay()
 void AGeneralCharacter::Tick(float _deltaTime)
 {
 	Super::Tick(_deltaTime);
-
-	if (life <= 0)
-	{
-		isAlive = false;
-	}
 
 	if (invulnerabilityCD >= 0)
 		invulnerabilityCD -= _deltaTime;
@@ -95,9 +90,19 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 			UGameplayStatics::SpawnEmitterAttached(onHitParticle, GetRootComponent());
 		}
 	}
+
+	if (life <= 0)
+	{
+		GameOverEvent();
+	}
 }
 
 void AGeneralCharacter::Attack()
 {
 	OnAttack.Broadcast();
+}
+
+void AGeneralCharacter::GameOverEvent_Implementation()
+{
+	isAlive = false;
 }
