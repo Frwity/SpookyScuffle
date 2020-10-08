@@ -42,17 +42,34 @@ private:
 			bool loadLock = false;
 		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock , meta = (AllowPrivateAccess = "true"))
 			class AGeneralCharacter* enemyToLock;
-
-		float distanceMaxLock = 2000;
-		float angleLock = 60;
-		float speedCameraLock = 100;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock, meta = (AllowPrivateAccess = "true"))
+			float distanceMaxLock = 2000;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock, meta = (AllowPrivateAccess = "true"))
+			float angleLock = 60;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock, meta = (AllowPrivateAccess = "true"))
+			float speedCameraLock = 100;
+		
 		float saveArmLength;
 		bool passToDisable = false;
 		
-
 		FTimerHandle outHandleLock;
 		FTimerHandle outHandleExitLock;
 
+	// ================================== Bat Form ================================== //
+
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
+			bool isBatMode = false;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
+			float mutiplySpeedBatMode = 1.5f;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
+			float timerBatLostLife = 1.5f;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
+			int costTransformToBat = 2;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
+			int costBatForm = 1;
+
+		float saveTimerBLL;
+		FTimerHandle outHandleBatForm;
 
 protected:
 
@@ -72,13 +89,21 @@ protected:
 	void MoveRight(float _value) override;
 	void TurnAtRate(float _rate);
 	void LookUpAtRate(float _rate);
+
+	// === Dash
 	void ActivateDash();
 	void DashMovement();
+
+	// === Lock
 	void ActivateLock();
 	void DisableLock();
 	bool CheckEnemyToLock(FVector enemy, FVector posPlayer);
 	void LockEnemy();
 	void ExitLock();
+
+	// === Bat Form
+	void SetBatMode();
+	void tickLostLifeBatForm();
 
 
 public:

@@ -21,5 +21,7 @@ void UAttackComponent::BeginPlay()
 void UAttackComponent::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AGeneralCharacter* Attacker = Cast<AGeneralCharacter>(GetOwner());
-	Cast<AGeneralCharacter>(OtherActor)->ModifyLife(-Attacker->GetDamage(), Attacker->GetTeam());
+
+	if(Attacker != nullptr)
+		Cast<AGeneralCharacter>(OtherActor)->ModifyLife(-Attacker->GetDamage(), Attacker->GetTeam());
 }
