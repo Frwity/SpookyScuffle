@@ -8,6 +8,7 @@
 #include "GeneralCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMultiDynDelegate);
+// you can find Event in Event Graph of doublesword Animation
 
 UENUM()
 enum class E_TEAMS

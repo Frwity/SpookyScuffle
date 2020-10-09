@@ -71,6 +71,10 @@ private:
 		float saveTimerBLL;
 		FTimerHandle outHandleBatForm;
 
+	// ================================== Special Attack ================================== //
+
+		// WIP...
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -104,6 +108,9 @@ protected:
 	// === Bat Form
 	void SetBatMode();
 	void tickLostLifeBatForm();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void BatEvent();
+	void BatEvent_Implementation();
 
 
 public:

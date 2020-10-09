@@ -106,7 +106,6 @@ void ASpookyScuffleCharacter::Attack()
 
 void ASpookyScuffleCharacter::ActivateDash()
 {
-	GEngine->AddOnScreenDebugMessage(1, 3, FColor::Green, isBatMode ? "true" : "false");
 	if (!isDash && !isBatMode)
 	{
 		isDash = true;
@@ -225,11 +224,12 @@ void ASpookyScuffleCharacter::LockEnemy()
 	FVector  _camTransform =  followCamera->GetRelativeLocation();
 	FVector _dirPlayerEnemy = { GetActorLocation().X - enemyToLock->GetActorLocation().X,
 						GetActorLocation().Y - enemyToLock->GetActorLocation().Y,0 };
-	
+
+	// == Camera focus on the enemy lock calcul 
 	FRotator _newRot;
 	FVector _currentPos = GetActorLocation() + FVector(0, 0, 100);
 	FVector _targetPos = enemyToLock->GetActorLocation() - FVector(0,0,100);
-
+	
 	FRotator _lookAt = FRotationMatrix::MakeFromX(_targetPos - _currentPos).Rotator();
 	FRotator _terp = UKismetMathLibrary::RInterpTo(GetController()->GetControlRotation(),_lookAt,GetWorld()->DeltaTimeSeconds,5.f);
 
@@ -239,7 +239,13 @@ void ASpookyScuffleCharacter::LockEnemy()
 
 	GetController()->SetControlRotation(_newRot);
 
+	//rotation player to enemy, needed to straff : Don't Work like I want
 
+	//FRotator _terpPlayer = UKismetMathLibrary::RInterpTo(GetController()->GetControlRotation(), 
+	//	FRotationMatrix::MakeFromX(-_dirPlayerEnemy).Rotator(), GetWorld()->DeltaTimeSeconds, 5.f);
+	//SetActorRotation(_terpPlayer);
+	
+	// Move Camera to the good Angle when you lock 
 	if (cameraBoom->TargetArmLength > 300)
 		cameraBoom->TargetArmLength -= speedCameraLock * GetWorld()->DeltaTimeSeconds;
 	
@@ -318,6 +324,7 @@ void ASpookyScuffleCharacter::ExitLock()
 void ASpookyScuffleCharacter::SetBatMode()
 {
 	isBatMode = !isBatMode;
+	BatEvent();
 
 	if (isBatMode)
 	{
@@ -350,5 +357,10 @@ void ASpookyScuffleCharacter::tickLostLifeBatForm()
 	{
 		GetWorldTimerManager().ClearTimer(outHandleBatForm);
 	}
+
+}
+
+void ASpookyScuffleCharacter::BatEvent_Implementation()
+{
 
 }
