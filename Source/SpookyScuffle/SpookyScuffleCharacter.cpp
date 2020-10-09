@@ -41,6 +41,8 @@ ASpookyScuffleCharacter::ASpookyScuffleCharacter()
 void ASpookyScuffleCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	saveTimerBLL = timerBatLostLife;
 }
 
 void ASpookyScuffleCharacter::Tick(float _deltaTime)
@@ -57,7 +59,8 @@ void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* P
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ASpookyScuffleCharacter::Attack);
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ASpookyScuffleCharacter::ActivateDash);
 	PlayerInputComponent->BindAction("Lock", IE_Pressed, this, &ASpookyScuffleCharacter::ActivateLock);
-	PlayerInputComponent->BindAction("Lock", IE_Released, this, &ASpookyScuffleCharacter::DisableLock);
+	PlayerInputComponent->BindAction("Lock", IE_Released, this, &ASpookyScuffleCharacter::DisableLock); 
+	PlayerInputComponent->BindAction("RightTrigger", IE_Pressed, this, &ASpookyScuffleCharacter::SetBatMode);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASpookyScuffleCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASpookyScuffleCharacter::MoveRight);
@@ -95,14 +98,15 @@ void ASpookyScuffleCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 
 void ASpookyScuffleCharacter::Attack()
 {
-	Super::Attack();
+	if(!isBatMode)
+		Super::Attack();
 }
 
 // =============================================== Dash ===============================================//
 
 void ASpookyScuffleCharacter::ActivateDash()
 {
-	if (!isDash)
+	if (!isDash && !isBatMode)
 	{
 		isDash = true;
 		savePosDash = GetActorLocation();
@@ -220,11 +224,12 @@ void ASpookyScuffleCharacter::LockEnemy()
 	FVector  _camTransform =  followCamera->GetRelativeLocation();
 	FVector _dirPlayerEnemy = { GetActorLocation().X - enemyToLock->GetActorLocation().X,
 						GetActorLocation().Y - enemyToLock->GetActorLocation().Y,0 };
-	
+
+	// == Camera focus on the enemy lock calcul 
 	FRotator _newRot;
 	FVector _currentPos = GetActorLocation() + FVector(0, 0, 100);
 	FVector _targetPos = enemyToLock->GetActorLocation() - FVector(0,0,100);
-
+	
 	FRotator _lookAt = FRotationMatrix::MakeFromX(_targetPos - _currentPos).Rotator();
 	FRotator _terp = UKismetMathLibrary::RInterpTo(GetController()->GetControlRotation(),_lookAt,GetWorld()->DeltaTimeSeconds,5.f);
 
@@ -234,7 +239,13 @@ void ASpookyScuffleCharacter::LockEnemy()
 
 	GetController()->SetControlRotation(_newRot);
 
+	//rotation player to enemy, needed to straff : Don't Work like I want
 
+	//FRotator _terpPlayer = UKismetMathLibrary::RInterpTo(GetController()->GetControlRotation(), 
+	//	FRotationMatrix::MakeFromX(-_dirPlayerEnemy).Rotator(), GetWorld()->DeltaTimeSeconds, 5.f);
+	//SetActorRotation(_terpPlayer);
+	
+	// Move Camera to the good Angle when you lock 
 	if (cameraBoom->TargetArmLength > 300)
 		cameraBoom->TargetArmLength -= speedCameraLock * GetWorld()->DeltaTimeSeconds;
 	
@@ -306,4 +317,50 @@ void ASpookyScuffleCharacter::ExitLock()
 		
 		GetWorldTimerManager().ClearTimer(outHandleExitLock);
 	}
+}
+
+// =============================================== Bat Form ===============================================//
+
+void ASpookyScuffleCharacter::SetBatMode()
+{
+	isBatMode = !isBatMode;
+	BatEvent();
+
+	if (isBatMode)
+	{
+		life -= costTransformToBat;
+		if (life <= 0)
+			GameOverEvent();
+		timerBatLostLife = saveTimerBLL;
+		GetCharacterMovement()->MaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed * mutiplySpeedBatMode;
+		GetWorldTimerManager().SetTimer(outHandleBatForm, this, &ASpookyScuffleCharacter::tickLostLifeBatForm, GetWorld()->GetDeltaSeconds(), true);
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed / mutiplySpeedBatMode;
+	}
+}
+
+void ASpookyScuffleCharacter::tickLostLifeBatForm()
+{
+	timerBatLostLife -= GetWorld()->DeltaTimeSeconds;
+
+	if (timerBatLostLife <= 0)
+	{
+		life -= costBatForm;
+		if (life <= 0)
+			GameOverEvent();
+		timerBatLostLife = saveTimerBLL;
+	}
+
+	if (!isBatMode)
+	{
+		GetWorldTimerManager().ClearTimer(outHandleBatForm);
+	}
+
+}
+
+void ASpookyScuffleCharacter::BatEvent_Implementation()
+{
+
 }
