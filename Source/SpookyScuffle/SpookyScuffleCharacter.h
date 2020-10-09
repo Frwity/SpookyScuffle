@@ -73,7 +73,25 @@ private:
 
 	// ================================== Special Attack ================================== //
 
-		// WIP...
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			class AGeneralCharacter* enemyToEat;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			bool useIsDrain = false;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			float distanceMaxToDrain = 500;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			float speedSpecialAttack = 500;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			int drainHowManyLife = 1;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			float timerDrainLife = 0.5f;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			float mutiplySpeedSpecialAttack = 5.f;
+
+		bool drainBlood = false;
+		float saveTimerDL;
+		int saveLifePLayerOnDrain;
+		FTimerHandle outHandleSpecialAttack;
 
 protected:
 
@@ -111,6 +129,11 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 		void BatEvent();
 	void BatEvent_Implementation();
+
+	// === Special Attack
+	void ActivateSpecialAttack();
+	void SpecialAttackMove();
+	void SpecialAttackDrain();
 
 
 public:

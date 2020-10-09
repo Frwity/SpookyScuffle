@@ -43,6 +43,7 @@ void ASpookyScuffleCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	saveTimerBLL = timerBatLostLife;
+	saveTimerDL = timerDrainLife;
 }
 
 void ASpookyScuffleCharacter::Tick(float _deltaTime)
@@ -61,6 +62,7 @@ void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* P
 	PlayerInputComponent->BindAction("Lock", IE_Pressed, this, &ASpookyScuffleCharacter::ActivateLock);
 	PlayerInputComponent->BindAction("Lock", IE_Released, this, &ASpookyScuffleCharacter::DisableLock); 
 	PlayerInputComponent->BindAction("RightTrigger", IE_Pressed, this, &ASpookyScuffleCharacter::SetBatMode);
+	PlayerInputComponent->BindAction("Special", IE_Pressed, this, &ASpookyScuffleCharacter::ActivateSpecialAttack);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASpookyScuffleCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASpookyScuffleCharacter::MoveRight);
@@ -363,4 +365,90 @@ void ASpookyScuffleCharacter::tickLostLifeBatForm()
 void ASpookyScuffleCharacter::BatEvent_Implementation()
 {
 
+}
+
+// =============================================== Special Attack ===============================================//
+
+void ASpookyScuffleCharacter::ActivateSpecialAttack()
+{
+	if (enemyToLock != nullptr)
+	{
+		enemyToEat = enemyToLock;
+		useIsDrain = true;
+	}
+
+	if (useIsDrain)
+	{
+		GetWorldTimerManager().SetTimer(outHandleSpecialAttack, this, &ASpookyScuffleCharacter::SpecialAttackMove, 
+										GetWorld()->GetDeltaSeconds(), true);
+	}
+}
+
+void ASpookyScuffleCharacter::SpecialAttackMove()
+{
+	FVector _dirVec = enemyToEat->GetActorLocation() - GetActorLocation();
+
+	FVector _posBehindEnemy =  enemyToEat->GetActorLocation() - (enemyToEat->GetActorForwardVector() * 100);
+
+	if (_dirVec.Size() < distanceMaxToDrain && !drainBlood)
+	{
+		FRotator rotPlayer = FRotationMatrix::MakeFromX(FVector(_dirVec)).Rotator();
+		rotPlayer.Pitch = GetActorRotation().Pitch;
+		// rotate the player
+		SetActorRotation(rotPlayer);
+
+		// go to back of enemy quickly
+		if ((_posBehindEnemy - GetActorLocation()).Size() >= 20)
+		{
+			GetCharacterMovement()->Velocity = (_posBehindEnemy - GetActorLocation()).GetSafeNormal() 
+												* speedSpecialAttack * mutiplySpeedSpecialAttack;
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(1, 5, FColor::Green, TEXT("yo"));
+			GetCharacterMovement()->Velocity = {0,0,0};
+			drainBlood = true;
+			if (life < maxLife)
+				life += drainHowManyLife;
+			saveLifePLayerOnDrain = life;
+		}
+	}
+
+	SpecialAttackDrain();
+}
+
+void ASpookyScuffleCharacter::SpecialAttackDrain()
+{
+	if (drainBlood)
+	{
+		timerDrainLife -= GetWorld()->DeltaTimeSeconds;
+
+		if (timerDrainLife <= 0)
+		{
+			timerDrainLife = saveTimerDL;
+
+			if (life < maxLife)
+			{
+				life += drainHowManyLife;
+				saveLifePLayerOnDrain = life;
+			}
+		}
+
+		if (!enemyToEat->IsAlive())
+		{
+			drainBlood = false;
+			useIsDrain = false;
+			enemyToEat = nullptr;
+			GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
+		}
+
+		if (saveLifePLayerOnDrain != life)
+		{
+			drainBlood = false;
+			useIsDrain = false;
+			enemyToEat = nullptr;
+			GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
+		}
+
+	}
 }
