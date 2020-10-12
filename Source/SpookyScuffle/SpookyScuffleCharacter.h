@@ -13,6 +13,9 @@ class ASpookyScuffleCharacter : public ATwoHandedSwordCharacter
 	GENERATED_BODY()
 
 private:
+	// ================================== DASH ================================== //
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Option, meta = (AllowPrivateAccess = "true"))
+		bool playerCanJump = true;
 
 	// ================================== DASH ================================== //
 
@@ -27,10 +30,11 @@ private:
 		float coolDownDash = 1;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
-		float isDash = false;
+		bool isDash = false;
 
 		float timerDash = 0;
 		float timerCoolDownDash = 0;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
 		bool isCoolDownDash = false;
 
 		FVector savePosDash;
@@ -50,6 +54,7 @@ private:
 			float speedCameraLock = 100;
 		
 		float saveArmLength;
+		float saveMaxAngleLock;
 		bool passToDisable = false;
 		
 		FTimerHandle outHandleLock;
@@ -73,7 +78,25 @@ private:
 
 	// ================================== Special Attack ================================== //
 
-		// WIP...
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			class AGeneralCharacter* enemyToEat;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			bool useIsDrain = false;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			float distanceMaxToDrain = 500;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			float speedSpecialAttack = 500;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			int drainHowManyLife = 1;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			float timerDrainLife = 0.5f;
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+			float mutiplySpeedSpecialAttack = 5.f;
+
+		bool drainBlood = false;
+		float saveTimerDL;
+		int saveLifePLayerOnDrain;
+		FTimerHandle outHandleSpecialAttack;
 
 protected:
 
@@ -111,6 +134,12 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 		void BatEvent();
 	void BatEvent_Implementation();
+
+	// === Special Attack
+	void ActivateSpecialAttack();
+	void SpecialAttackMove();
+	void SpecialAttackDrain();
+	void ResetDrainValue();
 
 
 public:
