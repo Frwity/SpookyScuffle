@@ -13,6 +13,9 @@ class ASpookyScuffleCharacter : public ATwoHandedSwordCharacter
 	GENERATED_BODY()
 
 private:
+	// ================================== DASH ================================== //
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Option, meta = (AllowPrivateAccess = "true"))
+		bool playerCanJump = true;
 
 	// ================================== DASH ================================== //
 
