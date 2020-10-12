@@ -30,10 +30,11 @@ private:
 		float coolDownDash = 1;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
-		float isDash = false;
+		bool isDash = false;
 
 		float timerDash = 0;
 		float timerCoolDownDash = 0;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
 		bool isCoolDownDash = false;
 
 		FVector savePosDash;
