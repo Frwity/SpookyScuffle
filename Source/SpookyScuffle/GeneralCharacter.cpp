@@ -97,6 +97,16 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 	}
 }
 
+void AGeneralCharacter::ActivateAttackComponent()
+{
+
+}
+
+void AGeneralCharacter::DeactivateAttackComponent()
+{
+
+}
+
 void AGeneralCharacter::Attack()
 {
 	OnAttack.Broadcast();

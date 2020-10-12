@@ -46,5 +46,8 @@ public:
 
 	virtual void ModifyLife(int _lifePoint, E_TEAMS _team) override;
 
+	virtual void ActivateAttackComponent() override;
+	virtual void DeactivateAttackComponent() override;
+
 	virtual void Attack() override;
 };

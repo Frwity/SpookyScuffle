@@ -32,14 +32,11 @@ void ATwoHandedSwordCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//rightAttackComponent = Cast<UAttackComponent>(GetDefaultSubobjectByName(TEXT("RightAttackComponent")));
-	//rightAttackComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	rightAttackComponent = Cast<UAttackComponent>(GetDefaultSubobjectByName(TEXT("RightAttackComponent")));
+	rightAttackComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	//leftAttackComponent = Cast<UAttackComponent>(GetDefaultSubobjectByName(TEXT("LeftAttackComponent")));
-	//leftAttackComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	//leftAttackComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-
+	leftAttackComponent = Cast<UAttackComponent>(GetDefaultSubobjectByName(TEXT("LeftAttackComponent")));
+	leftAttackComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ATwoHandedSwordCharacter::Tick(float _deltaTime)
@@ -61,6 +58,20 @@ void ATwoHandedSwordCharacter::MoveRight(float _value)
 void ATwoHandedSwordCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 {
 	Super::ModifyLife(_lifePoint, _team);
+}
+
+void ATwoHandedSwordCharacter::ActivateAttackComponent()
+{
+	Super::ActivateAttackComponent();
+	rightAttackComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	leftAttackComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+}
+
+void ATwoHandedSwordCharacter::DeactivateAttackComponent()
+{
+	Super::DeactivateAttackComponent();
+	rightAttackComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	leftAttackComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ATwoHandedSwordCharacter::Attack()

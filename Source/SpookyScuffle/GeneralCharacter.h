@@ -65,13 +65,17 @@ public:
 
 	AGeneralCharacter();
 
-	
 	virtual int GetLife() { return life; }
 	virtual int GetDamage() { return damage; }
 	virtual bool IsAlive() { return isAlive; }
 	virtual E_TEAMS GetTeam() { return team; }
 
 	virtual void ModifyLife(int _lifePoint, E_TEAMS _team);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void ActivateAttackComponent();
+	UFUNCTION(BlueprintCallable)
+	virtual void DeactivateAttackComponent();
 
 	UFUNCTION()
 	virtual void Attack();
