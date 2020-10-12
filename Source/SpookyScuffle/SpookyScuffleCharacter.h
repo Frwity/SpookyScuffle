@@ -50,6 +50,7 @@ private:
 			float speedCameraLock = 100;
 		
 		float saveArmLength;
+		float saveMaxAngleLock;
 		bool passToDisable = false;
 		
 		FTimerHandle outHandleLock;
@@ -134,6 +135,7 @@ protected:
 	void ActivateSpecialAttack();
 	void SpecialAttackMove();
 	void SpecialAttackDrain();
+	void ResetDrainValue();
 
 
 public:
