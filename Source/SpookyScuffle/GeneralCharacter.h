@@ -25,34 +25,40 @@ class SPOOKYSCUFFLE_API AGeneralCharacter : public ACharacter
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
-	E_TEAMS team;
+		E_TEAMS team;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
-	int maxLife;
+		int maxLife;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
-	int life;
+		int life;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
-	float invulnerabilityTime;
+		float invulnerabilityTime;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
-	float invulnerabilityCD;
+		float invulnerabilityCD;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+		float attackSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+		bool canAttack = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
-	int damage;
+		int damage;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
-	bool isAlive;
+		bool isAlive;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
-	bool isAttacking;
+		bool isAttacking;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX", meta = (AllowPrivateAccess = "true"))
-	UParticleSystem* onHitParticle;
+		UParticleSystem* onHitParticle;
 
 	UPROPERTY(BlueprintAssignable, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	FMultiDynDelegate OnAttack;
+		FMultiDynDelegate OnAttack;
 
 
 	virtual void BeginPlay() override;
@@ -79,6 +85,7 @@ public:
 
 	UFUNCTION()
 	virtual void Attack();
+	void ResetAttack();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 		void GameOverEvent();
