@@ -31,12 +31,6 @@ protected:
 public:
 	AOneHandedSwordCharacter();
 
-
-	virtual int GetLife() override { return life; }
-	virtual int GetDamage() override { return damage; }
-	virtual bool IsAlive() override { return isAlive; }
-	virtual E_TEAMS GetTeam() override { return team; }
-
 	virtual void ModifyLife(int _lifePoint, E_TEAMS _team) override;
 
 	virtual void ActivateAttackComponent() override;
