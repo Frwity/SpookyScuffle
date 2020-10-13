@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GeneralCharacter.h"
-#include "TwoHandedSwordCharacter.generated.h"
+#include "OneHandedSwordCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SPOOKYSCUFFLE_API ATwoHandedSwordCharacter : public AGeneralCharacter
+class SPOOKYSCUFFLE_API AOneHandedSwordCharacter : public AGeneralCharacter
 {
 	GENERATED_BODY()
 
@@ -23,20 +23,13 @@ protected:
 	virtual void MoveRight(float _value) override;
 
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* rightWeaponMesh;
-
-	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* leftWeaponMesh;
-
+		UStaticMeshComponent* weaponMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	class UAttackComponent* rightAttackComponent;
+		class UAttackComponent* attackComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	class UAttackComponent* leftAttackComponent;
-
-public:	
-	ATwoHandedSwordCharacter();
+public:
+	AOneHandedSwordCharacter();
 
 	virtual void ModifyLife(int _lifePoint, E_TEAMS _team) override;
 

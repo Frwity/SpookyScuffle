@@ -2,6 +2,7 @@
 
 
 #include "GeneralCharacter.h"
+#include "TimerManager.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -25,6 +26,7 @@ AGeneralCharacter::AGeneralCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.6f;
+	life = maxLife;
 
 }
 
@@ -109,7 +111,17 @@ void AGeneralCharacter::DeactivateAttackComponent()
 
 void AGeneralCharacter::Attack()
 {
-	OnAttack.Broadcast();
+	if (canAttack)
+	{
+		OnAttack.Broadcast();
+		canAttack = false;
+		FTimerHandle _outHandleDash;
+		GetWorldTimerManager().SetTimer(_outHandleDash, this, &AGeneralCharacter::ResetAttack, 1 / attackSpeed, false);
+	}
+}
+void AGeneralCharacter::ResetAttack()
+{
+	canAttack = true;
 }
 
 void AGeneralCharacter::GameOverEvent_Implementation()
