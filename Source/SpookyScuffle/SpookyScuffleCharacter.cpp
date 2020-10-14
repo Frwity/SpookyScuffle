@@ -179,12 +179,12 @@ void ASpookyScuffleCharacter::ActivateLock()
 
 		angleLock = saveMaxAngleLock;
 
-		TArray<AActor*> enemiesTwoHanded;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATwoHandedSwordCharacter::StaticClass(), enemiesTwoHanded);
+		TArray<AActor*> enemies;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGeneralCharacter::StaticClass(), enemies);
 
-		for (AActor* enemOfList : enemiesTwoHanded)
+		for (AActor* enemOfList : enemies)
 		{
-			ATwoHandedSwordCharacter* enemy = Cast<ATwoHandedSwordCharacter>(enemOfList);
+			AGeneralCharacter* enemy = Cast<AGeneralCharacter>(enemOfList);
 
 			if (enemy != nullptr && enemy != this && enemy->IsAlive())
 			{
