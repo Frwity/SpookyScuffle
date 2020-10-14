@@ -78,3 +78,8 @@ void ATwoHandedSwordCharacter::Attack()
 {
 	Super::Attack();
 }
+
+void ATwoHandedSwordCharacter::GameOverEvent_Implementation()
+{
+
+}

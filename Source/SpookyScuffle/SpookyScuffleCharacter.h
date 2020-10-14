@@ -13,29 +13,28 @@ class ASpookyScuffleCharacter : public ATwoHandedSwordCharacter
 	GENERATED_BODY()
 
 private:
-	// ================================== DASH ================================== //
+	// ================================== Option ================================== //
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Option, meta = (AllowPrivateAccess = "true"))
 		bool playerCanJump = true;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
+		bool playerMovable = true;
 
 	// ================================== DASH ================================== //
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true", 
 			  ClampMin = "0.0", ClampMax = "1000.0", UIMin = "0.0", UIMax = "1000.0"))
 		float distanceDash = 500.f;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
 		float speedDash = 300;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
 		float coolDownDash = 1;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
 		bool isDash = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
+		bool isCoolDownDash = false;
 
 		float timerDash = 0;
 		float timerCoolDownDash = 0;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
-		bool isCoolDownDash = false;
 
 		FVector savePosDash;
 		FTimerHandle outHandleDash;
@@ -162,5 +161,14 @@ public:
 	void ModifyLife(int _lifePoint, E_TEAMS _team) final;
 
 	void Attack() final;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void YouWinEvent();
+		void YouWinEvent_Implementation();
+
+		bool youWin = false;
+
+	virtual void GameOverEvent_Implementation() override;
+
 };
 

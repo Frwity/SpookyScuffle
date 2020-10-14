@@ -44,4 +44,6 @@ public:
 	virtual void DeactivateAttackComponent() override;
 
 	virtual void Attack() override;
+
+	virtual void GameOverEvent_Implementation() override;
 };

@@ -89,7 +89,8 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 		void GameOverEvent();
-		void GameOverEvent_Implementation();
+	virtual void GameOverEvent_Implementation();
+
 };
 
 	

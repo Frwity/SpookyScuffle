@@ -83,17 +83,21 @@ void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* P
 
 void ASpookyScuffleCharacter::TurnAtRate(float _rate)
 {
-	AddControllerYawInput(_rate * baseTurnRate * GetWorld()->GetDeltaSeconds());
+	
+		AddControllerYawInput(_rate * baseTurnRate * GetWorld()->GetDeltaSeconds());
+	
 }
 
 void ASpookyScuffleCharacter::LookUpAtRate(float _rate)
 {
-	AddControllerPitchInput(_rate * baseLookUpRate * GetWorld()->GetDeltaSeconds());
+	
+		AddControllerPitchInput(_rate * baseLookUpRate * GetWorld()->GetDeltaSeconds());
+	
 }
 
 void ASpookyScuffleCharacter::MoveForward(float _value)
 {
-	if (IsAlive())
+	if (playerMovable)
 	{
 		Super::MoveForward(_value);
 	}
@@ -101,7 +105,7 @@ void ASpookyScuffleCharacter::MoveForward(float _value)
 
 void ASpookyScuffleCharacter::MoveRight(float _value)
 {
-	if (IsAlive())
+	if (playerMovable)
 	{
 		Super::MoveRight(_value);
 	}
@@ -114,7 +118,7 @@ void ASpookyScuffleCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 
 void ASpookyScuffleCharacter::Attack()
 {
-	if(!isBatMode && IsAlive())
+	if(!isBatMode && playerMovable)
 		Super::Attack();
 }
 
@@ -122,7 +126,7 @@ void ASpookyScuffleCharacter::Attack()
 
 void ASpookyScuffleCharacter::ActivateDash()
 {
-	if (IsAlive())
+	if (playerMovable)
 	{
 		if (!isDash && !isBatMode && !drainBlood)
 		{
@@ -180,11 +184,11 @@ void ASpookyScuffleCharacter::ActivateLock()
 		angleLock = saveMaxAngleLock;
 
 		TArray<AActor*> enemiesTwoHanded;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATwoHandedSwordCharacter::StaticClass(), enemiesTwoHanded);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGeneralCharacter::StaticClass(), enemiesTwoHanded);
 
 		for (AActor* enemOfList : enemiesTwoHanded)
 		{
-			ATwoHandedSwordCharacter* enemy = Cast<ATwoHandedSwordCharacter>(enemOfList);
+			AGeneralCharacter* enemy = Cast<AGeneralCharacter>(enemOfList);
 
 			if (enemy != nullptr && enemy != this && enemy->IsAlive())
 			{
@@ -342,7 +346,7 @@ void ASpookyScuffleCharacter::ExitLock()
 
 void ASpookyScuffleCharacter::SetBatMode()
 {
-	if (IsAlive() && !drainBlood)
+	if (playerMovable && !drainBlood )
 	{
 		isBatMode = !isBatMode;
 		BatEvent();
@@ -491,4 +495,21 @@ void ASpookyScuffleCharacter::ResetDrainValue()
 	drainBlood = false;
 	useIsDrain = false;
 	enemyToEat = nullptr;
+}
+
+// =============================================== /   / ===============================================//
+
+void ASpookyScuffleCharacter::GameOverEvent_Implementation()
+{
+	playerMovable = false;
+}
+
+void ASpookyScuffleCharacter::YouWinEvent_Implementation()
+{
+	if (isBatMode)
+		SetBatMode();
+
+	youWin = true;
+
+	playerMovable = false;
 }
