@@ -135,6 +135,8 @@ void ASpookyScuffleCharacter::ActivateDash()
 
 void ASpookyScuffleCharacter::DashMovement()
 {
+	if (isAttacking)
+		return;
 	if (!isCoolDownDash)
 	{
 		// Movement Of Dash
@@ -151,6 +153,10 @@ void ASpookyScuffleCharacter::DashMovement()
 			timerDash = 0;
 			GetCharacterMovement()->MaxAcceleration = 2048; // default value 
 			GetCharacterMovement()->Velocity = GetActorForwardVector() * 0;
+			GetCharacterMovement()->MaxWalkSpeed -= slowSpeed;
+			FTimerHandle _timeHandle;
+			GetWorldTimerManager().SetTimer(_timeHandle, this, &ASpookyScuffleCharacter::ResetDashSpeed, slowTime, false);
+
 		}
 	}
 	else
@@ -166,6 +172,11 @@ void ASpookyScuffleCharacter::DashMovement()
 			GetWorldTimerManager().ClearTimer(outHandleDash);
 		}
 	}
+}
+
+void ASpookyScuffleCharacter::ResetDashSpeed()
+{
+	GetCharacterMovement()->MaxWalkSpeed += slowSpeed;
 }
 
 // =============================================== Lock =============================================== //
