@@ -45,8 +45,6 @@ private:
 	
 	float timerDash = 0;
 	float timerCoolDownDash = 0;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
-		bool isCoolDownDash = false;
 
 	FVector savePosDash;
 	FTimerHandle outHandleDash;
