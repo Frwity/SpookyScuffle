@@ -37,6 +37,7 @@ void AGeneralCharacter::BeginPlay()
 	life = maxLife;
 	isAlive = true;
 	
+	walkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 }
 
 void AGeneralCharacter::Tick(float _deltaTime)
@@ -114,11 +115,19 @@ void AGeneralCharacter::Attack()
 	if (canAttack)
 	{
 		OnAttack.Broadcast();
+		if (!canMoveOnAttack)
+			GetCharacterMovement()->MaxWalkSpeed = 0;
 		canAttack = false;
 		FTimerHandle _outHandleDash;
 		GetWorldTimerManager().SetTimer(_outHandleDash, this, &AGeneralCharacter::ResetAttack, 1 / attackSpeed, false);
 	}
 }
+
+void AGeneralCharacter::EndAttack()
+{
+	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
+}
+
 void AGeneralCharacter::ResetAttack()
 {
 	canAttack = true;

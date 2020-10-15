@@ -37,69 +37,77 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
 		bool isCoolDownDash = false;
 
-		float timerDash = 0;
-		float timerCoolDownDash = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
+		float slowSpeed;
 
-		FVector savePosDash;
-		FTimerHandle outHandleDash;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
+		float slowTime;
+	
+	float timerDash = 0;
+	float timerCoolDownDash = 0;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
+		bool isCoolDownDash = false;
+
+	FVector savePosDash;
+	FTimerHandle outHandleDash;
 
 	// ================================== Lock ================================== //
 
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock , meta = (AllowPrivateAccess = "true"))
-			bool loadLock = false;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock , meta = (AllowPrivateAccess = "true"))
-			class AGeneralCharacter* enemyToLock;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock, meta = (AllowPrivateAccess = "true"))
-			float distanceMaxLock = 2000;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock, meta = (AllowPrivateAccess = "true"))
-			float angleLock = 60;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock, meta = (AllowPrivateAccess = "true"))
-			float speedCameraLock = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock , meta = (AllowPrivateAccess = "true"))
+		bool loadLock = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock , meta = (AllowPrivateAccess = "true"))
+		class AGeneralCharacter* enemyToLock;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock, meta = (AllowPrivateAccess = "true"))
+		float distanceMaxLock = 2000;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock, meta = (AllowPrivateAccess = "true"))
+		float angleLock = 60;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock, meta = (AllowPrivateAccess = "true"))
+		float speedCameraLock = 100;
 		
-		float saveArmLength;
-		float saveMaxAngleLock;
-		bool passToDisable = false;
+	float saveArmLength;
+	float saveMaxAngleLock;
+	bool passToDisable = false;
 		
-		FTimerHandle outHandleLock;
-		FTimerHandle outHandleExitLock;
+	FTimerHandle outHandleLock;
+	FTimerHandle outHandleExitLock;
 
 	// ================================== Bat Form ================================== //
 
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
-			bool isBatMode = false;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
-			float mutiplySpeedBatMode = 1.5f;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
-			float timerBatLostLife = 1.5f;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
-			int costTransformToBat = 2;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
-			int costBatForm = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
+		bool isBatMode = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
+		float mutiplySpeedBatMode = 1.5f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
+		float timerBatLostLife = 1.5f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
+		int costTransformToBat = 2;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
+		int costBatForm = 1;
 
-		float saveTimerBLL;
-		FTimerHandle outHandleBatForm;
+	float saveTimerBLL;
+	FTimerHandle outHandleBatForm;
 
 	// ================================== Special Attack ================================== //
 
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
-			class AGeneralCharacter* enemyToEat;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
-			bool useIsDrain = false;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
-			float distanceMaxToDrain = 500;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
-			float speedSpecialAttack = 500;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
-			int drainHowManyLife = 1;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
-			float timerDrainLife = 0.5f;
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
-			float mutiplySpeedSpecialAttack = 5.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+		class AGeneralCharacter* enemyToEat;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+		bool useIsDrain = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+		float distanceMaxToDrain = 500;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+		float speedSpecialAttack = 500;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+		int drainHowManyLife = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+		float timerDrainLife = 0.5f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+		float mutiplySpeedSpecialAttack = 5.f;
 
-		bool drainBlood = false;
-		float saveTimerDL;
-		int saveLifePLayerOnDrain;
-		FTimerHandle outHandleSpecialAttack;
+	bool drainBlood = false;
+	float saveTimerDL;
+	int saveLifePLayerOnDrain;
+	FTimerHandle outHandleSpecialAttack;
 
 protected:
 
@@ -123,6 +131,7 @@ protected:
 	// === Dash
 	void ActivateDash();
 	void DashMovement();
+	void ResetDashSpeed();
 
 	// === Lock
 	void ActivateLock();

@@ -162,6 +162,8 @@ void ASpookyScuffleCharacter::ActivateDash()
 
 void ASpookyScuffleCharacter::DashMovement()
 {
+	if (isAttacking)
+		return;
 	if (!isCoolDownDash)
 	{
 		// Movement Of Dash
@@ -178,6 +180,10 @@ void ASpookyScuffleCharacter::DashMovement()
 			timerDash = 0;
 			GetCharacterMovement()->MaxAcceleration = 2048; // default value 
 			GetCharacterMovement()->Velocity = GetActorForwardVector() * 0;
+			GetCharacterMovement()->MaxWalkSpeed -= slowSpeed;
+			FTimerHandle _timeHandle;
+			GetWorldTimerManager().SetTimer(_timeHandle, this, &ASpookyScuffleCharacter::ResetDashSpeed, slowTime, false);
+
 		}
 	}
 	else
@@ -195,6 +201,11 @@ void ASpookyScuffleCharacter::DashMovement()
 	}
 }
 
+void ASpookyScuffleCharacter::ResetDashSpeed()
+{
+	GetCharacterMovement()->MaxWalkSpeed += slowSpeed;
+}
+
 // =============================================== Lock =============================================== //
 
 void ASpookyScuffleCharacter::ActivateLock()
@@ -206,10 +217,10 @@ void ASpookyScuffleCharacter::ActivateLock()
 
 		angleLock = saveMaxAngleLock;
 
-		TArray<AActor*> enemiesTwoHanded;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGeneralCharacter::StaticClass(), enemiesTwoHanded);
+		TArray<AActor*> enemies;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGeneralCharacter::StaticClass(), enemies);
 
-		for (AActor* enemOfList : enemiesTwoHanded)
+		for (AActor* enemOfList : enemies)
 		{
 			AGeneralCharacter* enemy = Cast<AGeneralCharacter>(enemOfList);
 

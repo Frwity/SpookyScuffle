@@ -28,10 +28,10 @@ protected:
 		E_TEAMS team;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
-		int maxLife;
+		int maxLife = 1;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
-		int life;
+		int life = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
 		float invulnerabilityTime;
@@ -39,19 +39,22 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
 		float invulnerabilityCD;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+		bool isAlive = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = NormalAttack, meta = (AllowPrivateAccess = "true"))
 		float attackSpeed;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = NormalAttack, meta = (AllowPrivateAccess = "true"))
 		bool canAttack = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = NormalAttack, meta = (AllowPrivateAccess = "true"))
 		int damage;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
-		bool isAlive;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = NormalAttack, meta = (AllowPrivateAccess = "true"))
+		bool canMoveOnAttack;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = NormalAttack, meta = (AllowPrivateAccess = "true"))
 		bool isAttacking;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX", meta = (AllowPrivateAccess = "true"))
@@ -60,6 +63,7 @@ protected:
 	UPROPERTY(BlueprintAssignable, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		FMultiDynDelegate OnAttack;
 
+	float walkSpeed;
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float _deltaTime) override;
@@ -79,13 +83,15 @@ public:
 	virtual void ModifyLife(int _lifePoint, E_TEAMS _team);
 
 	UFUNCTION(BlueprintCallable)
-	virtual void ActivateAttackComponent();
+		virtual void ActivateAttackComponent();
 	UFUNCTION(BlueprintCallable)
-	virtual void DeactivateAttackComponent();
-
+		virtual void DeactivateAttackComponent();
+	
 	UFUNCTION()
-	virtual void Attack();
-	void ResetAttack();
+		virtual void Attack();
+	UFUNCTION(BlueprintCallable)
+		virtual void EndAttack();
+	virtual void ResetAttack();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 		void GameOverEvent();
