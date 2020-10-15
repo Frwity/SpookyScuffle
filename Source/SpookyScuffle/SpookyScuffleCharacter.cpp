@@ -51,6 +51,29 @@ void ASpookyScuffleCharacter::Tick(float _deltaTime)
 {
 	Super::Tick(_deltaTime);
 
+	if (!loadLock && blockCameraPitch)
+	{
+		FRotator _newRot = GetController()->GetControlRotation();
+		float _speedRotCam = 10;
+
+		if (_newRot.Pitch > 0)
+		{
+			if (_newRot.Pitch < 344)
+				_newRot.Pitch += _speedRotCam * GetWorld()->DeltaTimeSeconds;
+			if (_newRot.Pitch > 344)
+				_newRot.Pitch -= _speedRotCam * GetWorld()->DeltaTimeSeconds;
+		}
+		else
+		{
+
+			if (_newRot.Pitch < -14)
+				_newRot.Pitch += _speedRotCam * GetWorld()->DeltaTimeSeconds;
+			if (_newRot.Pitch > -14)
+				_newRot.Pitch -= _speedRotCam * GetWorld()->DeltaTimeSeconds;
+		}
+
+		GetController()->SetControlRotation(_newRot);
+	}
 }
 
 void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -90,7 +113,7 @@ void ASpookyScuffleCharacter::TurnAtRate(float _rate)
 
 void ASpookyScuffleCharacter::LookUpAtRate(float _rate)
 {
-	
+	if(!blockCameraPitch)
 		AddControllerPitchInput(_rate * baseLookUpRate * GetWorld()->GetDeltaSeconds());
 	
 }

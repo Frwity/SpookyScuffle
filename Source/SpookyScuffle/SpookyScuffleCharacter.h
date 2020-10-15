@@ -16,8 +16,12 @@ private:
 	// ================================== Option ================================== //
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Option, meta = (AllowPrivateAccess = "true"))
 		bool playerCanJump = true;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
 		bool playerMovable = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
+		bool blockCameraPitch = true;
 
 	// ================================== DASH ================================== //
 
