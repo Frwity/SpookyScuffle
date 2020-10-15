@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "VillagerAIController.generated.h"
+#include "SquireAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SPOOKYSCUFFLE_API AVillagerAIController : public AAIController
+class SPOOKYSCUFFLE_API ASquireAIController : public AAIController
 {
 	GENERATED_BODY()
 
@@ -19,7 +19,7 @@ protected:
 	bool isAlive;
 
 	class AGeneralCharacter* Player;
-	
+
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float deltaTime) override;
