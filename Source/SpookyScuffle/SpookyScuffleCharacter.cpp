@@ -243,7 +243,6 @@ void ASpookyScuffleCharacter::ActivateLock()
 		if (enemyToLock != nullptr)
 		{
 			GetWorldTimerManager().SetTimer(outHandleLock, this, &ASpookyScuffleCharacter::LockEnemy, GetWorld()->GetDeltaSeconds(), true);
-			enemyToLock->Jump();
 		}
 	}
 }
