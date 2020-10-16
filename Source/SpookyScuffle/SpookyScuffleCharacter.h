@@ -39,9 +39,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
 		float slowSpeed;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Dash, meta = (AllowPrivateAccess = "true"))
 		float slowTime;
+	bool isSlowDash;
 	
 	float timerDash = 0;
 	float timerCoolDownDash = 0;
@@ -140,6 +140,7 @@ protected:
 
 	// === Bat Form
 	void SetBatMode();
+	void UnSetBatMode();
 	void tickLostLifeBatForm();
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 		void BatEvent();

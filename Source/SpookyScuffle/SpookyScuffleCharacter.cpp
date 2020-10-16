@@ -88,12 +88,12 @@ void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* P
 		PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 		PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 		PlayerInputComponent->BindAction("RightTrigger", IE_Pressed, this, &ASpookyScuffleCharacter::SetBatMode);
-		PlayerInputComponent->BindAction("RightTrigger", IE_Released, this, &ASpookyScuffleCharacter::SetBatMode);
+		PlayerInputComponent->BindAction("RightTrigger", IE_Released, this, &ASpookyScuffleCharacter::UnSetBatMode);
 	}
 	else
 	{
 		PlayerInputComponent->BindAction("RightTrigger", IE_Pressed, this, &ASpookyScuffleCharacter::SetBatMode);
-		PlayerInputComponent->BindAction("RightTrigger", IE_Released, this, &ASpookyScuffleCharacter::SetBatMode);
+		PlayerInputComponent->BindAction("RightTrigger", IE_Released, this, &ASpookyScuffleCharacter::UnSetBatMode);
 	}
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ASpookyScuffleCharacter::Attack);
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ASpookyScuffleCharacter::ActivateDash);
@@ -159,6 +159,7 @@ void ASpookyScuffleCharacter::ActivateDash()
 		{
 			isDash = true;
 			savePosDash = GetActorLocation();
+			isSlowDash = true;
 			GetWorldTimerManager().SetTimer(outHandleDash, this, &ASpookyScuffleCharacter::DashMovement, GetWorld()->GetDeltaSeconds(), true);
 		}
 	}
@@ -208,6 +209,7 @@ void ASpookyScuffleCharacter::DashMovement()
 void ASpookyScuffleCharacter::ResetDashSpeed()
 {
 	GetCharacterMovement()->MaxWalkSpeed += slowSpeed;
+	isSlowDash = false;
 }
 
 // =============================================== Lock =============================================== //
@@ -383,13 +385,14 @@ void ASpookyScuffleCharacter::ExitLock()
 
 void ASpookyScuffleCharacter::SetBatMode()
 {
-	if (playerMovable && !drainBlood )
+	if (isSlowDash)
+		return;
+	if ((playerMovable && !drainBlood))
 	{
-		isBatMode = !isBatMode;
-		BatEvent();
-
-		if (isBatMode)
-		{
+		if (!isBatMode)
+		{ 
+			isBatMode = true;
+			BatEvent();
 			life -= costTransformToBat;
 			if (life <= 0)
 				GameOverEvent();
@@ -397,12 +400,25 @@ void ASpookyScuffleCharacter::SetBatMode()
 			GetCharacterMovement()->MaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed * mutiplySpeedBatMode;
 			GetWorldTimerManager().SetTimer(outHandleBatForm, this, &ASpookyScuffleCharacter::tickLostLifeBatForm, GetWorld()->GetDeltaSeconds(), true);
 		}
-		else
+	}
+}
+
+void ASpookyScuffleCharacter::UnSetBatMode()
+{
+	if (isSlowDash)
+		return;
+
+	if ((playerMovable && !drainBlood))
+	{
+		if (isBatMode)
 		{
-			GetCharacterMovement()->MaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed / mutiplySpeedBatMode;
+			isBatMode = false;
+			BatEvent();
+			GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
 		}
 	}
 }
+
 
 void ASpookyScuffleCharacter::tickLostLifeBatForm()
 {
