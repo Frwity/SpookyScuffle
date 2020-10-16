@@ -14,7 +14,8 @@ UENUM()
 enum class E_TEAMS
 {
 	Ally,
-	Enemy
+	Enemy,
+	Environement
 };
 
 UCLASS()
