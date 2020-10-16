@@ -54,22 +54,21 @@ void ASpookyScuffleCharacter::Tick(float _deltaTime)
 	if (!loadLock && blockCameraPitch)
 	{
 		FRotator _newRot = GetController()->GetControlRotation();
-		float _speedRotCam = 10;
 
 		if (_newRot.Pitch > 0)
 		{
 			if (_newRot.Pitch < 344)
-				_newRot.Pitch += _speedRotCam * GetWorld()->DeltaTimeSeconds;
+				_newRot.Pitch += speedRotCam * GetWorld()->DeltaTimeSeconds;
 			if (_newRot.Pitch > 344)
-				_newRot.Pitch -= _speedRotCam * GetWorld()->DeltaTimeSeconds;
+				_newRot.Pitch -= speedRotCam * GetWorld()->DeltaTimeSeconds;
 		}
 		else
 		{
 
-			if (_newRot.Pitch < -14)
-				_newRot.Pitch += _speedRotCam * GetWorld()->DeltaTimeSeconds;
-			if (_newRot.Pitch > -14)
-				_newRot.Pitch -= _speedRotCam * GetWorld()->DeltaTimeSeconds;
+			if (_newRot.Pitch < -16)
+				_newRot.Pitch += speedRotCam * GetWorld()->DeltaTimeSeconds;
+			if (_newRot.Pitch > -16)
+				_newRot.Pitch -= speedRotCam * GetWorld()->DeltaTimeSeconds;
 		}
 
 		GetController()->SetControlRotation(_newRot);
@@ -79,20 +78,25 @@ void ASpookyScuffleCharacter::Tick(float _deltaTime)
 void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
+
+
+	PlayerInputComponent->BindAction("Lock", IE_Pressed, this, &ASpookyScuffleCharacter::ActivateLock);
+	PlayerInputComponent->BindAction("Lock", IE_Released, this, &ASpookyScuffleCharacter::DisableLock);
+
 	if (playerCanJump)
 	{
 		PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 		PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 		PlayerInputComponent->BindAction("RightTrigger", IE_Pressed, this, &ASpookyScuffleCharacter::SetBatMode);
+		PlayerInputComponent->BindAction("RightTrigger", IE_Released, this, &ASpookyScuffleCharacter::SetBatMode);
 	}
 	else
 	{
-		PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASpookyScuffleCharacter::SetBatMode);
+		PlayerInputComponent->BindAction("RightTrigger", IE_Pressed, this, &ASpookyScuffleCharacter::SetBatMode);
+		PlayerInputComponent->BindAction("RightTrigger", IE_Released, this, &ASpookyScuffleCharacter::SetBatMode);
 	}
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ASpookyScuffleCharacter::Attack);
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ASpookyScuffleCharacter::ActivateDash);
-	PlayerInputComponent->BindAction("Lock", IE_Pressed, this, &ASpookyScuffleCharacter::ActivateLock);
-	PlayerInputComponent->BindAction("Lock", IE_Released, this, &ASpookyScuffleCharacter::DisableLock); 
 	PlayerInputComponent->BindAction("Special", IE_Pressed, this, &ASpookyScuffleCharacter::ActivateSpecialAttack);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASpookyScuffleCharacter::MoveForward);
@@ -437,6 +441,7 @@ void ASpookyScuffleCharacter::ActivateSpecialAttack()
 	if (useIsDrain)
 	{
 		enemyToEat = enemyToLock;
+		enemyToEat->stun = true;
 		GetWorldTimerManager().SetTimer(outHandleSpecialAttack, this, &ASpookyScuffleCharacter::SpecialAttackMove, 
 									GetWorld()->GetDeltaSeconds(), true);
 	}
@@ -528,6 +533,7 @@ void ASpookyScuffleCharacter::ResetDrainValue()
 {
 	drainBlood = false;
 	useIsDrain = false;
+	enemyToEat->stun = false;
 	enemyToEat = nullptr;
 }
 

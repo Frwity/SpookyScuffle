@@ -52,13 +52,15 @@ void AGeneralCharacter::MoveForward(float _value)
 {
 	if ((Controller != NULL) && (_value != 0.0f))
 	{
-		// find out which way is forward
-		const FRotator _rotation = Controller->GetControlRotation();
-		const FRotator _yawRotation(0, _rotation.Yaw, 0);
+		
+			// find out which way is forward
+			const FRotator _rotation = Controller->GetControlRotation();
+			const FRotator _yawRotation(0, _rotation.Yaw, 0);
 
-		// get forward vector
-		const FVector _direction = FRotationMatrix(_yawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(_direction, _value);
+			// get forward vector
+			const FVector _direction = FRotationMatrix(_yawRotation).GetUnitAxis(EAxis::X);
+			AddMovementInput(_direction, _value);
+		
 	}
 }
 
@@ -66,13 +68,15 @@ void AGeneralCharacter::MoveRight(float _value)
 {
 	if ((Controller != NULL) && (_value != 0.0f))
 	{
-		// find out which way is right
-		const FRotator _rotation = Controller->GetControlRotation();
-		const FRotator _yawRotation(0, _rotation.Yaw, 0);
+		
+			// find out which way is right
+			const FRotator _rotation = Controller->GetControlRotation();
+			const FRotator _yawRotation(0, _rotation.Yaw, 0);
 
-		// get right vector 
-		const FVector _direction = FRotationMatrix(_yawRotation).GetUnitAxis(EAxis::Y);
-		AddMovementInput(_direction, _value);
+			// get right vector 
+			const FVector _direction = FRotationMatrix(_yawRotation).GetUnitAxis(EAxis::Y);
+			AddMovementInput(_direction, _value);
+		
 	}
 }
 

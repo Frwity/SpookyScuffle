@@ -63,6 +63,7 @@ protected:
 	UPROPERTY(BlueprintAssignable, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		FMultiDynDelegate OnAttack;
 
+
 	float walkSpeed;
 
 	virtual void BeginPlay() override;
@@ -96,6 +97,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 		void GameOverEvent();
 	virtual void GameOverEvent_Implementation();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		bool stun = false;
 
 };
 

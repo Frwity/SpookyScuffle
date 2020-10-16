@@ -42,4 +42,6 @@ void AVillagerAIController::Tick(float deltaTime)
 
 	Blackboard->SetValueAsVector(TEXT("PlayerPos"), playerPos);
 	Blackboard->SetValueAsVector(TEXT("AwayFromPlayer"), enemyPos + ((away - enemyPos).GetSafeNormal() * 500));
+	bool _stun = Cast<AGeneralCharacter>(GetPawn())->stun;
+	Blackboard->SetValueAsBool(TEXT("Stun"), _stun);
 }
