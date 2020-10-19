@@ -23,8 +23,13 @@ class ASpookyScuffleGameMode : public AGameModeBase
 
 protected:
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		class AEnemyAIManager* enemyAIManager;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		E_GAMESTATE state;
+
+	virtual void BeginPlay() override;
 
 public:
 	ASpookyScuffleGameMode();

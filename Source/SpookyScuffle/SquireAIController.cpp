@@ -19,29 +19,11 @@ void ASquireAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	RunBehaviorTree(BehaviourTree);
-
-	Player = Cast<AGeneralCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-
-	ASquireCharacter* enemy = Cast<ASquireCharacter>(GetPawn());
-
-	Blackboard->SetValueAsFloat(TEXT("TriggerDistance"), enemy->GetTriggerDistance());
-	Blackboard->SetValueAsFloat(TEXT("AttackDistance"), enemy->GetAttackDistance());
 }
 
 void ASquireAIController::Tick(float deltaTime)
 {
-	isAlive = Cast<AGeneralCharacter>(GetPawn())->IsAlive();
-	Blackboard->SetValueAsBool(TEXT("IsAlive"), isAlive);
+	Super::Tick(deltaTime);
 	if (!isAlive)
 		return;
-
-	FVector enemyPos = GetPawn()->GetActorLocation();
-	FVector playerPos = Player->GetActorLocation();
-	FVector away = 2 * enemyPos - playerPos;
-
-	Blackboard->SetValueAsVector(TEXT("PlayerPos"), playerPos);
-	Blackboard->SetValueAsVector(TEXT("AwayFromPlayer"), enemyPos + ((away - enemyPos).GetSafeNormal() * 500));
-	bool _stun = Cast<AGeneralCharacter>(GetPawn())->stun;
-	Blackboard->SetValueAsBool(TEXT("Stun"), _stun);
 }

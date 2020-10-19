@@ -63,7 +63,6 @@ protected:
 	UPROPERTY(BlueprintAssignable, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		FMultiDynDelegate OnAttack;
 
-
 	float walkSpeed;
 
 	virtual void BeginPlay() override;
@@ -80,7 +79,7 @@ public:
 	virtual int GetDamage() { return damage; }
 	virtual bool IsAlive() { return isAlive; }
 	virtual E_TEAMS GetTeam() { return team; }
-
+	
 	virtual void ModifyLife(int _lifePoint, E_TEAMS _team);
 
 	UFUNCTION(BlueprintCallable)

@@ -14,16 +14,4 @@ class SPOOKYSCUFFLE_API AVillagerCharacter : public AHandFreeCharacter
 {
 	GENERATED_BODY()
 
-protected:
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI, meta = (AllowPrivateAccess = "true"))
-		float safeDistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI, meta = (AllowPrivateAccess = "true"))
-		float fleeTriggerDistance;
-
-public:
-
-	float GetSafeDistance() { return safeDistance; }
-	float GetFleeTriggerDistance() { return fleeTriggerDistance; }
 };

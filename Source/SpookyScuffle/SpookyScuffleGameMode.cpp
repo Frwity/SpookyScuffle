@@ -2,7 +2,14 @@
 
 #include "SpookyScuffleGameMode.h"
 #include "SpookyScuffleCharacter.h"
+#include "EnemyAIManager.h"
+#include "EnemyAIController.h"
+#include "Engine/World.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Engine/Engine.h"
+
 
 ASpookyScuffleGameMode::ASpookyScuffleGameMode()
 {
@@ -14,4 +21,19 @@ ASpookyScuffleGameMode::ASpookyScuffleGameMode()
 	}
 
 	state = E_GAMESTATE::STARTING;
+}
+
+void ASpookyScuffleGameMode::BeginPlay()
+{
+	TArray<AActor*> _enemyAIManager;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemyAIManager::StaticClass(), _enemyAIManager);
+	enemyAIManager = Cast<AEnemyAIManager>(_enemyAIManager[0]);
+
+	TArray<AActor*> enemyAIs;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemyAIController::StaticClass(), enemyAIs);
+
+	for (auto enemyAI : enemyAIs)
+	{	
+		Cast<AEnemyAIController>(enemyAI)->SetEnemyAIManager(enemyAIManager);
+	}
 }

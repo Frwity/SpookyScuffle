@@ -3,29 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AIController.h"
+#include "EnemyAIController.h"
 #include "VillagerAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SPOOKYSCUFFLE_API AVillagerAIController : public AAIController
+class SPOOKYSCUFFLE_API AVillagerAIController : public AEnemyAIController
 {
 	GENERATED_BODY()
 
 protected:
 
-	bool isAlive;
-
-	class AGeneralCharacter* Player;
-	
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float deltaTime) override;
 
-public:
-
-	UPROPERTY(EditAnywhere, Category = "AI")
-		class UBehaviorTree* BehaviourTree;
 };
