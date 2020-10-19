@@ -134,7 +134,7 @@ protected:
 	// === Lock
 	void ActivateLock();
 	void DisableLock();
-	bool CheckEnemyToLock(FVector enemy, FVector posPlayer);
+	bool CheckEnemyToLock(FVector enemy, FVector posPlayer, FVector forwardVec);
 	void LockEnemy();
 	void ExitLock();
 

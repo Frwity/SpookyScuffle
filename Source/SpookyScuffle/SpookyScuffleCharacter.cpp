@@ -19,6 +19,8 @@
 #include "DrawDebugHelpers.h"
 #include "Math/UnrealMathVectorCommon.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Camera/PlayerCameraManager.h"
+
 
 
 ASpookyScuffleCharacter::ASpookyScuffleCharacter()
@@ -226,6 +228,9 @@ void ASpookyScuffleCharacter::ActivateLock()
 		TArray<AActor*> enemies;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGeneralCharacter::StaticClass(), enemies);
 
+		APlayerCameraManager* _camera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
+		FVector _forwardVec = { _camera->GetActorForwardVector().X,_camera->GetActorForwardVector().Y, 0 };
+
 		for (AActor* enemOfList : enemies)
 		{
 			AGeneralCharacter* enemy = Cast<AGeneralCharacter>(enemOfList);
@@ -233,9 +238,8 @@ void ASpookyScuffleCharacter::ActivateLock()
 			if (enemy != nullptr && enemy != this && enemy->IsAlive())
 			{
 				
-				if (CheckEnemyToLock(enemy->GetActorLocation(), GetActorLocation()))
+				if (CheckEnemyToLock(enemy->GetActorLocation(),_camera->GetCameraLocation(), _forwardVec))
 					enemyToLock = enemy;
-			
 			}
 		}
 
@@ -244,22 +248,22 @@ void ASpookyScuffleCharacter::ActivateLock()
 
 		if (enemyToLock != nullptr)
 		{
+			enemyToLock->isLock = true;
 			GetWorldTimerManager().SetTimer(outHandleLock, this, &ASpookyScuffleCharacter::LockEnemy, GetWorld()->GetDeltaSeconds(), true);
 		}
 	}
 }
 
 // verify angle and take the lower 
-bool ASpookyScuffleCharacter::CheckEnemyToLock(FVector enemy, FVector posPlayer)
+bool ASpookyScuffleCharacter::CheckEnemyToLock(FVector enemy, FVector posPlayer , FVector forwardVec)
 {
 		if ((enemy - posPlayer).Size() < distanceMaxLock)
 		{
-			FVector _forwardVec = { GetActorForwardVector().X,GetActorForwardVector().Y, 0};
+			//FVector _forwardVec = { GetActorForwardVector().X,GetActorForwardVector().Y, 0};
 			FVector _playerToEnemy = { (enemy - posPlayer).X, (enemy - posPlayer).Y, 0 };
 
-			float  _calcAngle = FVector::DotProduct(_forwardVec.GetSafeNormal(), _playerToEnemy.GetSafeNormal());
+			float  _calcAngle = FVector::DotProduct(forwardVec.GetSafeNormal(), _playerToEnemy.GetSafeNormal());
 			float _newAngle = (acosf(_calcAngle)) * 180 / PI;
-
 
 			if (_newAngle < angleLock)
 			{
@@ -372,6 +376,7 @@ void ASpookyScuffleCharacter::ExitLock()
 		if (enemyToLock != nullptr)
 		{
 			enemyToLock->StopJumping();
+			enemyToLock->isLock = false;
 			enemyToLock = nullptr;
 		}
 

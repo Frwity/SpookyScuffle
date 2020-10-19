@@ -23,7 +23,7 @@ private:
 		int damageTaken = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
-		float coolDown = 40;
+		float coolDown = 0.4;
 
 	bool stopTimer = false;
 	float saveCoolDown;
