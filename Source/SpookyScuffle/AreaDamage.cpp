@@ -33,7 +33,7 @@ void UAreaDamage::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Ot
 {
 
 	saveCharacter = Cast<AGeneralCharacter>(OtherActor);
-	saveCharacter->ModifyLife(-damageTaken, E_TEAMS::Environement);
+	saveCharacter->ModifyLife(-damageTaken, team);
 		
 	GetWorld()->GetTimerManager().SetTimer(outHandleTimer, this, &UAreaDamage::TakeDamage, GetWorld()->GetDeltaSeconds(), true);
 }
@@ -50,7 +50,7 @@ void UAreaDamage::TakeDamage()
 	if (coolDown < 0)
 	{
 		coolDown = saveCoolDown;
-		saveCharacter->ModifyLife(-damageTaken, E_TEAMS::Environement);
+		saveCharacter->ModifyLife(-damageTaken, team);
 	}
 
 	if (stopTimer)

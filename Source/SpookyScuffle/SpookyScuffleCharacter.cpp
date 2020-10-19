@@ -53,28 +53,6 @@ void ASpookyScuffleCharacter::Tick(float _deltaTime)
 {
 	Super::Tick(_deltaTime);
 
-	if (!loadLock && blockCameraPitch)
-	{
-		FRotator _newRot = GetController()->GetControlRotation();
-
-		if (_newRot.Pitch > 0)
-		{
-			if (_newRot.Pitch < 344)
-				_newRot.Pitch += speedRotCam * GetWorld()->DeltaTimeSeconds;
-			if (_newRot.Pitch > 344)
-				_newRot.Pitch -= speedRotCam * GetWorld()->DeltaTimeSeconds;
-		}
-		else
-		{
-
-			if (_newRot.Pitch < -16)
-				_newRot.Pitch += speedRotCam * GetWorld()->DeltaTimeSeconds;
-			if (_newRot.Pitch > -16)
-				_newRot.Pitch -= speedRotCam * GetWorld()->DeltaTimeSeconds;
-		}
-
-		GetController()->SetControlRotation(_newRot);
-	}
 }
 
 void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -115,12 +93,68 @@ void ASpookyScuffleCharacter::TurnAtRate(float _rate)
 	
 		AddControllerYawInput(_rate * baseTurnRate * GetWorld()->GetDeltaSeconds());
 	
+		if (!loadLock && blockCameraPitch && !unlockPitch)
+		{
+			FRotator _newRot = GetController()->GetControlRotation();
+
+			if (_newRot.Pitch > 180)
+			{
+				if (_newRot.Pitch < axisCam)
+					_newRot.Pitch += speedRotCam * GetWorld()->DeltaTimeSeconds;
+				if (_newRot.Pitch > axisCam)
+					_newRot.Pitch -= speedRotCam * GetWorld()->DeltaTimeSeconds;
+			}
+			else
+			{
+			
+				if (_newRot.Pitch < axisCam - 360)
+					_newRot.Pitch += speedRotCam * GetWorld()->DeltaTimeSeconds;
+				if (_newRot.Pitch > axisCam - 360)
+					_newRot.Pitch -= speedRotCam * GetWorld()->DeltaTimeSeconds;
+			}
+
+			GetController()->SetControlRotation(_newRot);
+		}
 }
 
 void ASpookyScuffleCharacter::LookUpAtRate(float _rate)
 {
-	if(!blockCameraPitch)
+
+	if (!blockCameraPitch)
 		AddControllerPitchInput(_rate * baseLookUpRate * GetWorld()->GetDeltaSeconds());
+	else
+	{
+		if (_rate == 0)
+			unlockPitch = false;
+		else
+			unlockPitch = true;
+
+	
+		if (unlockPitch)
+		{
+			FRotator _newRot = GetController()->GetControlRotation();
+
+			if (_newRot.Pitch > 180)
+			{
+				if (_newRot.Pitch > axisCam + limitPitch)
+					_rate = 0;
+				if (_newRot.Pitch < axisCam - limitPitch)
+					_rate = 0;
+			}
+			else
+			{
+				if (_newRot.Pitch > (axisCam - 360) + limitPitch)
+					_rate = 0;
+				if (_newRot.Pitch < (axisCam - 360) - limitPitch)
+					_rate = 0;
+			}
+
+			GEngine->AddOnScreenDebugMessage(1, 1, FColor::Orange, FString::Printf(TEXT("%f"), _newRot.Pitch));
+
+			if(_rate != 0)
+				AddControllerPitchInput(_rate * baseLookUpRate * GetWorld()->GetDeltaSeconds());
+		}
+	}
 	
 }
 
@@ -249,6 +283,7 @@ void ASpookyScuffleCharacter::ActivateLock()
 		if (enemyToLock != nullptr)
 		{
 			enemyToLock->isLock = true;
+			enemyToLock->TargetEvent();
 			GetWorldTimerManager().SetTimer(outHandleLock, this, &ASpookyScuffleCharacter::LockEnemy, GetWorld()->GetDeltaSeconds(), true);
 		}
 	}
@@ -377,6 +412,7 @@ void ASpookyScuffleCharacter::ExitLock()
 		{
 			enemyToLock->StopJumping();
 			enemyToLock->isLock = false;
+			enemyToLock->TargetEvent();
 			enemyToLock = nullptr;
 		}
 

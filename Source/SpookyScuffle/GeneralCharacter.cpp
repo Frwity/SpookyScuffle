@@ -137,3 +137,8 @@ void AGeneralCharacter::GameOverEvent_Implementation()
 {
 	isAlive = false;
 }
+
+void AGeneralCharacter::TargetEvent_Implementation()
+{
+
+}

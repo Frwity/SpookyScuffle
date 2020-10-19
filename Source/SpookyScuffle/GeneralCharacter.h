@@ -99,10 +99,18 @@ public:
 		void GameOverEvent();
 	virtual void GameOverEvent_Implementation();
 
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		bool stun = false;
+
+	// ==================================== Target ==================================== //
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		bool isLock = false;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void TargetEvent();
+	virtual void TargetEvent_Implementation();
 
 };
 

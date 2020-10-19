@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GeneralCharacter.h"
 #include "Components/BoxComponent.h"
 #include "AreaDamage.generated.h"
 
@@ -24,6 +25,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
 		float coolDown = 0.4;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
+		E_TEAMS team;
 
 	bool stopTimer = false;
 	float saveCoolDown;
