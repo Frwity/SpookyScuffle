@@ -64,6 +64,18 @@ protected:
 	UPROPERTY(BlueprintAssignable, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		FMultiDynDelegate OnAttack;
 
+	// ==================================== Area Damage ==================================== //
+
+	class UAreaDamage* areaDamage;
+
+	FTimerHandle timerHandle;
+
+	bool stopTimer = false;
+	float timerCoolDown;
+
+	void TakeDamageByArea();
+
+	// ======================================================================== //
 
 	float walkSpeed;
 
@@ -111,6 +123,12 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 		void TargetEvent();
 	virtual void TargetEvent_Implementation();
+
+	UFUNCTION()
+		void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 };
 

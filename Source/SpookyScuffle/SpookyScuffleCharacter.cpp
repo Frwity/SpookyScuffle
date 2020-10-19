@@ -149,7 +149,6 @@ void ASpookyScuffleCharacter::LookUpAtRate(float _rate)
 					_rate = 0;
 			}
 
-			GEngine->AddOnScreenDebugMessage(1, 1, FColor::Orange, FString::Printf(TEXT("%f"), _newRot.Pitch));
 
 			if(_rate != 0)
 				AddControllerPitchInput(_rate * baseLookUpRate * GetWorld()->GetDeltaSeconds());

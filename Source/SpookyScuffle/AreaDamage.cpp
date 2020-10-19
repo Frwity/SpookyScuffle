@@ -21,41 +21,5 @@ void UAreaDamage::BeginPlay()
 {
 	Super::BeginPlay();
 
-	saveCoolDown = coolDown;
-
-	OnComponentBeginOverlap.AddDynamic(this, &UAreaDamage::OnBeginOverlap);
-	OnComponentEndOverlap.AddDynamic(this, &UAreaDamage::OnOverlapEnd);
-
 }
 
-void UAreaDamage::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-
-	saveCharacter = Cast<AGeneralCharacter>(OtherActor);
-	saveCharacter->ModifyLife(-damageTaken, team);
-		
-	GetWorld()->GetTimerManager().SetTimer(outHandleTimer, this, &UAreaDamage::TakeDamage, GetWorld()->GetDeltaSeconds(), true);
-}
-
-void UAreaDamage::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	stopTimer = true;
-}
-
-void UAreaDamage::TakeDamage()
-{
-	coolDown -= GetWorld()->DeltaTimeSeconds;
-
-	if (coolDown < 0)
-	{
-		coolDown = saveCoolDown;
-		saveCharacter->ModifyLife(-damageTaken, team);
-	}
-
-	if (stopTimer)
-	{
-		stopTimer = false;
-		GetWorld()->GetTimerManager().ClearTimer(outHandleTimer);
-	}
-}

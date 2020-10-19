@@ -13,6 +13,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
+#include "AreaDamage.h"
 
 AGeneralCharacter::AGeneralCharacter()
 {
@@ -38,6 +39,10 @@ void AGeneralCharacter::BeginPlay()
 	isAlive = true;
 	
 	walkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AGeneralCharacter::OnBeginOverlap);
+	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AGeneralCharacter::OnOverlapEnd);
+
 }
 
 void AGeneralCharacter::Tick(float _deltaTime)
@@ -141,4 +146,44 @@ void AGeneralCharacter::GameOverEvent_Implementation()
 void AGeneralCharacter::TargetEvent_Implementation()
 {
 
+}
+
+// ================================ OverLap Function ================================ //
+
+
+void AGeneralCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	areaDamage = Cast<UAreaDamage>(OtherComp);
+
+
+	if (areaDamage != nullptr && areaDamage->team != GetTeam())
+	{
+		this->ModifyLife(-areaDamage->damageTaken, areaDamage->team);
+		GetWorldTimerManager().SetTimer(timerHandle, this, &AGeneralCharacter::TakeDamageByArea, GetWorld()->GetDeltaSeconds(), true);
+	}
+	
+}
+
+void AGeneralCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	stopTimer = true;
+}
+
+void AGeneralCharacter::TakeDamageByArea()
+{
+	timerCoolDown -= GetWorld()->DeltaTimeSeconds;
+
+	if (timerCoolDown < 0)
+	{
+		timerCoolDown = areaDamage->coolDown;
+		this->ModifyLife(-areaDamage->damageTaken, areaDamage->team);
+	}
+
+	if (stopTimer)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 1, FColor::Emerald, TEXT("aie c pas moi"));
+		stopTimer = false;
+		GetWorld()->GetTimerManager().ClearTimer(timerHandle);
+	}
 }
