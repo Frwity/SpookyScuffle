@@ -14,13 +14,15 @@ class SPOOKYSCUFFLE_API UAttackComponent : public UBoxComponent
 {
 	GENERATED_BODY()
 
+protected:
+
 	virtual void BeginPlay() override;
 
 public:
 	UAttackComponent();
 
 	UFUNCTION()
-	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
+	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 						int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 };

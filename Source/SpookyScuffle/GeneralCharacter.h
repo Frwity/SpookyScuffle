@@ -64,6 +64,7 @@ protected:
 		FMultiDynDelegate OnAttack;
 
 	float walkSpeed;
+	FRotator rotationRate;
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float _deltaTime) override;
