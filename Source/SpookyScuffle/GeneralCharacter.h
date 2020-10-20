@@ -99,7 +99,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		bool stun = false;
-
 };
 
 	

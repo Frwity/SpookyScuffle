@@ -17,6 +17,9 @@ protected:
 
 	class TArray<class AEnemyAIController*> enemyAIs;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI, meta = (AllowPrivateAccess = "true"))
+		bool letPlaceToNewAI = false;
+
 	virtual void BeginPlay() override;
 
 public:	

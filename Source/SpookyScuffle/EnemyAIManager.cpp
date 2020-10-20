@@ -36,11 +36,10 @@ void AEnemyAIManager::Tick(float DeltaTime)
 		for (AEnemyAIController* _enemyAI : enemyAIs)
 		{
 			_enemyAI->SetTargetPos(_targetPos);
-			_targetPos = (_targetPos - _playerPos).RotateAngleAxis(360.0f / _nbEnemy, { 0.0f, 0.0f, 1.0f }) + _playerPos;
+			_targetPos = (_targetPos - _playerPos).RotateAngleAxis(360.0f / _nbEnemy, { 0.0f, 0.0f, -1.0f }) + _playerPos;
 		} 
 	}
 }
-
 
 void AEnemyAIManager::AddEnemyAI(AEnemyAIController* enemyAI)
 {
@@ -51,20 +50,30 @@ void AEnemyAIManager::AddEnemyAI(AEnemyAIController* enemyAI)
 	if (_nbEnemy > 0)
 	{
 		FVector _playerPos = player->GetActorLocation();
+		FVector _v1 = enemyAIs[0]->GetPawn()->GetActorLocation() - _playerPos;
+		FVector _v2 = enemyAI->GetPawn()->GetActorLocation() - _playerPos;
 
-		float _angle = FMath::RadiansToDegrees(enemyAI->GetPawn()->GetActorLocation() - _playerPos).CosineAngle2D(enemyAIs[0]->GetPawn()->GetActorLocation() - _playerPos);
+		float _angle = atan2(_v1.Y, _v1.X) - atan2(_v2.Y, _v2.X);
 
-		int _newPos = FMath::FloorToInt(_angle / (360.0f / _nbEnemy)) + 1;
-	
-		TArray<AEnemyAIController*> _tempEnemy;
+		if (_angle < 0)
+			_angle += 2 * PI;
+		
+		_angle = FMath::RadiansToDegrees(_angle);
+
+		int _newPos = (FMath::FloorToInt(_angle / (360.0f / _nbEnemy)) + 1);
 
 		enemyAIs.Insert(enemyAI, _newPos);
-		for (int i = 0; i < _nbEnemy + 1; ++i)
+		
+		if (letPlaceToNewAI)
 		{
-			_tempEnemy.Add(enemyAIs[(i + _newPos) % (_nbEnemy + 1)]);
+			TArray<AEnemyAIController*> _tempEnemy;
+			for (int i = 0; i < _nbEnemy + 1; ++i)
+			{
+				_tempEnemy.Add(enemyAIs[(i + _newPos) % (_nbEnemy + 1)]);
+			}
+			enemyAIs.Empty();
+			enemyAIs.Append(_tempEnemy);
 		}
-		enemyAIs.Empty();
-		enemyAIs.Append(_tempEnemy);
 	}
 	else
 	{
