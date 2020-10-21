@@ -14,6 +14,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 #include "AreaDamage.h"
+#include "DoorEnemy.h"
 
 AGeneralCharacter::AGeneralCharacter()
 {
@@ -39,6 +40,9 @@ void AGeneralCharacter::BeginPlay()
 	isAlive = true;
 	
 	walkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+
+	if (myDoor != nullptr)
+		myDoor->SetGoalToUnlock();
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AGeneralCharacter::OnBeginOverlap);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AGeneralCharacter::OnOverlapEnd);
@@ -102,6 +106,9 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 	if (life <= 0)
 	{
 		GameOverEvent();
+
+		if (myDoor != nullptr)
+			myDoor->AddToCount();
 	}
 }
 
@@ -154,36 +161,46 @@ void AGeneralCharacter::TargetEvent_Implementation()
 void AGeneralCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	areaDamage = Cast<UAreaDamage>(OtherComp);
-
-
-	if (areaDamage != nullptr && areaDamage->team != GetTeam())
+	if (Cast<UAreaDamage>(OtherComp))
 	{
-		this->ModifyLife(-areaDamage->damageTaken, areaDamage->team);
-		GetWorldTimerManager().SetTimer(timerHandle, this, &AGeneralCharacter::TakeDamageByArea, GetWorld()->GetDeltaSeconds(), true);
-	}
+		areaDamage = Cast<UAreaDamage>(OtherComp);
 	
+		if (areaDamage->team != GetTeam())
+		{
+			this->ModifyLife(-areaDamage->damageTaken, areaDamage->team);
+			GetWorldTimerManager().SetTimer(timerHandle, this, &AGeneralCharacter::TakeDamageByArea, GetWorld()->GetDeltaSeconds(), true);
+		}
+	}
 }
 
 void AGeneralCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	stopTimer = true;
+	if (Cast<UAreaDamage>(OtherComp))
+	{
+		if (areaDamage->IsOverlappingComponent(GetCapsuleComponent()))
+		{
+			return;
+		}
+		else
+		{
+			areaDamage = nullptr;
+		}
+	}
 }
 
 void AGeneralCharacter::TakeDamageByArea()
 {
+	if (areaDamage == nullptr)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(timerHandle);
+		return;
+	}
+
 	timerCoolDown -= GetWorld()->DeltaTimeSeconds;
 
 	if (timerCoolDown < 0)
 	{
 		timerCoolDown = areaDamage->coolDown;
 		this->ModifyLife(-areaDamage->damageTaken, areaDamage->team);
-	}
-
-	if (stopTimer)
-	{
-		GEngine->AddOnScreenDebugMessage(1, 1, FColor::Emerald, TEXT("aie c pas moi"));
-		stopTimer = false;
-		GetWorld()->GetTimerManager().ClearTimer(timerHandle);
 	}
 }

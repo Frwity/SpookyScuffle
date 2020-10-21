@@ -64,6 +64,9 @@ protected:
 	UPROPERTY(BlueprintAssignable, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		FMultiDynDelegate OnAttack;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Door, meta = (AllowPrivateAccess = "true"))
+		class ADoorEnemy* myDoor;
+
 	// ==================================== Area Damage ==================================== //
 
 	class UAreaDamage* areaDamage;
