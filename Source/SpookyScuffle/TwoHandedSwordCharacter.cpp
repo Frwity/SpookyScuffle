@@ -11,7 +11,7 @@
 ATwoHandedSwordCharacter::ATwoHandedSwordCharacter()
 	: AGeneralCharacter{}
 {
-	rightWeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightSword"));;
+	rightWeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightSword"));
 	rightWeaponMesh->SetupAttachment(GetMesh(), FName("RightWeaponShield"));
 	leftWeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftSword"));
 	leftWeaponMesh->SetupAttachment(GetMesh(), FName("LeftWeaponShield"));

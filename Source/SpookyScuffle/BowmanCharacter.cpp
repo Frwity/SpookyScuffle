@@ -4,6 +4,7 @@
 #include "BowmanCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 
 
@@ -41,7 +42,9 @@ void ABowmanCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 	Super::ModifyLife(_lifePoint, _team);
 }
 
+
 void ABowmanCharacter::Attack()
 {
 	Super::Attack();
+	targetPos = Cast<AGeneralCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))->GetActorLocation();
 }

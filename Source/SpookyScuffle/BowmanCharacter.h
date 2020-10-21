@@ -22,14 +22,20 @@ protected:
 	virtual void MoveForward(float _value) override;
 	virtual void MoveRight(float _value) override;
 
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		FVector targetPos;
+
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* weaponMesh;
-
 
 public:
 	ABowmanCharacter();
 
 	virtual void ModifyLife(int _lifePoint, E_TEAMS _team) override;
 
-	virtual void Attack() override;
+	void Attack() override;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void Fire();
+	virtual void Fire_Implementation() {}
 };
