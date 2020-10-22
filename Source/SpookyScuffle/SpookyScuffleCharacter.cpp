@@ -493,7 +493,7 @@ void ASpookyScuffleCharacter::ActivateSpecialAttack()
 		drainBlood = false;
 	}
 
-	if (useIsDrain)
+	if (useIsDrain && enemyToLock != nullptr)
 	{
 		enemyToEat = enemyToLock;
 		enemyToEat->stun = true;

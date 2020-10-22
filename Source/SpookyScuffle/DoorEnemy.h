@@ -43,4 +43,10 @@ public:
 	void AddToCount();
 	void OpenTheDoor();
 
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
+		void StartVibrating() ;
+	void StartVibrating_Implementation() {};
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
+		void StopVibrating() ;
+	void StopVibrating_Implementation() {};
 };

@@ -36,12 +36,10 @@ void ADoorEnemy::AddToCount()
 {
 	countToUnlock += 1;
 
-	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Orange,FString::Printf( TEXT("%i / %i"), countToUnlock,goalToUnlock));
-
 	if (countToUnlock >= goalToUnlock)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 5, FColor::Blue, FString::Printf(TEXT("%i / %i"), countToUnlock, goalToUnlock));
 		savePos = GetActorLocation();
+		StartVibrating();
 		GetWorldTimerManager().SetTimer(timerOpenDoor, this, &ADoorEnemy::OpenTheDoor, GetWorld()->GetDeltaSeconds(), true);
 	}
 }
@@ -55,10 +53,12 @@ void ADoorEnemy::OpenTheDoor()
 		_posDoor = axisMovement * (speedDoor * GetWorld()->DeltaTimeSeconds);
 
 		SetActorLocation(GetActorLocation() + _posDoor);
+
+		
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(1, 5, FColor::Red, TEXT("oui"));
+		StopVibrating();
 		GetWorldTimerManager().ClearTimer(timerOpenDoor);
 	}
 }

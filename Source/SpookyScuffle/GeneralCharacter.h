@@ -67,6 +67,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Door, meta = (AllowPrivateAccess = "true"))
 		class ADoorEnemy* myDoor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = myCheckPoint, meta = (AllowPrivateAccess = "true"))
+		class ACheckPoint* myCheckPoint;
+
 	// ==================================== Area Damage ==================================== //
 
 	class UAreaDamage* areaDamage;

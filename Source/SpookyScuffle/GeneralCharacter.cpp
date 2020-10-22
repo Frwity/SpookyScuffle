@@ -15,6 +15,8 @@
 #include "Engine/Engine.h"
 #include "AreaDamage.h"
 #include "DoorEnemy.h"
+#include "SaveGameSpooky.h"
+#include "CheckPoint.h"
 
 AGeneralCharacter::AGeneralCharacter()
 {
@@ -169,6 +171,23 @@ void AGeneralCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 		{
 			this->ModifyLife(-areaDamage->damageTaken, areaDamage->team);
 			GetWorldTimerManager().SetTimer(timerHandle, this, &AGeneralCharacter::TakeDamageByArea, GetWorld()->GetDeltaSeconds(), true);
+		}
+	}
+
+	if (Cast<ACheckPoint>(OtherActor))
+	{
+
+		ACheckPoint* _checkPoint = Cast<ACheckPoint>(OtherActor);
+
+		if (myCheckPoint == nullptr)
+			myCheckPoint = _checkPoint;
+
+		if (!_checkPoint->IsCheck())
+		{
+			_checkPoint->CheckIsOk();
+
+			if (_checkPoint->orderCheckPoint > myCheckPoint->orderCheckPoint)
+				myCheckPoint = _checkPoint;
 		}
 	}
 }
