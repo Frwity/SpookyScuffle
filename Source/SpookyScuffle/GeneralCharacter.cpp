@@ -223,3 +223,41 @@ void AGeneralCharacter::TakeDamageByArea()
 		this->ModifyLife(-areaDamage->damageTaken, areaDamage->team);
 	}
 }
+
+AGeneralCharacter* AGeneralCharacter::FindCharacterByIndex(int index)
+{
+	TArray<AActor*> FoundCharacters;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGeneralCharacter::StaticClass(), FoundCharacters);
+	
+	for (AActor* myActor : FoundCharacters)
+	{
+		AGeneralCharacter* myCharacter = Cast<AGeneralCharacter>(myActor);
+
+		if (myCharacter->indexSave == index)
+			return myCharacter;
+	}
+
+	return NULL;
+}
+
+void AGeneralCharacter::SetIsAlive(bool onOff)
+{
+	this->isAlive = onOff;
+}
+
+void AGeneralCharacter::CheckIsAliveToCheckPoint()
+{
+	if (isAlive)
+	{
+		life = maxLife;
+	}
+	else
+	{
+		life = 0;
+
+		GameOverEvent();
+
+		if (myDoor != nullptr)
+			myDoor->AddToCount();
+	}
+}

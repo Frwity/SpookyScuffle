@@ -24,6 +24,8 @@ protected:
 
 public:
 
+	AVillagerCharacter();
+
 	float GetSafeDistance() { return safeDistance; }
 	float GetFleeTriggerDistance() { return fleeTriggerDistance; }
 };

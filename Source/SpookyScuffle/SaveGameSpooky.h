@@ -16,30 +16,34 @@ class SPOOKYSCUFFLE_API USaveGameSpooky : public USaveGame
 
 protected:
 
-    UPROPERTY(VisibleAnywhere, Category = Basic)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Basic, meta = (AllowPrivateAccess = "true"))
         FString playerName;
 
-    UPROPERTY(VisibleAnywhere, Category = Basic)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Basic, meta = (AllowPrivateAccess = "true"))
         FString saveSlotName;
 
-    UPROPERTY(VisibleAnywhere, Category = Basic)
-        uint32 userIndex;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Basic, meta = (AllowPrivateAccess = "true"))
+        int userIndex;
+
+    TArray<FTransform> transformCharacter ;
+    TArray<int> indexCharacter;
+    TArray<bool> isAliveCharacter;
+
+    int indexMax;
+
+
 
 public:
 
     USaveGameSpooky();
     USaveGameSpooky(FString namePlayer, FString nameSlot, int index);
-	
-    void SaveGame();
-    UFUNCTION(BlueprintCallable)
-        void SaveGame(FString namePlayer,FString nameSlot,int index);
 
-    void LoadGame();
 
     UFUNCTION(BlueprintCallable)
         void LoadGame(FString nameSlot, int index);
 
     void SetSavedGame(FString namePlayer, FString nameSlot, int index);
     void mySaveGame();
+    class ACheckPoint* myCheckPoint;
     
 };

@@ -34,15 +34,11 @@ void ACheckPoint::CheckIsOk()
 	{
 		isCheck = true;
 
-		savedGame = Cast<USaveGameSpooky>(UGameplayStatics::CreateSaveGameObject(USaveGameSpooky::StaticClass()));
-		savedGame->SetSavedGame("player", "firstSlot", 1);
-		savedGame->mySaveGame();
-
 		GEngine->AddOnScreenDebugMessage(1, 4, FColor::Cyan, TEXT("checkpoint WIP"));
 	}
 }
 
 void ACheckPoint::LoadGameAtCheckPoint()
 {
-	savedGame->LoadGame();
+	
 }

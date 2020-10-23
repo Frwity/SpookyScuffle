@@ -23,7 +23,6 @@ protected:
 	virtual void BeginPlay() override;
 
 	bool isCheck = false;
-	class USaveGameSpooky* savedGame;
 	
 
 public:	
@@ -35,5 +34,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void LoadGameAtCheckPoint();
+
 
 };

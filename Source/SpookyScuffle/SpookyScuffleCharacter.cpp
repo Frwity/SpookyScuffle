@@ -26,6 +26,7 @@
 ASpookyScuffleCharacter::ASpookyScuffleCharacter()
 	: ATwoHandedSwordCharacter{}
 {
+	saveType = 0;
 	baseTurnRate = 45.f;
 	baseLookUpRate = 45.f;
 

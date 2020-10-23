@@ -3,3 +3,7 @@
 
 #include "SquireCharacter.h"
 
+ASquireCharacter::ASquireCharacter()
+{
+	saveType = 2;
+}

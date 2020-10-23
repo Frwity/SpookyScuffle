@@ -70,6 +70,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = myCheckPoint, meta = (AllowPrivateAccess = "true"))
 		class ACheckPoint* myCheckPoint;
 
+
+
 	// ==================================== Area Damage ==================================== //
 
 	class UAreaDamage* areaDamage;
@@ -121,6 +123,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		bool stun = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = myCheckPoint, meta = (AllowPrivateAccess = "true"))
+		int saveType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = myCheckPoint, meta = (AllowPrivateAccess = "true"))
+		int indexSave;
+
 	// ==================================== Target ==================================== //
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -135,6 +143,10 @@ public:
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 		void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	void SetIsAlive(bool onOff);
+	void CheckIsAliveToCheckPoint();
+	AGeneralCharacter* FindCharacterByIndex(int index);
 
 };
 

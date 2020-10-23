@@ -24,6 +24,8 @@ protected:
 
 public:
 
+	ASquireCharacter();
+
 	float GetTriggerDistance() { return triggerDistance; }
 	float GetAttackDistance() { return attackDistance; }
 
