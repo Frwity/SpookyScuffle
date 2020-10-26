@@ -3,3 +3,7 @@
 
 #include "VillagerCharacter.h"
 
+AVillagerCharacter::AVillagerCharacter()
+{
+	saveType = 1;
+}

@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "OneHandedSwordCharacter.h"
-#include "SquireCharacter.generated.h"
+#include "AreaDamage.h"
+#include "AreaDamageComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SPOOKYSCUFFLE_API ASquireCharacter : public AOneHandedSwordCharacter
+class SPOOKYSCUFFLE_API UAreaDamageComponent : public UAreaDamage
 {
 	GENERATED_BODY()
-
+	
 };

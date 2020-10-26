@@ -14,7 +14,8 @@ UENUM()
 enum class E_TEAMS
 {
 	Ally,
-	Enemy
+	Enemy,
+	Environement
 };
 
 UCLASS()
@@ -63,6 +64,27 @@ protected:
 	UPROPERTY(BlueprintAssignable, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		FMultiDynDelegate OnAttack;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Door, meta = (AllowPrivateAccess = "true"))
+		class ADoorEnemy* myDoor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = myCheckPoint, meta = (AllowPrivateAccess = "true"))
+		class ACheckPoint* myCheckPoint;
+
+
+
+	// ==================================== Area Damage ==================================== //
+
+	class UAreaDamage* areaDamage;
+
+	FTimerHandle timerHandle;
+
+	bool stopTimer = false;
+	float timerCoolDown;
+
+	void TakeDamageByArea();
+
+	// ======================================================================== //
+
 	float walkSpeed;
 	FRotator rotationRate;
 
@@ -98,8 +120,35 @@ public:
 		void GameOverEvent();
 	virtual void GameOverEvent_Implementation();
 
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		bool stun = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = myCheckPoint, meta = (AllowPrivateAccess = "true"))
+		int saveType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = myCheckPoint, meta = (AllowPrivateAccess = "true"))
+		int indexSave;
+
+	// ==================================== Target ==================================== //
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		bool isLock = false;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void TargetEvent();
+	virtual void TargetEvent_Implementation();
+
+	UFUNCTION()
+		void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	void SetIsAlive(bool onOff);
+	void CheckIsAliveToCheckPoint();
+	AGeneralCharacter* FindCharacterByIndex(int index);
+
 };
 
 	

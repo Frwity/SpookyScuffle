@@ -13,6 +13,10 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
+#include "AreaDamage.h"
+#include "DoorEnemy.h"
+#include "SaveGameSpooky.h"
+#include "CheckPoint.h"
 
 AGeneralCharacter::AGeneralCharacter()
 {
@@ -39,6 +43,13 @@ void AGeneralCharacter::BeginPlay()
 	
 	walkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	rotationRate = GetCharacterMovement()->RotationRate;
+
+	if (myDoor != nullptr)
+		myDoor->SetGoalToUnlock();
+
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AGeneralCharacter::OnBeginOverlap);
+	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AGeneralCharacter::OnOverlapEnd);
+
 }
 
 void AGeneralCharacter::Tick(float _deltaTime)
@@ -98,6 +109,9 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 	if (life <= 0)
 	{
 		GameOverEvent();
+
+		if (myDoor != nullptr)
+			myDoor->AddToCount();
 	}
 }
 
@@ -141,4 +155,114 @@ void AGeneralCharacter::ResetAttack()
 void AGeneralCharacter::GameOverEvent_Implementation()
 {
 	isAlive = false;
+}
+
+void AGeneralCharacter::TargetEvent_Implementation()
+{
+
+}
+
+// ================================ OverLap Function ================================ //
+
+
+void AGeneralCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (Cast<UAreaDamage>(OtherComp))
+	{
+		areaDamage = Cast<UAreaDamage>(OtherComp);
+	
+		if (areaDamage->team != GetTeam())
+		{
+			this->ModifyLife(-areaDamage->damageTaken, areaDamage->team);
+			GetWorldTimerManager().SetTimer(timerHandle, this, &AGeneralCharacter::TakeDamageByArea, GetWorld()->GetDeltaSeconds(), true);
+		}
+	}
+
+	if (Cast<ACheckPoint>(OtherActor))
+	{
+
+		ACheckPoint* _checkPoint = Cast<ACheckPoint>(OtherActor);
+
+		if (myCheckPoint == nullptr)
+			myCheckPoint = _checkPoint;
+
+		if (!_checkPoint->IsCheck())
+		{
+			_checkPoint->CheckIsOk();
+
+			if (_checkPoint->orderCheckPoint > myCheckPoint->orderCheckPoint)
+				myCheckPoint = _checkPoint;
+		}
+	}
+}
+
+void AGeneralCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (Cast<UAreaDamage>(OtherComp))
+	{
+		if (areaDamage->IsOverlappingComponent(GetCapsuleComponent()))
+		{
+			return;
+		}
+		else
+		{
+			areaDamage = nullptr;
+		}
+	}
+}
+
+void AGeneralCharacter::TakeDamageByArea()
+{
+	if (areaDamage == nullptr)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(timerHandle);
+		return;
+	}
+
+	timerCoolDown -= GetWorld()->DeltaTimeSeconds;
+
+	if (timerCoolDown < 0)
+	{
+		timerCoolDown = areaDamage->coolDown;
+		this->ModifyLife(-areaDamage->damageTaken, areaDamage->team);
+	}
+}
+
+AGeneralCharacter* AGeneralCharacter::FindCharacterByIndex(int index)
+{
+	TArray<AActor*> FoundCharacters;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGeneralCharacter::StaticClass(), FoundCharacters);
+	
+	for (AActor* myActor : FoundCharacters)
+	{
+		AGeneralCharacter* myCharacter = Cast<AGeneralCharacter>(myActor);
+
+		if (myCharacter->indexSave == index)
+			return myCharacter;
+	}
+
+	return NULL;
+}
+
+void AGeneralCharacter::SetIsAlive(bool onOff)
+{
+	this->isAlive = onOff;
+}
+
+void AGeneralCharacter::CheckIsAliveToCheckPoint()
+{
+	if (isAlive)
+	{
+		life = maxLife;
+	}
+	else
+	{
+		life = 0;
+
+		GameOverEvent();
+
+		if (myDoor != nullptr)
+			myDoor->AddToCount();
+	}
 }
