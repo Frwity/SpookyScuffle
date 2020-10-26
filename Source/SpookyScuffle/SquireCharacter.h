@@ -14,4 +14,7 @@ class SPOOKYSCUFFLE_API ASquireCharacter : public AOneHandedSwordCharacter
 {
 	GENERATED_BODY()
 
+public:
+	ASquireCharacter();
+
 };

@@ -14,4 +14,6 @@ class SPOOKYSCUFFLE_API AVillagerCharacter : public AHandFreeCharacter
 {
 	GENERATED_BODY()
 
+public:
+	AVillagerCharacter();
 };
