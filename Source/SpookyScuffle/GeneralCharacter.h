@@ -67,10 +67,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Door, meta = (AllowPrivateAccess = "true"))
 		class ADoorEnemy* myDoor;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = myCheckPoint, meta = (AllowPrivateAccess = "true"))
-		class ACheckPoint* myCheckPoint;
-
-
 
 	// ==================================== Area Damage ==================================== //
 
@@ -124,11 +120,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		bool stun = false;
 
+	// ==================================== CheckPoint ==================================== //
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = myCheckPoint, meta = (AllowPrivateAccess = "true"))
 		int saveType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = myCheckPoint, meta = (AllowPrivateAccess = "true"))
 		int indexSave;
+
+	void SetIsAlive(bool onOff);
+	void CheckIsAliveToCheckPoint();
+	AGeneralCharacter* FindCharacterByIndex(int index);
 
 	// ==================================== Target ==================================== //
 
@@ -140,14 +142,12 @@ public:
 	virtual void TargetEvent_Implementation();
 
 	UFUNCTION()
-		void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 		void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	void SetIsAlive(bool onOff);
-	void CheckIsAliveToCheckPoint();
-	AGeneralCharacter* FindCharacterByIndex(int index);
+	
 
 };
 

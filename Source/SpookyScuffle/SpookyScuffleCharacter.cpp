@@ -20,6 +20,7 @@
 #include "Math/UnrealMathVectorCommon.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Camera/PlayerCameraManager.h"
+#include "CheckPoint.h"
 
 
 
@@ -48,6 +49,7 @@ void ASpookyScuffleCharacter::BeginPlay()
 	saveTimerBLL = timerBatLostLife;
 	saveTimerDL = timerDrainLife;
 	saveMaxAngleLock = angleLock;
+
 }
 
 void ASpookyScuffleCharacter::Tick(float _deltaTime)
@@ -593,7 +595,7 @@ void ASpookyScuffleCharacter::ResetDrainValue()
 	enemyToEat = nullptr;
 }
 
-// =============================================== /   / ===============================================//
+// =============================================== / Events / ===============================================//
 
 void ASpookyScuffleCharacter::GameOverEvent_Implementation()
 {
@@ -608,4 +610,25 @@ void ASpookyScuffleCharacter::YouWinEvent_Implementation()
 	youWin = true;
 
 	playerMovable = false;
+}
+
+void ASpookyScuffleCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (Cast<ACheckPoint>(OtherActor))
+	{
+
+		ACheckPoint* _checkPoint = Cast<ACheckPoint>(OtherActor);
+
+		if (myCheckPoint == nullptr)
+			myCheckPoint = _checkPoint;
+
+		if (!_checkPoint->IsCheck())
+		{
+			_checkPoint->CheckIsOk();
+
+			if (_checkPoint->orderCheckPoint > myCheckPoint->orderCheckPoint)
+				myCheckPoint = _checkPoint;
+		}
+	}
 }

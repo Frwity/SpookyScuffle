@@ -16,7 +16,7 @@
 #include "AreaDamage.h"
 #include "DoorEnemy.h"
 #include "SaveGameSpooky.h"
-#include "CheckPoint.h"
+
 
 AGeneralCharacter::AGeneralCharacter()
 {
@@ -179,22 +179,7 @@ void AGeneralCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 		}
 	}
 
-	if (Cast<ACheckPoint>(OtherActor))
-	{
-
-		ACheckPoint* _checkPoint = Cast<ACheckPoint>(OtherActor);
-
-		if (myCheckPoint == nullptr)
-			myCheckPoint = _checkPoint;
-
-		if (!_checkPoint->IsCheck())
-		{
-			_checkPoint->CheckIsOk();
-
-			if (_checkPoint->orderCheckPoint > myCheckPoint->orderCheckPoint)
-				myCheckPoint = _checkPoint;
-		}
-	}
+	
 }
 
 void AGeneralCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

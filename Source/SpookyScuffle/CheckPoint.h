@@ -15,7 +15,7 @@ public:
 	// Sets default values for this actor's properties
 	ACheckPoint();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = myCheckPoint, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
 		int orderCheckPoint = 0;
 
 protected:
@@ -23,6 +23,22 @@ protected:
 	virtual void BeginPlay() override;
 
 	bool isCheck = false;
+
+	// ================================== Data ================================== //
+
+	//all character
+	TArray<FTransform> transformCharacter;
+	TArray<bool> isAliveCharacter;
+
+	void SaveDataCharacters();
+	void LoadDataCharacters();
+
+	// door
+	TArray<FVector> savePosDoor;
+
+	void SaveDataDoor();
+	void LoadDataDoor();
+	
 	
 
 public:	
