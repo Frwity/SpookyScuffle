@@ -170,7 +170,6 @@ void AGeneralCharacter::TargetEvent_Implementation()
 void AGeneralCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, TEXT("oui"));
 
 	if (Cast<UAreaDamage>(OtherComp))
 	{

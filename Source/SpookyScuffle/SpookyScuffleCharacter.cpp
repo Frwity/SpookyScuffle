@@ -94,9 +94,10 @@ void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* P
 
 void ASpookyScuffleCharacter::TurnAtRate(float _rate)
 {
-	
+	if (!loadLock)
+	{
 		AddControllerYawInput(_rate * baseTurnRate * GetWorld()->GetDeltaSeconds());
-	
+
 		if (!loadLock && blockCameraPitch && !unlockPitch)
 		{
 			FRotator _newRot = GetController()->GetControlRotation();
@@ -110,7 +111,7 @@ void ASpookyScuffleCharacter::TurnAtRate(float _rate)
 			}
 			else
 			{
-			
+
 				if (_newRot.Pitch < axisCam - 360)
 					_newRot.Pitch += speedRotCam * GetWorld()->DeltaTimeSeconds;
 				if (_newRot.Pitch > axisCam - 360)
@@ -119,46 +120,48 @@ void ASpookyScuffleCharacter::TurnAtRate(float _rate)
 
 			GetController()->SetControlRotation(_newRot);
 		}
+	}
 }
 
 void ASpookyScuffleCharacter::LookUpAtRate(float _rate)
 {
-
-	if (!blockCameraPitch)
-		AddControllerPitchInput(_rate * baseLookUpRate * GetWorld()->GetDeltaSeconds());
-	else
+	if (!loadLock)
 	{
-		if (_rate == 0)
-			unlockPitch = false;
+		if (!blockCameraPitch)
+			AddControllerPitchInput(_rate * baseLookUpRate * GetWorld()->GetDeltaSeconds());
 		else
-			unlockPitch = true;
-
-	
-		if (unlockPitch)
 		{
-			FRotator _newRot = GetController()->GetControlRotation();
-
-			if (_newRot.Pitch > 180)
-			{
-				if (_newRot.Pitch > axisCam + limitPitch)
-					_rate = 0;
-				if (_newRot.Pitch < axisCam - limitPitch)
-					_rate = 0;
-			}
+			if (_rate == 0)
+				unlockPitch = false;
 			else
+				unlockPitch = true;
+
+
+			if (unlockPitch)
 			{
-				if (_newRot.Pitch > (axisCam - 360) + limitPitch)
-					_rate = 0;
-				if (_newRot.Pitch < (axisCam - 360) - limitPitch)
-					_rate = 0;
+				FRotator _newRot = GetController()->GetControlRotation();
+
+				if (_newRot.Pitch > 180)
+				{
+					if (_newRot.Pitch > axisCam + limitPitch)
+						_rate = 0;
+					if (_newRot.Pitch < axisCam - limitPitch)
+						_rate = 0;
+				}
+				else
+				{
+					if (_newRot.Pitch > (axisCam - 360) + limitPitch)
+						_rate = 0;
+					if (_newRot.Pitch < (axisCam - 360) - limitPitch)
+						_rate = 0;
+				}
+
+
+				if (_rate != 0)
+					AddControllerPitchInput(_rate * baseLookUpRate * GetWorld()->GetDeltaSeconds());
 			}
-
-
-			if(_rate != 0)
-				AddControllerPitchInput(_rate * baseLookUpRate * GetWorld()->GetDeltaSeconds());
 		}
 	}
-	
 }
 
 void ASpookyScuffleCharacter::MoveForward(float _value)
@@ -431,6 +434,7 @@ void ASpookyScuffleCharacter::SetBatMode()
 {
 	if (isSlowDash)
 		return;
+
 	if ((playerMovable && !drainBlood))
 	{
 		if (!isBatMode)
@@ -616,7 +620,6 @@ void ASpookyScuffleCharacter::YouWinEvent_Implementation()
 void ASpookyScuffleCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, TEXT("non"));
 
 	if (Cast<UAreaDamage>(OtherComp))
 	{
