@@ -21,6 +21,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Camera/PlayerCameraManager.h"
 #include "CheckPoint.h"
+#include "AreaDamage.h"
 
 
 
@@ -615,6 +616,19 @@ void ASpookyScuffleCharacter::YouWinEvent_Implementation()
 void ASpookyScuffleCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, TEXT("non"));
+
+	if (Cast<UAreaDamage>(OtherComp))
+	{
+		areaDamage = Cast<UAreaDamage>(OtherComp);
+
+		if (areaDamage->team != GetTeam())
+		{
+			this->ModifyLife(-areaDamage->damageTaken, areaDamage->team);
+			GetWorldTimerManager().SetTimer(timerHandle, this, &AGeneralCharacter::TakeDamageByArea, GetWorld()->GetDeltaSeconds(), true);
+		}
+	}
+
 	if (Cast<ACheckPoint>(OtherActor))
 	{
 
