@@ -16,7 +16,7 @@
 #include "AreaDamage.h"
 #include "DoorEnemy.h"
 #include "SaveGameSpooky.h"
-#include "CheckPoint.h"
+
 
 AGeneralCharacter::AGeneralCharacter()
 {
@@ -46,6 +46,8 @@ void AGeneralCharacter::BeginPlay()
 
 	if (myDoor != nullptr)
 		myDoor->SetGoalToUnlock();
+
+	areaDamage = nullptr,
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AGeneralCharacter::OnBeginOverlap);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AGeneralCharacter::OnOverlapEnd);
@@ -168,6 +170,8 @@ void AGeneralCharacter::TargetEvent_Implementation()
 void AGeneralCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, TEXT("oui"));
+
 	if (Cast<UAreaDamage>(OtherComp))
 	{
 		areaDamage = Cast<UAreaDamage>(OtherComp);
@@ -179,36 +183,24 @@ void AGeneralCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 		}
 	}
 
-	if (Cast<ACheckPoint>(OtherActor))
-	{
-
-		ACheckPoint* _checkPoint = Cast<ACheckPoint>(OtherActor);
-
-		if (myCheckPoint == nullptr)
-			myCheckPoint = _checkPoint;
-
-		if (!_checkPoint->IsCheck())
-		{
-			_checkPoint->CheckIsOk();
-
-			if (_checkPoint->orderCheckPoint > myCheckPoint->orderCheckPoint)
-				myCheckPoint = _checkPoint;
-		}
-	}
 }
 
 void AGeneralCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (Cast<UAreaDamage>(OtherComp))
 	{
-		if (areaDamage->IsOverlappingComponent(GetCapsuleComponent()))
-		{
-			return;
-		}
-		else
-		{
-			areaDamage = nullptr;
-		}
+		
+		areaDamage = Cast<UAreaDamage>(OtherComp);
+
+			if (areaDamage->IsOverlappingComponent(GetCapsuleComponent()))
+			{
+				return;
+			}
+			else
+			{
+				areaDamage = nullptr;
+			}
+		
 	}
 }
 

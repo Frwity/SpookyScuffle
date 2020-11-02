@@ -49,4 +49,8 @@ public:
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 		void StopVibrating() ;
 	void StopVibrating_Implementation() {};
+
+	// =============== CheckPoint =============== //
+
+	int indexSave;
 };

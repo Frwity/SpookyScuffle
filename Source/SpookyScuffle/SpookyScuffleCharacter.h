@@ -18,6 +18,8 @@ private:
 		bool playerCanJump = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
 		bool playerMovable = true;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
+		class ACheckPoint* myCheckPoint;
 
 	// ================================== Camera ================================== //
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -189,6 +191,10 @@ public:
 		bool youWin = false;
 
 	virtual void GameOverEvent_Implementation() override;
+
+
+	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
 };
 

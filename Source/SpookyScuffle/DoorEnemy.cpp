@@ -36,7 +36,7 @@ void ADoorEnemy::AddToCount()
 {
 	countToUnlock += 1;
 
-	if (countToUnlock >= goalToUnlock)
+	if (countToUnlock >= goalToUnlock && !unlock)
 	{
 		savePos = GetActorLocation();
 		StartVibrating();
@@ -46,20 +46,22 @@ void ADoorEnemy::AddToCount()
 
 void ADoorEnemy::OpenTheDoor()
 {
-	FVector _posDoor ;
-
-	if ((savePos - GetActorLocation()).Size() < distanceDoorOpen)
+	if (!unlock)
 	{
-		_posDoor = axisMovement * (speedDoor * GetWorld()->DeltaTimeSeconds);
+		FVector _posDoor;
 
-		SetActorLocation(GetActorLocation() + _posDoor);
+		if ((savePos - GetActorLocation()).Size() < distanceDoorOpen)
+		{
+			_posDoor = axisMovement * (speedDoor * GetWorld()->DeltaTimeSeconds);
 
-		
-	}
-	else
-	{
-		StopVibrating();
-		GetWorldTimerManager().ClearTimer(timerOpenDoor);
+			SetActorLocation(GetActorLocation() + _posDoor);
+		}
+		else
+		{
+			unlock = true;
+			StopVibrating();
+			GetWorldTimerManager().ClearTimer(timerOpenDoor);
+		}
 	}
 }
 
