@@ -19,12 +19,36 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = JumpAttack, meta = (AllowPrivateAccess = "true"))
 		float jumpCD;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = JumpAttack, meta = (AllowPrivateAccess = "true"))
+		float jumpTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = JumpAttack, meta = (AllowPrivateAccess = "true"))
+		float jumpHeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = JumpAttack, meta = (AllowPrivateAccess = "true"))
+		float anticipationMultiplicator;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadwrite, Category = JumpAttack, meta = (AllowPrivateAccess = "true"))
 		bool isAttackJumping = false;
 
+	float currentJumpTime = 0.f;
+	FVector offset;
+	float zOffset1;
+	float zOffset2;
+	float zCurrentOffset1;
+	float zCurrentOffset2;
+
+	FVector target;
+
 	bool canAttackJump = true;
 
+	FTimerHandle jumpTimeHandler;
+
+
 public:
+
+	void Tick(float _deltaTime) override;
+	void BeginPlay() override;
 
 	float GetJumpCD() { return jumpCD; }
 	
@@ -32,7 +56,7 @@ public:
 
 	bool CanAttackJump() { return canAttackJump; }
 
-	void AttackJump(float);
+	void AttackJump(FVector, FVector);
+	void Jumping();
 	void ResetAttackJump();
-	void EndAttackJump();
 };

@@ -39,8 +39,11 @@ void AEnemyAIController::Tick(float deltaTime)
 	if (!isAlive)
 		return;
 
+	isLock = enemy->isLock;
+
 	FVector enemyPos = GetPawn()->GetActorLocation();
 	FVector playerPos = player->GetActorLocation();
+	targetDir = player->GetActorForwardVector();
 	FVector away = 2 * enemyPos - playerPos;
 
 
@@ -56,6 +59,10 @@ void AEnemyAIController::Tick(float deltaTime)
 			enemyAIManager->RemoveEnemyAI(this);
 		isTriggered = false;
 	}
+
+	if (!isPartOfCrowd)
+		targetPos = playerPos;
+
 
 	Blackboard->SetValueAsVector(TEXT("TargetPos"), targetPos);
 	Blackboard->SetValueAsVector(TEXT("PlayerPos"), playerPos);

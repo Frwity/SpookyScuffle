@@ -32,6 +32,22 @@ void AEnemyAIManager::Tick(float DeltaTime)
 	
 	if (_nbEnemy > 0)
 	{
+		int _pos = 0;
+		for (AEnemyAIController* _enemyAI : enemyAIs)
+		{
+			_pos++;
+			if (_enemyAI->IsLock())
+			{
+				TArray<AEnemyAIController*> _tempEnemy;
+				for (int i = 0; i < _nbEnemy; ++i)
+				{
+					_tempEnemy.Add(enemyAIs[(i + _pos) % (_nbEnemy)]);
+				}
+				enemyAIs.Empty();
+				enemyAIs.Append(_tempEnemy);
+				break;
+			}
+		}
 		FVector _targetPos = (enemyAIs[0]->GetPawn()->GetActorLocation() - _playerPos).GetSafeNormal2D() * enemyAIs[0]->GetSafeDistance() + _playerPos;
 		for (AEnemyAIController* _enemyAI : enemyAIs)
 		{

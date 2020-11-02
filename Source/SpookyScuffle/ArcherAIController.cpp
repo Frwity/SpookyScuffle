@@ -10,14 +10,19 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "GeneralCharacter.h"
-#include "SquireCharacter.h"
+#include "ArcherCharacter.h"
 #include "Engine/Engine.h"
 
 
 void AArcherAIController::BeginPlay()
 {
+	float _attackDistance = Cast<AArcherCharacter>(GetPawn())->GetAttackRange();
+	if (_attackDistance != 0)
+	{
+		triggerDistance = _attackDistance;
+		attackDistance = _attackDistance;
+	}
 	Super::BeginPlay();
-
 }
 
 void AArcherAIController::Tick(float deltaTime)

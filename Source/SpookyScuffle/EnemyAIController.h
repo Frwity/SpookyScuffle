@@ -18,6 +18,7 @@ protected:
 
 	bool isAlive;
 	bool isTriggered;
+	bool isLock;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI, meta = (AllowPrivateAccess = "true"))
 		bool isPartOfCrowd = true;
@@ -32,6 +33,7 @@ protected:
 		float safeDistance;
 
 	FVector targetPos;
+	FVector targetDir;
 
 	class AGeneralCharacter* enemy;
 	class AGeneralCharacter* player;
@@ -49,6 +51,11 @@ public:
 
 	void SetTargetPos(FVector newTargetPos) { targetPos = newTargetPos; }
 	void SetEnemyAIManager(class AEnemyAIManager* newEnemyAIManager) { enemyAIManager = newEnemyAIManager; }
+
+	FVector GetTargetPos() { return targetPos; }
+	FVector GetTargetDir() { return targetDir; }
+
+	bool IsLock() { return isLock; }
 
 	float GetSafeDistance() { return safeDistance; }
 };
