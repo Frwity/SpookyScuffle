@@ -21,7 +21,11 @@ protected:
 		bool letPlaceToNewAI = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI, meta = (AllowPrivateAccess = "true"))
-		float attackerCooldown = 1.0f;
+		float attackerCooldown = 2.5f;
+
+	float attackTimer = 0.0f;
+	int fighterPos;
+	bool fighterChoosen = false;
 
 	virtual void BeginPlay() override;
 

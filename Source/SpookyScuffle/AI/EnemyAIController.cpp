@@ -7,6 +7,7 @@
 #include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Components/CapsuleComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
@@ -45,7 +46,26 @@ void AEnemyAIController::Tick(float deltaTime)
 	FVector playerPos = player->GetActorLocation();
 	targetDir = player->GetActorForwardVector();
 	FVector away = 2 * enemyPos - playerPos;
-
+	if(!isPartOfCrowd)
+		targetPos = playerPos;
+	else
+	{
+		float angleForStrafeDir = FMath::RadiansToDegrees(atan2((enemyPos - playerPos).Y, (enemyPos - playerPos).X) - atan2((targetPos - playerPos).Y, (targetPos - playerPos).X));
+		if (angleForStrafeDir > 180 || angleForStrafeDir < -180)
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::SanitizeFloat(angleForStrafeDir));
+		if (angleForStrafeDir > 180)
+		{
+			targetStrafe = -enemy->GetCapsuleComponent()->GetRightVector() * 100;
+			targetStrafe += enemyPos;
+		}
+		else if (angleForStrafeDir < -180)
+		{
+			targetStrafe = enemy->GetCapsuleComponent()->GetRightVector() * 100;
+			targetStrafe += enemyPos;
+		}
+		else
+			targetStrafe = targetPos;
+	}
 
 	if (FVector::Dist(playerPos, enemyPos) < triggerDistance)
 	{
@@ -60,12 +80,10 @@ void AEnemyAIController::Tick(float deltaTime)
 		isTriggered = false;
 	}
 
-	if (!isPartOfCrowd)
-		targetPos = playerPos;
-
-
 	Blackboard->SetValueAsVector(TEXT("TargetPos"), targetPos);
 	Blackboard->SetValueAsVector(TEXT("PlayerPos"), playerPos);
+	Blackboard->SetValueAsVector(TEXT("TargetStrafe"), targetStrafe);
 	Blackboard->SetValueAsVector(TEXT("AwayFromPlayer"), enemyPos + ((away - enemyPos).GetSafeNormal() * 500));
 	Blackboard->SetValueAsBool(TEXT("Stun"), enemy->stun);
+	Blackboard->SetValueAsBool(TEXT("IsAFighter"), isAFighter);
 }

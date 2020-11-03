@@ -34,6 +34,8 @@ protected:
 
 	FVector targetPos;
 	FVector targetDir;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI, meta = (AllowPrivateAccess = "true"))
+	FVector targetStrafe;
 
 	class AGeneralCharacter* enemy;
 	class AGeneralCharacter* player;
@@ -45,6 +47,8 @@ protected:
 	virtual void Tick(float deltaTime) override;
 
 public:
+
+	bool isAFighter;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 		class UBehaviorTree* BehaviourTree;
