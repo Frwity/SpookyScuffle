@@ -1,9 +1,9 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 #include "SpookyScuffleGameMode.h"
-#include "SpookyScuffleCharacter.h"
-#include "EnemyAIManager.h"
-#include "EnemyAIController.h"
+#include "Character/SpookyScuffleCharacter.h"
+#include "AI/EnemyAIManager.h"
+#include "AI/EnemyAIController.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -14,7 +14,7 @@
 ASpookyScuffleGameMode::ASpookyScuffleGameMode()
 {
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Blueprints/ThirdPersonCharacter"));
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Blueprints/character/ThirdPersonCharacter"));
 	if (PlayerPawnBPClass.Class != NULL)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;

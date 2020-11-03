@@ -3,12 +3,12 @@
 
 #include "SaveGameSpooky.h"
 #include "Kismet/GameplayStatics.h"
-#include "GeneralCharacter.h"
+#include "Character/GeneralCharacter.h"
 #include "Engine/World.h"
-#include "SpookyScuffleCharacter.h"
-#include "VillagerCharacter.h"
-#include "SquireCharacter.h"
-#include "CheckPoint.h"
+#include "Character/SpookyScuffleCharacter.h"
+#include "Character/VillagerCharacter.h"
+#include "Character/SquireCharacter.h"
+#include "LDBlock/CheckPoint.h"
 
 USaveGameSpooky::USaveGameSpooky()
 {
