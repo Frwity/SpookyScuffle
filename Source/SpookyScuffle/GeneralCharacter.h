@@ -70,6 +70,7 @@ protected:
 
 	// ==================================== Area Damage ==================================== //
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AreaDamage, meta = (AllowPrivateAccess = "true"))
 	class UAreaDamage* areaDamage;
 
 	FTimerHandle timerHandle;
@@ -77,7 +78,6 @@ protected:
 	bool stopTimer = false;
 	float timerCoolDown;
 
-	void TakeDamageByArea();
 
 	// ======================================================================== //
 
@@ -120,6 +120,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		bool stun = false;
 
+	// ==================================== Area Damage ==================================== //
+
+	void TakeDamageByArea();
+
 	// ==================================== CheckPoint ==================================== //
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = myCheckPoint, meta = (AllowPrivateAccess = "true"))
@@ -146,8 +150,6 @@ public:
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 		void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	
 
 };
 
