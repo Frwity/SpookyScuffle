@@ -20,6 +20,9 @@ void AEnemyAIManager::BeginPlay()
 	Super::BeginPlay();
 	
 	player = Cast<AGeneralCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	for (int i = 0; i < 50; ++i)
+		randNumber[i] = FMath::FRandRange(-noise, noise);
 }
 
 
@@ -35,7 +38,7 @@ void AEnemyAIManager::Tick(float DeltaTime)
 		// set the first enemy to be the one locked
 		int _pos = 0;
 		for (AEnemyAIController* _enemyAI : enemyAIs)
-		{		
+		{
 			if (_enemyAI->IsLock())
 			{
 				TArray<AEnemyAIController*> _tempEnemy;
@@ -51,12 +54,13 @@ void AEnemyAIManager::Tick(float DeltaTime)
 		}
 
 		// set target for all enemy
+		int _i = 0;
 		FVector _targetPos = (enemyAIs[0]->GetPawn()->GetActorLocation() - _playerPos).GetSafeNormal2D() * enemyAIs[0]->GetSafeDistance() + _playerPos;
 		for (AEnemyAIController* _enemyAI : enemyAIs)
 		{
 			_enemyAI->isAFighter = false;
 			_enemyAI->SetTargetPos(_targetPos);
-			_targetPos = (_targetPos - _playerPos).RotateAngleAxis(360.0f / _nbEnemy, { 0.0f, 0.0f, -1.0f }) + _playerPos;
+			_targetPos = (_targetPos - _playerPos).RotateAngleAxis(360.0f / _nbEnemy, { 0.0f, 0.0f, -1.0f }) + _playerPos + FVector(randNumber[_i++], randNumber[_i++], 0);
 		} 
 	}
 

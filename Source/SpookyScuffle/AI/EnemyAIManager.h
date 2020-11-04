@@ -23,6 +23,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI, meta = (AllowPrivateAccess = "true"))
 		float attackerCooldown = 2.5f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI, meta = (AllowPrivateAccess = "true"))
+		float noise = 200;
+
+	float randNumber[50];
+
 	float attackTimer = 0.0f;
 	int fighterPos;
 	bool fighterChoosen = false;

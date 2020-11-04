@@ -32,9 +32,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI, meta = (AllowPrivateAccess = "true"))
 		float safeDistance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI, meta = (AllowPrivateAccess = "true"))
+		float targetToleranceMin;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI, meta = (AllowPrivateAccess = "true"))
+		float targetToleranceMax;
+	float targetTolerance;
+
 	FVector targetPos;
 	FVector targetDir;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI, meta = (AllowPrivateAccess = "true"))
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI, meta = (AllowPrivateAccess = "true"))
 	FVector targetStrafe;
 
 	class AGeneralCharacter* enemy;

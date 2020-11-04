@@ -109,6 +109,7 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 
 	if (life <= 0)
 	{
+		isAlive = false;
 		GameOverEvent();
 
 		if (myDoor != nullptr)

@@ -25,6 +25,9 @@ void AEnemyAIController::BeginPlay()
 	player = Cast<AGeneralCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	enemy = Cast<AGeneralCharacter>(GetPawn());
 
+	targetTolerance = FMath::FRandRange(targetToleranceMin, targetToleranceMax);
+	Blackboard->SetValueAsFloat(TEXT("TargetTolerance"), targetTolerance);
+
 	Blackboard->SetValueAsFloat(TEXT("TriggerDistance"), triggerDistance);
 	Blackboard->SetValueAsFloat(TEXT("SafeDistance"), safeDistance);
 	Blackboard->SetValueAsFloat(TEXT("AttackDistance"), attackDistance);	
@@ -53,14 +56,14 @@ void AEnemyAIController::Tick(float deltaTime)
 		float angleForStrafeDir = FMath::RadiansToDegrees(atan2((enemyPos - playerPos).Y, (enemyPos - playerPos).X) - atan2((targetPos - playerPos).Y, (targetPos - playerPos).X));
 		if (angleForStrafeDir > 180 || angleForStrafeDir < -180)
 			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::SanitizeFloat(angleForStrafeDir));
-		if (angleForStrafeDir > 180)
-		{
-			targetStrafe = -enemy->GetCapsuleComponent()->GetRightVector() * 100;
-			targetStrafe += enemyPos;
-		}
-		else if (angleForStrafeDir < -180)
+		if (angleForStrafeDir > 20)
 		{
 			targetStrafe = enemy->GetCapsuleComponent()->GetRightVector() * 100;
+			targetStrafe += enemyPos;
+		}
+		else if (angleForStrafeDir < -0)
+		{
+			targetStrafe = -enemy->GetCapsuleComponent()->GetRightVector() * 100;
 			targetStrafe += enemyPos;
 		}
 		else
