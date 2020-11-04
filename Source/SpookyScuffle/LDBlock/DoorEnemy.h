@@ -31,6 +31,9 @@ private:
 	FTimerHandle timerOpenDoor;
 	FVector savePos;
 
+	bool isGetPlayer = false;
+	class ASpookyScuffleCharacter* player;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

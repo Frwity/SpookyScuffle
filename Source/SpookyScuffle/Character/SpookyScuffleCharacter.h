@@ -197,9 +197,14 @@ public:
 
 	virtual void GameOverEvent_Implementation() override;
 
-
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+
+	//===== Lock
+
+	void LockPosition(FVector pos);
+	bool ExitLockFirstCondition();
+	bool ExitLockSecondCondition();
 
 };
 

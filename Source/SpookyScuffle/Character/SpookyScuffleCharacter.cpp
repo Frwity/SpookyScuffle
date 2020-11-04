@@ -340,53 +340,51 @@ void myLerp(FRotator targetPos, FRotator currentPos)
 // Camera lock change of place
 void ASpookyScuffleCharacter::LockEnemy()
 {
-	FVector  _camTransform =  followCamera->GetRelativeLocation();
-	FVector _dirPlayerEnemy = { GetActorLocation().X - enemyToLock->GetActorLocation().X,
-						GetActorLocation().Y - enemyToLock->GetActorLocation().Y,0 };
-
-	// == Camera focus on the enemy lock calcul 
-	float _nice = 100;
-
-	if ((GetActorLocation() - enemyToLock->GetActorLocation()).Size() < limitUpCamera)
-	{
-		_nice = _nice * ((GetActorLocation() - enemyToLock->GetActorLocation()).Size() / limitUpCamera) ;
-	}
-
-	FRotator _newRot;
-	FVector _currentPos = GetActorLocation() + FVector(0, 0, _nice);
-	FVector _targetPos = enemyToLock->GetActorLocation() - FVector(0,0, _nice);
-	
-	FRotator _lookAt = FRotationMatrix::MakeFromX(_targetPos - _currentPos).Rotator();
-	FRotator _terp = UKismetMathLibrary::RInterpTo(GetController()->GetControlRotation(),_lookAt,GetWorld()->DeltaTimeSeconds,5.f);
-
-	_newRot.Roll = GetController()->GetControlRotation().Roll;
-	_newRot.Pitch = _terp.Pitch ;
-	_newRot.Yaw = _terp.Yaw;
-
-	GetController()->SetControlRotation(_newRot);
-
-	//rotation player to enemy, needed to straff : Don't Work like I want
-
-	//FRotator _terpPlayer = UKismetMathLibrary::RInterpTo(GetController()->GetControlRotation(), 
-	//	FRotationMatrix::MakeFromX(-_dirPlayerEnemy).Rotator(), GetWorld()->DeltaTimeSeconds, 5.f);
-	//SetActorRotation(_terpPlayer);
-	
-	// Move Camera to the good Angle when you lock 
-	if (cameraBoom->TargetArmLength > 300)
-		cameraBoom->TargetArmLength -= speedCameraLock * GetWorld()->DeltaTimeSeconds;
-	
-	if (_camTransform.Y < 100 && _camTransform.Z < 100)
-	{
-		_camTransform.Z += speedCameraLock * GetWorld()->DeltaTimeSeconds;
-		_camTransform.Y += speedCameraLock * GetWorld()->DeltaTimeSeconds;
-		followCamera->SetRelativeLocation(_camTransform);
-	}
+	LockPosition(enemyToLock->GetActorLocation());
 
 	if (passToDisable)
 	{
 		GetWorldTimerManager().ClearTimer(outHandleLock);
 	}
 
+}
+
+void ASpookyScuffleCharacter::LockPosition(FVector pos)
+{
+	FVector  _camTransform = followCamera->GetRelativeLocation();
+	FVector _dirPlayerEnemy = { GetActorLocation().X - pos.X, GetActorLocation().Y - pos.Y,0 };
+
+	// == Camera focus on the enemy lock calcul 
+	float _nice = 100;
+
+	if ((GetActorLocation() - pos).Size() < limitUpCamera)
+	{
+		_nice = _nice * ((GetActorLocation() - pos).Size() / limitUpCamera);
+	}
+
+	FRotator _newRot;
+	FVector _currentPos = GetActorLocation() + FVector(0, 0, _nice);
+	FVector _targetPos = pos - FVector(0, 0, _nice);
+
+	FRotator _lookAt = FRotationMatrix::MakeFromX(_targetPos - _currentPos).Rotator();
+	FRotator _terp = UKismetMathLibrary::RInterpTo(GetController()->GetControlRotation(), _lookAt, GetWorld()->DeltaTimeSeconds, 5.f);
+
+	_newRot.Roll = GetController()->GetControlRotation().Roll;
+	_newRot.Pitch = _terp.Pitch;
+	_newRot.Yaw = _terp.Yaw;
+
+	GetController()->SetControlRotation(_newRot);
+
+	// Move Camera to the good Angle when you lock 
+	if (cameraBoom->TargetArmLength > 300)
+		cameraBoom->TargetArmLength -= speedCameraLock * GetWorld()->DeltaTimeSeconds;
+
+	if (_camTransform.Y < 100 && _camTransform.Z < 100)
+	{
+		_camTransform.Z += speedCameraLock * GetWorld()->DeltaTimeSeconds;
+		_camTransform.Y += speedCameraLock * GetWorld()->DeltaTimeSeconds;
+		followCamera->SetRelativeLocation(_camTransform);
+	}
 }
 
 
@@ -407,8 +405,9 @@ void ASpookyScuffleCharacter::ExitLock()
 
 	bool _firstCondition = false, _scndCondition = false;
 
-
-
+	_firstCondition = ExitLockFirstCondition();
+	_scndCondition = ExitLockSecondCondition();
+	/*
 	if (saveArmLength > cameraBoom->TargetArmLength)
 	{
 		cameraBoom->TargetArmLength += speedCameraLock * 4 * GetWorld()->DeltaTimeSeconds;
@@ -429,13 +428,12 @@ void ASpookyScuffleCharacter::ExitLock()
 	{
 		followCamera->SetRelativeLocation({ 0,0,0 });
 		_scndCondition = true;
-	}
+	}*/
 
 	if (_firstCondition && _scndCondition)
 	{
 		if (enemyToLock != nullptr)
 		{
-			enemyToLock->StopJumping();
 			enemyToLock->isLock = false;
 			enemyToLock->TargetEvent();
 			enemyToLock = nullptr;
@@ -445,6 +443,40 @@ void ASpookyScuffleCharacter::ExitLock()
 		
 		GetWorldTimerManager().ClearTimer(outHandleExitLock);
 	}
+}
+
+bool ASpookyScuffleCharacter::ExitLockFirstCondition()
+{
+	if (saveArmLength > cameraBoom->TargetArmLength)
+	{
+		cameraBoom->TargetArmLength += speedCameraLock * 4 * GetWorld()->DeltaTimeSeconds;
+	}
+	else
+	{
+		cameraBoom->TargetArmLength = saveArmLength;
+		return true;
+	}
+	return false;
+}
+
+bool ASpookyScuffleCharacter::ExitLockSecondCondition()
+{
+	FVector  _camTransform = followCamera->GetRelativeLocation();
+	float _multiplReset = 4;
+
+	if (_camTransform.Y > 0 && _camTransform.Z > 0)
+	{
+		_camTransform.Z -= speedCameraLock * _multiplReset * GetWorld()->DeltaTimeSeconds;
+		_camTransform.Y -= speedCameraLock * _multiplReset * GetWorld()->DeltaTimeSeconds;
+		followCamera->SetRelativeLocation(_camTransform);
+	}
+	else
+	{
+		followCamera->SetRelativeLocation({ 0,0,0 });
+		return true;
+	}
+
+	return false;
 }
 
 // =============================================== Bat Form ===============================================//
