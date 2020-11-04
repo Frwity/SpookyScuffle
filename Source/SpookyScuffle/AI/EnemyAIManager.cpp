@@ -36,7 +36,7 @@ void AEnemyAIManager::Tick(float DeltaTime)
 	if (_nbEnemy > 0)
 	{
 		// set the first enemy to be the one locked
-		int _pos = 0;
+		/*int _pos = 0;
 		for (AEnemyAIController* _enemyAI : enemyAIs)
 		{
 			if (_enemyAI->IsLock())
@@ -51,28 +51,45 @@ void AEnemyAIManager::Tick(float DeltaTime)
 				break;
 			}
 			_pos++;
-		}
+		}*/
 
 		// set target for all enemy
 		int _i = 0;
-		FVector _targetPos = (enemyAIs[0]->GetPawn()->GetActorLocation() - _playerPos).GetSafeNormal2D() * enemyAIs[0]->GetSafeDistance() + _playerPos;
+		FVector _targetPos = FVector(1,0,0).GetSafeNormal2D() * enemyAIs[0]->GetSafeDistance() + _playerPos;
 		for (AEnemyAIController* _enemyAI : enemyAIs)
 		{
+			if (_i > 0)
+			_targetPos = (_targetPos - _playerPos).RotateAngleAxis(360.0f / _nbEnemy, { 0.0f, 0.0f, -1.0f }).GetSafeNormal2D() * enemyAIs[_i]->GetSafeDistance() + _playerPos + FVector(randNumber[_i * 2], randNumber[_i * 2 + 1], 0);
 			_enemyAI->isAFighter = false;
 			_enemyAI->SetTargetPos(_targetPos);
-			_targetPos = (_targetPos - _playerPos).RotateAngleAxis(360.0f / _nbEnemy, { 0.0f, 0.0f, -1.0f }) + _playerPos + FVector(randNumber[_i++], randNumber[_i++], 0);
+			++_i;
 		} 
 	}
 
 	// set a fighter
+	if (_nbEnemy > 0)
+		firstFighter = enemyAIs[0];
+	{
+		int _i = 0;
+		for (AEnemyAIController* _enemyAI : enemyAIs)
+		{
+			if (_enemyAI->IsLock())
+			{
+				firstFighter = _enemyAI;
+				break;
+			}
+			_i++;
+		}
+	}
+	
 	attackTimer += GetWorld()->GetDeltaSeconds();
 
 	if (_nbEnemy == 1)
-		enemyAIs[0]->isAFighter = true;
+		firstFighter->isAFighter = true;
 	else if (_nbEnemy == 2)
 	{
 		if (attackTimer < attackerCooldown)
-			enemyAIs[0]->isAFighter = true;
+			firstFighter->isAFighter = true;
 		else if (attackTimer < attackerCooldown * 2)
 			enemyAIs[1]->isAFighter = true;
 		else
@@ -82,8 +99,8 @@ void AEnemyAIManager::Tick(float DeltaTime)
 	{
 		if (attackTimer < attackerCooldown)
 		{
-			if (enemyAIs[0]->IsLock())
-				enemyAIs[0]->isAFighter = true;
+			if (firstFighter->IsLock())
+				firstFighter->isAFighter = true;
 			else
 				attackTimer += attackerCooldown;
 		}
@@ -91,7 +108,7 @@ void AEnemyAIManager::Tick(float DeltaTime)
 		{
 			if (!fighterChoosen)
 			{
-				if (enemyAIs[0]->IsLock())
+				if (firstFighter->IsLock())
 					fighterPos = FMath::RandRange(1, _nbEnemy - 1);
 				else
 					fighterPos = FMath::RandRange(0, _nbEnemy - 1);
@@ -130,7 +147,7 @@ void AEnemyAIManager::AddEnemyAI(AEnemyAIController* enemyAI)
 
 		enemyAIs.Insert(enemyAI, _newPos);
 		
-		if (letPlaceToNewAI)
+		/*if (letPlaceToNewAI)
 		{
 			TArray<AEnemyAIController*> _tempEnemy;
 			for (int i = 0; i < _nbEnemy + 1; ++i)
@@ -139,7 +156,7 @@ void AEnemyAIManager::AddEnemyAI(AEnemyAIController* enemyAI)
 			}
 			enemyAIs.Empty();
 			enemyAIs.Append(_tempEnemy);
-		}
+		}*/
 	}
 	else
 	{

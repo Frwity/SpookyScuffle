@@ -16,6 +16,7 @@ protected:
 	class AGeneralCharacter* player;
 
 	class TArray<class AEnemyAIController*> enemyAIs;
+	AEnemyAIController* firstFighter;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI, meta = (AllowPrivateAccess = "true"))
 		bool letPlaceToNewAI = false;

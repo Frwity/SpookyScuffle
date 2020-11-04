@@ -54,8 +54,7 @@ void AEnemyAIController::Tick(float deltaTime)
 	else
 	{
 		float angleForStrafeDir = FMath::RadiansToDegrees(atan2((enemyPos - playerPos).Y, (enemyPos - playerPos).X) - atan2((targetPos - playerPos).Y, (targetPos - playerPos).X));
-		if (angleForStrafeDir > 180 || angleForStrafeDir < -180)
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::SanitizeFloat(angleForStrafeDir));
+	
 		if (angleForStrafeDir > 20)
 		{
 			targetStrafe = enemy->GetCapsuleComponent()->GetRightVector() * 100;
