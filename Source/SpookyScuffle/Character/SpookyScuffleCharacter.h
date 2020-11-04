@@ -71,6 +71,8 @@ private:
 		float angleLock = 60;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock, meta = (AllowPrivateAccess = "true"))
 		float speedCameraLock = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock, meta = (AllowPrivateAccess = "true"))
+		float limitUpCamera = 500;
 		
 	float saveArmLength;
 	float saveMaxAngleLock;
@@ -113,6 +115,9 @@ private:
 		float mutiplySpeedSpecialAttack = 5.f;
 
 	bool drainBlood = false;
+	bool stopDrain = false;
+	float timerSecuritySP = 2;
+	float saveTimerSecuritySP;
 	float saveTimerDL;
 	int saveLifePLayerOnDrain;
 	FTimerHandle outHandleSpecialAttack;

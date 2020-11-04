@@ -50,6 +50,7 @@ void ASpookyScuffleCharacter::BeginPlay()
 	saveTimerBLL = timerBatLostLife;
 	saveTimerDL = timerDrainLife;
 	saveMaxAngleLock = angleLock;
+	saveTimerSecuritySP = timerSecuritySP;
 
 }
 
@@ -169,6 +170,7 @@ void ASpookyScuffleCharacter::MoveForward(float _value)
 	if (playerMovable)
 	{
 		Super::MoveForward(_value);
+
 	}
 }
 
@@ -177,6 +179,7 @@ void ASpookyScuffleCharacter::MoveRight(float _value)
 	if (playerMovable)
 	{
 		Super::MoveRight(_value);
+
 	}
 }
 
@@ -187,8 +190,13 @@ void ASpookyScuffleCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 
 void ASpookyScuffleCharacter::Attack()
 {
-	if(!isBatMode && playerMovable)
+	if (!isBatMode && playerMovable)
+	{
 		Super::Attack();
+
+		if (drainBlood)
+			stopDrain = true;
+	}
 }
 
 // =============================================== Dash ===============================================//
@@ -197,6 +205,10 @@ void ASpookyScuffleCharacter::ActivateDash()
 {
 	if (playerMovable)
 	{
+
+		if (drainBlood)
+			stopDrain = true;
+
 		if (!isDash && !isBatMode && !drainBlood)
 		{
 			isDash = true;
@@ -333,9 +345,16 @@ void ASpookyScuffleCharacter::LockEnemy()
 						GetActorLocation().Y - enemyToLock->GetActorLocation().Y,0 };
 
 	// == Camera focus on the enemy lock calcul 
+	float _nice = 100;
+
+	if ((GetActorLocation() - enemyToLock->GetActorLocation()).Size() < limitUpCamera)
+	{
+		_nice = _nice * ((GetActorLocation() - enemyToLock->GetActorLocation()).Size() / limitUpCamera) ;
+	}
+
 	FRotator _newRot;
-	FVector _currentPos = GetActorLocation() + FVector(0, 0, 100);
-	FVector _targetPos = enemyToLock->GetActorLocation() - FVector(0,0,100);
+	FVector _currentPos = GetActorLocation() + FVector(0, 0, _nice);
+	FVector _targetPos = enemyToLock->GetActorLocation() - FVector(0,0, _nice);
 	
 	FRotator _lookAt = FRotationMatrix::MakeFromX(_targetPos - _currentPos).Rotator();
 	FRotator _terp = UKismetMathLibrary::RInterpTo(GetController()->GetControlRotation(),_lookAt,GetWorld()->DeltaTimeSeconds,5.f);
@@ -504,7 +523,7 @@ void ASpookyScuffleCharacter::ActivateSpecialAttack()
 	if (useIsDrain && enemyToLock != nullptr)
 	{
 		enemyToEat = enemyToLock;
-		enemyToEat->stun = true;
+		timerSecuritySP = saveTimerSecuritySP;
 		GetWorldTimerManager().SetTimer(outHandleSpecialAttack, this, &ASpookyScuffleCharacter::SpecialAttackMove, 
 									GetWorld()->GetDeltaSeconds(), true);
 	}
@@ -512,9 +531,12 @@ void ASpookyScuffleCharacter::ActivateSpecialAttack()
 
 void ASpookyScuffleCharacter::SpecialAttackMove()
 {
+	
 	FVector _dirVec = enemyToEat->GetActorLocation() - GetActorLocation();
-
 	FVector _posBehindEnemy = enemyToEat->GetActorLocation() - (enemyToEat->GetActorForwardVector() * 100);
+
+	if (_dirVec.Size() < 150)
+		enemyToEat->stun = true;
 
 	if (_dirVec.Size() < distanceMaxToDrain && !drainBlood)
 	{
@@ -524,22 +546,29 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 		SetActorRotation(rotPlayer);
 
 		// go to back of enemy quickly
-		if ((_posBehindEnemy - GetActorLocation()).Size() >= 20)
+		if ((_posBehindEnemy - GetActorLocation()).Size() >= 30)
 		{
 			GetCharacterMovement()->Velocity = (_posBehindEnemy - GetActorLocation()).GetSafeNormal()
 				* speedSpecialAttack * mutiplySpeedSpecialAttack;
+
+			// Security if player is block by object on scene
+			timerSecuritySP -= GetWorld()->DeltaTimeSeconds;
+			if (timerSecuritySP <= 0)
+			{
+				ResetDrainValue();
+				GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
+				return;
+			}
 		}
 		else
 		{
 			GetCharacterMovement()->Velocity = { 0,0,0 };
 			if (isBatMode)
-				SetBatMode();
+				UnSetBatMode();
 
 			drainBlood = true;
 			enemyToEat->ModifyLife(-GetDamage(), GetTeam());
-			saveLifePLayerOnDrain = life;
-			// batmode go to false
-			
+			saveLifePLayerOnDrain = life;	
 		}
 	}
 
@@ -577,18 +606,29 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 	{
 		ResetDrainValue();
 		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
+		return;
 	}
 
-	if (GetCharacterMovement()->Velocity != FVector{ 0,0,0 })
+	if (!(GetCharacterMovement()->Velocity).IsNearlyZero())
 	{
 		ResetDrainValue();
 		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
+		return;
+	}
+
+	if (stopDrain)
+	{
+		stopDrain = false;
+		ResetDrainValue();
+		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
+		return;
 	}
 
 	if (saveLifePLayerOnDrain != life)
 	{
 		ResetDrainValue();
 		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
+		return;
 	}
 }
 
