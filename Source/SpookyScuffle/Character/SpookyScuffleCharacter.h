@@ -122,6 +122,10 @@ private:
 	int saveLifePLayerOnDrain;
 	FTimerHandle outHandleSpecialAttack;
 
+	// ================================== Debug ================================== //
+
+	int tPPointnumber = 0;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -167,6 +171,11 @@ protected:
 	void SpecialAttackDrain();
 	void ResetDrainValue();
 
+	// === Debug
+
+	void PrevTPPoint();
+	void NextTPPoint();
+	void CurrentTPPoint();
 
 public:
 

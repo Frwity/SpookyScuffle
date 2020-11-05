@@ -22,6 +22,7 @@
 #include "Camera/PlayerCameraManager.h"
 #include "../LDBlock/CheckPoint.h"
 #include "../LDBlock/AreaDamage.h"
+#include "../LDBlock/TPPoint.h"
 
 
 
@@ -90,6 +91,10 @@ void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* P
 	PlayerInputComponent->BindAxis("TurnRate", this, &ASpookyScuffleCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ASpookyScuffleCharacter::LookUpAtRate);
+
+	PlayerInputComponent->BindAction("Next", IE_Pressed, this, &ASpookyScuffleCharacter::NextTPPoint);
+	PlayerInputComponent->BindAction("Prev", IE_Pressed, this, &ASpookyScuffleCharacter::PrevTPPoint);
+	PlayerInputComponent->BindAction("CurrentTP", IE_Pressed, this, &ASpookyScuffleCharacter::CurrentTPPoint);
 	
 }
 
@@ -407,28 +412,6 @@ void ASpookyScuffleCharacter::ExitLock()
 
 	_firstCondition = ExitLockFirstCondition();
 	_scndCondition = ExitLockSecondCondition();
-	/*
-	if (saveArmLength > cameraBoom->TargetArmLength)
-	{
-		cameraBoom->TargetArmLength += speedCameraLock * 4 * GetWorld()->DeltaTimeSeconds;
-	}
-	else
-	{
-		cameraBoom->TargetArmLength = saveArmLength;
-		_firstCondition = true;
-	}
-
-	if (_camTransform.Y > 0 && _camTransform.Z > 0)
-	{
-		_camTransform.Z -= speedCameraLock * _multiplReset * GetWorld()->DeltaTimeSeconds;
-		_camTransform.Y -= speedCameraLock * _multiplReset * GetWorld()->DeltaTimeSeconds;
-		followCamera->SetRelativeLocation(_camTransform);
-	}
-	else
-	{
-		followCamera->SetRelativeLocation({ 0,0,0 });
-		_scndCondition = true;
-	}*/
 
 	if (_firstCondition && _scndCondition)
 	{
@@ -718,6 +701,74 @@ void ASpookyScuffleCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 
 			if (_checkPoint->orderCheckPoint > myCheckPoint->orderCheckPoint)
 				myCheckPoint = _checkPoint;
+		}
+	}
+}
+
+
+// =============================================== / Debug / ===============================================//
+
+void ASpookyScuffleCharacter::PrevTPPoint()
+{
+	TArray<AActor*> _tPPoint;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATPPoint::StaticClass(), _tPPoint);
+	bool check = false;
+
+	for (AActor* _pointOfTp : _tPPoint)
+	{
+		ATPPoint* _point = Cast<ATPPoint>(_pointOfTp);
+
+		if (_point != nullptr && !check)
+		{
+			if (tPPointnumber - 1 == _point->pointNumber)
+			{
+				check = true;
+				tPPointnumber = _point->pointNumber;
+				SetActorLocation(_point->GetActorLocation());
+			}
+		}
+	}
+}
+
+void ASpookyScuffleCharacter::NextTPPoint()
+{
+	TArray<AActor*> _tPPoint;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATPPoint::StaticClass(), _tPPoint);
+	bool check = false;
+
+	for (AActor* _pointOfTp : _tPPoint)
+	{
+		ATPPoint* _point = Cast<ATPPoint>(_pointOfTp);
+
+		if (_point != nullptr && !check)
+		{
+			if (tPPointnumber + 1 == _point->pointNumber)
+			{
+				check = true;
+				tPPointnumber = _point->pointNumber;
+				SetActorLocation(_point->GetActorLocation());
+			}
+		}
+	}
+}
+
+void ASpookyScuffleCharacter::CurrentTPPoint()
+{
+	TArray<AActor*> _tPPoint;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATPPoint::StaticClass(), _tPPoint);
+	bool check = false;
+
+	for (AActor* _pointOfTp : _tPPoint)
+	{
+		ATPPoint* _point = Cast<ATPPoint>(_pointOfTp);
+
+		if (_point != nullptr && !check)
+		{
+			if (tPPointnumber == _point->pointNumber)
+			{
+				check = true;
+				SetActorLocation(_point->GetActorLocation());
+			}
 		}
 	}
 }

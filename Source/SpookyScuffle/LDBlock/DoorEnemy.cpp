@@ -64,11 +64,17 @@ void ADoorEnemy::OpenTheDoor()
 
 			SetActorLocation(GetActorLocation() + _posDoor);
 
-			player->LockPosition(GetActorLocation());
+			if (followUnlock)
+				player->LockPosition(GetActorLocation());
+			else
+				player->LockPosition(savePos);
 			
 		}
 		else
 		{
+
+			StopVibrating();
+
 			bool _firstCondition = false, _secondCondition = false;
 
 			_firstCondition = player->ExitLockFirstCondition();
@@ -77,7 +83,6 @@ void ADoorEnemy::OpenTheDoor()
 			if (_firstCondition && _secondCondition)
 			{
 				unlock = true;
-				StopVibrating();
 				GetWorldTimerManager().ClearTimer(timerOpenDoor);
 			}
 		}
