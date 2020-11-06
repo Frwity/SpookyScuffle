@@ -23,6 +23,8 @@ private:
 		float speedDoor;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Door, meta = (AllowPrivateAccess = "true"))
 		float distanceDoorOpen;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Door, meta = (AllowPrivateAccess = "true"))
+		bool followUnlock = true; 
 
 	int countToUnlock = 0;
 	bool unlock = false;
@@ -30,6 +32,9 @@ private:
 
 	FTimerHandle timerOpenDoor;
 	FVector savePos;
+
+	bool isGetPlayer = false;
+	class ASpookyScuffleCharacter* player;
 
 protected:
 	// Called when the game starts or when spawned

@@ -4,6 +4,8 @@
 #include "DoorEnemy.h"
 #include "Engine/Engine.h"
 #include "TimerManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Character/SpookyScuffleCharacter.h"
 
 // Sets default values
 ADoorEnemy::ADoorEnemy()
@@ -48,6 +50,12 @@ void ADoorEnemy::OpenTheDoor()
 {
 	if (!unlock)
 	{
+		if (!isGetPlayer)
+		{
+			isGetPlayer = true;
+			player = Cast<ASpookyScuffleCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), ASpookyScuffleCharacter::StaticClass()));
+		}
+
 		FVector _posDoor;
 
 		if ((savePos - GetActorLocation()).Size() < distanceDoorOpen)
@@ -55,12 +63,22 @@ void ADoorEnemy::OpenTheDoor()
 			_posDoor = axisMovement * (speedDoor * GetWorld()->DeltaTimeSeconds);
 
 			SetActorLocation(GetActorLocation() + _posDoor);
+
+			if (followUnlock)
+				player->LockPosition(GetActorLocation());
+			else
+				player->LockPosition(savePos);
+			
 		}
 		else
 		{
-			unlock = true;
 			StopVibrating();
-			GetWorldTimerManager().ClearTimer(timerOpenDoor);
+
+			if (player->ExitLockCondition())
+			{
+				unlock = true;
+				GetWorldTimerManager().ClearTimer(timerOpenDoor);
+			}
 		}
 	}
 }

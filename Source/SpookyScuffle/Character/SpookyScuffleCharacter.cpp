@@ -22,6 +22,7 @@
 #include "Camera/PlayerCameraManager.h"
 #include "../LDBlock/CheckPoint.h"
 #include "../LDBlock/AreaDamage.h"
+#include "../LDBlock/TPPoint.h"
 
 
 
@@ -50,6 +51,7 @@ void ASpookyScuffleCharacter::BeginPlay()
 	saveTimerBLL = timerBatLostLife;
 	saveTimerDL = timerDrainLife;
 	saveMaxAngleLock = angleLock;
+	saveTimerSecuritySP = timerSecuritySP;
 
 }
 
@@ -89,6 +91,10 @@ void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* P
 	PlayerInputComponent->BindAxis("TurnRate", this, &ASpookyScuffleCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ASpookyScuffleCharacter::LookUpAtRate);
+
+	PlayerInputComponent->BindAction("Next", IE_Pressed, this, &ASpookyScuffleCharacter::NextTPPoint);
+	PlayerInputComponent->BindAction("Prev", IE_Pressed, this, &ASpookyScuffleCharacter::PrevTPPoint);
+	PlayerInputComponent->BindAction("CurrentTP", IE_Pressed, this, &ASpookyScuffleCharacter::CurrentTPPoint);
 	
 }
 
@@ -135,7 +141,6 @@ void ASpookyScuffleCharacter::LookUpAtRate(float _rate)
 				unlockPitch = false;
 			else
 				unlockPitch = true;
-
 
 			if (unlockPitch)
 			{
@@ -187,8 +192,13 @@ void ASpookyScuffleCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 
 void ASpookyScuffleCharacter::Attack()
 {
-	if(!isBatMode && playerMovable)
+	if (!isBatMode && playerMovable)
+	{
 		Super::Attack();
+
+		if (drainBlood)
+			stopDrain = true;
+	}
 }
 
 // =============================================== Dash ===============================================//
@@ -197,6 +207,9 @@ void ASpookyScuffleCharacter::ActivateDash()
 {
 	if (playerMovable)
 	{
+		if (drainBlood)
+			stopDrain = true;
+
 		if (!isDash && !isBatMode && !drainBlood)
 		{
 			isDash = true;
@@ -320,54 +333,53 @@ bool ASpookyScuffleCharacter::CheckEnemyToLock(FVector enemy, FVector posPlayer 
 		return false;
 }
 
-void myLerp(FRotator targetPos, FRotator currentPos)
-{
-
-}
-
 // Camera lock change of place
 void ASpookyScuffleCharacter::LockEnemy()
 {
-	FVector  _camTransform =  followCamera->GetRelativeLocation();
-	FVector _dirPlayerEnemy = { GetActorLocation().X - enemyToLock->GetActorLocation().X,
-						GetActorLocation().Y - enemyToLock->GetActorLocation().Y,0 };
+	LockPosition(enemyToLock->GetActorLocation());
+
+	if (passToDisable)
+	{
+		GetWorldTimerManager().ClearTimer(outHandleLock);
+	}
+}
+
+void ASpookyScuffleCharacter::LockPosition(FVector pos)
+{
+	FVector  _camTransform = followCamera->GetRelativeLocation();
+	FVector _dirPlayerEnemy = { GetActorLocation().X - pos.X, GetActorLocation().Y - pos.Y,0 };
 
 	// == Camera focus on the enemy lock calcul 
+	float _nice = 100;
+
+	if ((GetActorLocation() - pos).Size() < limitUpCamera)
+	{
+		_nice = _nice * ((GetActorLocation() - pos).Size() / limitUpCamera);
+	}
+
 	FRotator _newRot;
-	FVector _currentPos = GetActorLocation() + FVector(0, 0, 100);
-	FVector _targetPos = enemyToLock->GetActorLocation() - FVector(0,0,100);
-	
+	FVector _currentPos = GetActorLocation() + FVector(0, 0, _nice);
+	FVector _targetPos = pos - FVector(0, 0, _nice);
+
 	FRotator _lookAt = FRotationMatrix::MakeFromX(_targetPos - _currentPos).Rotator();
-	FRotator _terp = UKismetMathLibrary::RInterpTo(GetController()->GetControlRotation(),_lookAt,GetWorld()->DeltaTimeSeconds,5.f);
+	FRotator _terp = UKismetMathLibrary::RInterpTo(GetController()->GetControlRotation(), _lookAt, GetWorld()->DeltaTimeSeconds, 5.f);
 
 	_newRot.Roll = GetController()->GetControlRotation().Roll;
-	_newRot.Pitch = _terp.Pitch ;
+	_newRot.Pitch = _terp.Pitch;
 	_newRot.Yaw = _terp.Yaw;
 
 	GetController()->SetControlRotation(_newRot);
 
-	//rotation player to enemy, needed to straff : Don't Work like I want
-
-	//FRotator _terpPlayer = UKismetMathLibrary::RInterpTo(GetController()->GetControlRotation(), 
-	//	FRotationMatrix::MakeFromX(-_dirPlayerEnemy).Rotator(), GetWorld()->DeltaTimeSeconds, 5.f);
-	//SetActorRotation(_terpPlayer);
-	
 	// Move Camera to the good Angle when you lock 
 	if (cameraBoom->TargetArmLength > 300)
 		cameraBoom->TargetArmLength -= speedCameraLock * GetWorld()->DeltaTimeSeconds;
-	
+
 	if (_camTransform.Y < 100 && _camTransform.Z < 100)
 	{
 		_camTransform.Z += speedCameraLock * GetWorld()->DeltaTimeSeconds;
 		_camTransform.Y += speedCameraLock * GetWorld()->DeltaTimeSeconds;
 		followCamera->SetRelativeLocation(_camTransform);
 	}
-
-	if (passToDisable)
-	{
-		GetWorldTimerManager().ClearTimer(outHandleLock);
-	}
-
 }
 
 
@@ -386,9 +398,27 @@ void ASpookyScuffleCharacter::ExitLock()
 	FVector  _camTransform = followCamera->GetRelativeLocation();
 	float _multiplReset = 4;
 
+	if (ExitLockCondition())
+	{
+		if (enemyToLock != nullptr)
+		{
+			enemyToLock->isLock = false;
+			enemyToLock->TargetEvent();
+			enemyToLock = nullptr;
+		}
+
+		loadLock = false;
+		
+		GetWorldTimerManager().ClearTimer(outHandleExitLock);
+	}
+}
+
+bool ASpookyScuffleCharacter::ExitLockCondition()
+{
+	FVector  _camTransform = followCamera->GetRelativeLocation();
+	float _multiplReset = 4;
+
 	bool _firstCondition = false, _scndCondition = false;
-
-
 
 	if (saveArmLength > cameraBoom->TargetArmLength)
 	{
@@ -413,19 +443,9 @@ void ASpookyScuffleCharacter::ExitLock()
 	}
 
 	if (_firstCondition && _scndCondition)
-	{
-		if (enemyToLock != nullptr)
-		{
-			enemyToLock->StopJumping();
-			enemyToLock->isLock = false;
-			enemyToLock->TargetEvent();
-			enemyToLock = nullptr;
-		}
+		return true;
 
-		loadLock = false;
-		
-		GetWorldTimerManager().ClearTimer(outHandleExitLock);
-	}
+	return false;
 }
 
 // =============================================== Bat Form ===============================================//
@@ -467,7 +487,6 @@ void ASpookyScuffleCharacter::UnSetBatMode()
 	}
 }
 
-
 void ASpookyScuffleCharacter::tickLostLifeBatForm()
 {
 	timerBatLostLife -= GetWorld()->DeltaTimeSeconds;
@@ -504,7 +523,7 @@ void ASpookyScuffleCharacter::ActivateSpecialAttack()
 	if (useIsDrain && enemyToLock != nullptr)
 	{
 		enemyToEat = enemyToLock;
-		enemyToEat->stun = true;
+		timerSecuritySP = saveTimerSecuritySP;
 		GetWorldTimerManager().SetTimer(outHandleSpecialAttack, this, &ASpookyScuffleCharacter::SpecialAttackMove, 
 									GetWorld()->GetDeltaSeconds(), true);
 	}
@@ -512,9 +531,12 @@ void ASpookyScuffleCharacter::ActivateSpecialAttack()
 
 void ASpookyScuffleCharacter::SpecialAttackMove()
 {
+	
 	FVector _dirVec = enemyToEat->GetActorLocation() - GetActorLocation();
-
 	FVector _posBehindEnemy = enemyToEat->GetActorLocation() - (enemyToEat->GetActorForwardVector() * 100);
+
+	if (_dirVec.Size() < 150)
+		enemyToEat->stun = true;
 
 	if (_dirVec.Size() < distanceMaxToDrain && !drainBlood)
 	{
@@ -524,22 +546,29 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 		SetActorRotation(rotPlayer);
 
 		// go to back of enemy quickly
-		if ((_posBehindEnemy - GetActorLocation()).Size() >= 20)
+		if ((_posBehindEnemy - GetActorLocation()).Size() >= 60) // bug if you change too much the scale of enemy because the forwardvector up his position
 		{
 			GetCharacterMovement()->Velocity = (_posBehindEnemy - GetActorLocation()).GetSafeNormal()
 				* speedSpecialAttack * mutiplySpeedSpecialAttack;
+
+			// Security if player is block by object on scene
+			timerSecuritySP -= GetWorld()->DeltaTimeSeconds;
+			if (timerSecuritySP <= 0)
+			{
+				ResetDrainValue();
+				GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
+				return;
+			}
 		}
 		else
 		{
 			GetCharacterMovement()->Velocity = { 0,0,0 };
 			if (isBatMode)
-				SetBatMode();
+				UnSetBatMode();
 
 			drainBlood = true;
 			enemyToEat->ModifyLife(-GetDamage(), GetTeam());
-			saveLifePLayerOnDrain = life;
-			// batmode go to false
-			
+			saveLifePLayerOnDrain = life;	
 		}
 	}
 
@@ -577,18 +606,29 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 	{
 		ResetDrainValue();
 		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
+		return;
 	}
 
-	if (GetCharacterMovement()->Velocity != FVector{ 0,0,0 })
+	if (!(GetCharacterMovement()->Velocity).IsNearlyZero())
 	{
 		ResetDrainValue();
 		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
+		return;
+	}
+
+	if (stopDrain)
+	{
+		stopDrain = false;
+		ResetDrainValue();
+		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
+		return;
 	}
 
 	if (saveLifePLayerOnDrain != life)
 	{
 		ResetDrainValue();
 		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
+		return;
 	}
 }
 
@@ -620,7 +660,6 @@ void ASpookyScuffleCharacter::YouWinEvent_Implementation()
 void ASpookyScuffleCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
 	if (Cast<UAreaDamage>(OtherComp))
 	{
 		areaDamage = Cast<UAreaDamage>(OtherComp);
@@ -646,6 +685,45 @@ void ASpookyScuffleCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 
 			if (_checkPoint->orderCheckPoint > myCheckPoint->orderCheckPoint)
 				myCheckPoint = _checkPoint;
+		}
+	}
+}
+
+// =============================================== / Debug / ===============================================//
+
+void ASpookyScuffleCharacter::PrevTPPoint()
+{
+	TpPoint(-1);
+}
+
+void ASpookyScuffleCharacter::NextTPPoint()
+{
+	TpPoint(1);
+}
+
+void ASpookyScuffleCharacter::CurrentTPPoint()
+{
+	TpPoint(0);
+}
+
+void ASpookyScuffleCharacter::TpPoint(int move)
+{
+	TArray<AActor*> _tPPoint;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATPPoint::StaticClass(), _tPPoint);
+	bool check = false;
+
+	for (AActor* _pointOfTp : _tPPoint)
+	{
+		ATPPoint* _point = Cast<ATPPoint>(_pointOfTp);
+
+		if (_point != nullptr && !check)
+		{
+			if (tPPointnumber + move == _point->pointNumber)
+			{
+				check = true;
+				tPPointnumber = _point->pointNumber;
+				SetActorLocation(_point->GetActorLocation());
+			}
 		}
 	}
 }

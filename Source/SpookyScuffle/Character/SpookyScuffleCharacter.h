@@ -71,6 +71,8 @@ private:
 		float angleLock = 60;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock, meta = (AllowPrivateAccess = "true"))
 		float speedCameraLock = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Lock, meta = (AllowPrivateAccess = "true"))
+		float limitUpCamera = 500;
 		
 	float saveArmLength;
 	float saveMaxAngleLock;
@@ -113,9 +115,16 @@ private:
 		float mutiplySpeedSpecialAttack = 5.f;
 
 	bool drainBlood = false;
+	bool stopDrain = false;
+	float timerSecuritySP = 2;
+	float saveTimerSecuritySP;
 	float saveTimerDL;
 	int saveLifePLayerOnDrain;
 	FTimerHandle outHandleSpecialAttack;
+
+	// ================================== Debug ================================== //
+
+	int tPPointnumber = 0;
 
 protected:
 
@@ -162,6 +171,12 @@ protected:
 	void SpecialAttackDrain();
 	void ResetDrainValue();
 
+	// === Debug
+
+	void PrevTPPoint();
+	void NextTPPoint();
+	void CurrentTPPoint();
+	void TpPoint(int move); // 0 current pos, 1 next pos, -1 prev pos
 
 public:
 
@@ -192,9 +207,13 @@ public:
 
 	virtual void GameOverEvent_Implementation() override;
 
-
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+
+	//===== Lock
+
+	void LockPosition(FVector pos);
+	bool ExitLockCondition();
 
 };
 
