@@ -63,6 +63,8 @@ void AGeneralCharacter::Tick(float _deltaTime)
 
 void AGeneralCharacter::MoveForward(float _value)
 {
+	if (stun)
+		return;
 	if ((Controller != NULL) && (_value != 0.0f))
 	{	
 		// find out which way is forward
@@ -77,6 +79,8 @@ void AGeneralCharacter::MoveForward(float _value)
 
 void AGeneralCharacter::MoveRight(float _value)
 {
+	if (stun)
+		return;
 	if ((Controller != NULL) && (_value != 0.0f))
 	{
 		// find out which way is right
@@ -89,7 +93,7 @@ void AGeneralCharacter::MoveRight(float _value)
 	}
 }
 
-void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
+void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 {
 	if (invulnerabilityCD >= 0 || !isAlive)
 		return;
@@ -99,7 +103,21 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 		invulnerabilityCD = invulnerabilityTime;
 		life += _lifePoint;
 
-
+		if (_stun)
+		{
+			stun = true;
+			if (isHit)
+			{
+				isHit = false;
+				GetWorldTimerManager().ClearTimer(outHandleHit);
+				GetWorldTimerManager().SetTimer(outHandleHit, this, &AGeneralCharacter::ResetHit, GetWorld()->GetDeltaSeconds(), false);
+			}
+			else
+			{
+				isHit = true;
+				GetWorldTimerManager().SetTimer(outHandleHit, this, &AGeneralCharacter::ResetHit, recoveryTime, false);
+			}
+		}
 		// particle
 		if (onHitParticle)
 		{
@@ -115,6 +133,17 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
 		if (myDoor != nullptr)
 			myDoor->AddToCount();
 	}
+}
+void AGeneralCharacter::ResetHit()
+{
+	if (!isHit)
+	{
+		isHit = true;
+		GetWorldTimerManager().ClearTimer(outHandleHit);
+		GetWorldTimerManager().SetTimer(outHandleHit, this, &AGeneralCharacter::ResetHit, recoveryTime, false);
+	}
+	stun = false;
+	isHit = false;
 }
 
 void AGeneralCharacter::ActivateAttackComponent()
@@ -177,7 +206,7 @@ void AGeneralCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 	
 		if (areaDamage->team != GetTeam())
 		{
-			this->ModifyLife(-areaDamage->damageTaken, areaDamage->team);
+			this->ModifyLife(-areaDamage->damageTaken, areaDamage->team, false);
 			GetWorldTimerManager().SetTimer(timerHandle, this, &AGeneralCharacter::TakeDamageByArea, GetWorld()->GetDeltaSeconds(), true);
 		}
 	}
@@ -216,7 +245,7 @@ void AGeneralCharacter::TakeDamageByArea()
 	if (timerCoolDown < 0)
 	{
 		timerCoolDown = areaDamage->coolDown;
-		this->ModifyLife(-areaDamage->damageTaken, areaDamage->team);
+		this->ModifyLife(-areaDamage->damageTaken, areaDamage->team, false);
 	}
 }
 

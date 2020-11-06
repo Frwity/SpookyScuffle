@@ -195,7 +195,7 @@ public:
 	bool IsAlive() final { return isAlive; }
 	E_TEAMS GetTeam() final { return team; }
 
-	void ModifyLife(int _lifePoint, E_TEAMS _team) final;
+	void ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun) final;
 
 	void Attack() final;
 

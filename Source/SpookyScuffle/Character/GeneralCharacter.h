@@ -36,9 +36,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
 		float invulnerabilityTime;
-
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
 		float invulnerabilityCD;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+		bool isHit;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
+		float recoveryTime;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Characteristic", meta = (AllowPrivateAccess = "true"))
 		bool isAlive = true;
@@ -72,7 +78,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AreaDamage, meta = (AllowPrivateAccess = "true"))
 	class UAreaDamage* areaDamage;
-
+	FTimerHandle outHandleHit;
 	FTimerHandle timerHandle;
 
 	bool stopTimer = false;
@@ -97,9 +103,12 @@ public:
 	virtual int GetLife() { return life; }
 	virtual int GetDamage() { return damage; }
 	virtual bool IsAlive() { return isAlive; }
+	virtual bool IsHit() { return isHit; }
 	virtual E_TEAMS GetTeam() { return team; }
 	
-	virtual void ModifyLife(int _lifePoint, E_TEAMS _team);
+	virtual void ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun);
+
+	void ResetHit();
 
 	UFUNCTION(BlueprintCallable)
 		virtual void ActivateAttackComponent();

@@ -25,6 +25,6 @@ protected:
 public:
 	AHandFreeCharacter();
 
-	virtual void ModifyLife(int _lifePoint, E_TEAMS _team) override;
+	virtual void ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun) override;
 
 };

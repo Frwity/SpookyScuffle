@@ -38,7 +38,7 @@ protected:
 public:	
 	ATwoHandedSwordCharacter();
 
-	virtual void ModifyLife(int _lifePoint, E_TEAMS _team) override;
+	virtual void ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun) override;
 
 	virtual void ActivateAttackComponent() override;
 	virtual void DeactivateAttackComponent() override;

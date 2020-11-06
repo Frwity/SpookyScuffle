@@ -30,7 +30,7 @@ void AHandFreeCharacter::MoveRight(float _value)
 	Super::MoveRight(_value);
 }
 
-void AHandFreeCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
+void AHandFreeCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 {
-	Super::ModifyLife(_lifePoint, _team);
+	Super::ModifyLife(_lifePoint, _team, _stun);
 }

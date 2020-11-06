@@ -185,9 +185,9 @@ void ASpookyScuffleCharacter::MoveRight(float _value)
 	}
 }
 
-void ASpookyScuffleCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
+void ASpookyScuffleCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 {
-	Super::ModifyLife(_lifePoint, _team);
+	Super::ModifyLife(_lifePoint, _team, _stun);
 }
 
 void ASpookyScuffleCharacter::Attack()
@@ -567,7 +567,7 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 				UnSetBatMode();
 
 			drainBlood = true;
-			enemyToEat->ModifyLife(-GetDamage(), GetTeam());
+			enemyToEat->ModifyLife(-GetDamage(), GetTeam(), false);
 			saveLifePLayerOnDrain = life;	
 		}
 	}
@@ -599,7 +599,7 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 			saveLifePLayerOnDrain = life;
 		}
 
-		enemyToEat->ModifyLife(-GetDamage(), GetTeam());
+		enemyToEat->ModifyLife(-GetDamage(), GetTeam(), false);
 	}
 
 	if (!enemyToEat->IsAlive())
@@ -666,7 +666,7 @@ void ASpookyScuffleCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 
 		if (areaDamage->team != GetTeam())
 		{
-			this->ModifyLife(-areaDamage->damageTaken, areaDamage->team);
+			this->ModifyLife(-areaDamage->damageTaken, areaDamage->team, false);
 			GetWorldTimerManager().SetTimer(timerHandle, this, &AGeneralCharacter::TakeDamageByArea, GetWorld()->GetDeltaSeconds(), true);
 		}
 	}

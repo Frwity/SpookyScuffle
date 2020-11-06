@@ -45,9 +45,9 @@ void AOneHandedSwordCharacter::MoveRight(float _value)
 	Super::MoveRight(_value);
 }
 
-void AOneHandedSwordCharacter::ModifyLife(int _lifePoint, E_TEAMS _team)
+void AOneHandedSwordCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 {
-	Super::ModifyLife(_lifePoint, _team);
+	Super::ModifyLife(_lifePoint, _team, _stun);
 }
 
 void AOneHandedSwordCharacter::ActivateAttackComponent()
