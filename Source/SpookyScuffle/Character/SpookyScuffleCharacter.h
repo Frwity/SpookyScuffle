@@ -176,6 +176,7 @@ protected:
 	void PrevTPPoint();
 	void NextTPPoint();
 	void CurrentTPPoint();
+	void TpPoint(int move); // 0 current pos, 1 next pos, -1 prev pos
 
 public:
 
@@ -212,8 +213,7 @@ public:
 	//===== Lock
 
 	void LockPosition(FVector pos);
-	bool ExitLockFirstCondition();
-	bool ExitLockSecondCondition();
+	bool ExitLockCondition();
 
 };
 

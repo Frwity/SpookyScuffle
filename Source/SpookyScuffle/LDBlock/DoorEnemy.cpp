@@ -72,15 +72,9 @@ void ADoorEnemy::OpenTheDoor()
 		}
 		else
 		{
-
 			StopVibrating();
 
-			bool _firstCondition = false, _secondCondition = false;
-
-			_firstCondition = player->ExitLockFirstCondition();
-			_secondCondition = player->ExitLockSecondCondition();
-
-			if (_firstCondition && _secondCondition)
+			if (player->ExitLockCondition())
 			{
 				unlock = true;
 				GetWorldTimerManager().ClearTimer(timerOpenDoor);
