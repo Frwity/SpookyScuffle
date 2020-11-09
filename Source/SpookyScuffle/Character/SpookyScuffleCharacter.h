@@ -215,5 +215,15 @@ public:
 	void LockPosition(FVector pos);
 	bool ExitLockCondition();
 
+	// === Sound Attack Special
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void SoundEat();
+	void SoundEat_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void SoundDrain();
+	void SoundDrain_Implementation();
+
 };
 

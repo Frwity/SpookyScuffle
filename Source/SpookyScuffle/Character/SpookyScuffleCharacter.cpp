@@ -567,6 +567,7 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 				UnSetBatMode();
 
 			drainBlood = true;
+			SoundEat();
 			enemyToEat->ModifyLife(-GetDamage(), GetTeam(), false);
 			saveLifePLayerOnDrain = life;	
 		}
@@ -599,6 +600,7 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 			saveLifePLayerOnDrain = life;
 		}
 
+		SoundDrain();
 		enemyToEat->ModifyLife(-GetDamage(), GetTeam(), false);
 	}
 
@@ -638,6 +640,15 @@ void ASpookyScuffleCharacter::ResetDrainValue()
 	useIsDrain = false;
 	enemyToEat->stun = false;
 	enemyToEat = nullptr;
+}
+// =============================================== / Sound Special Attack / ===============================================//
+void ASpookyScuffleCharacter::SoundEat_Implementation()
+{
+
+}
+void ASpookyScuffleCharacter::SoundDrain_Implementation()
+{
+
 }
 
 // =============================================== / Events / ===============================================//
