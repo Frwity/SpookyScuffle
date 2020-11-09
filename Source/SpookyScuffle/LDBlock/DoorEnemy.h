@@ -24,7 +24,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Door, meta = (AllowPrivateAccess = "true"))
 		float distanceDoorOpen;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Door, meta = (AllowPrivateAccess = "true"))
-		bool followUnlock = true; 
+		bool followUnlock; 
 
 	int countToUnlock = 0;
 	bool unlock = false;

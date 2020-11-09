@@ -301,6 +301,7 @@ void ASpookyScuffleCharacter::ActivateLock()
 
 		if (enemyToLock != nullptr)
 		{
+			SoundEnterLock();
 			enemyToLock->isLock = true;
 			enemyToLock->TargetEvent();
 			GetWorldTimerManager().SetTimer(outHandleLock, this, &ASpookyScuffleCharacter::LockEnemy, GetWorld()->GetDeltaSeconds(), true);
@@ -402,6 +403,7 @@ void ASpookyScuffleCharacter::ExitLock()
 	{
 		if (enemyToLock != nullptr)
 		{
+			SoundExitLock();
 			enemyToLock->isLock = false;
 			enemyToLock->TargetEvent();
 			enemyToLock = nullptr;
@@ -416,13 +418,13 @@ void ASpookyScuffleCharacter::ExitLock()
 bool ASpookyScuffleCharacter::ExitLockCondition()
 {
 	FVector  _camTransform = followCamera->GetRelativeLocation();
-	float _multiplReset = 4;
+	float _multiplReset = 10;
 
 	bool _firstCondition = false, _scndCondition = false;
 
 	if (saveArmLength > cameraBoom->TargetArmLength)
 	{
-		cameraBoom->TargetArmLength += speedCameraLock * 4 * GetWorld()->DeltaTimeSeconds;
+		cameraBoom->TargetArmLength += speedCameraLock * _multiplReset * GetWorld()->DeltaTimeSeconds;
 	}
 	else
 	{
@@ -447,6 +449,14 @@ bool ASpookyScuffleCharacter::ExitLockCondition()
 
 	return false;
 }
+// =============================================== Event Sound Lock ===============================================//
+
+void ASpookyScuffleCharacter::SoundEnterLock_Implementation()
+{
+}
+void ASpookyScuffleCharacter::SoundExitLock_Implementation()
+{
+}
 
 // =============================================== Bat Form ===============================================//
 
@@ -459,6 +469,7 @@ void ASpookyScuffleCharacter::SetBatMode()
 	{
 		if (!isBatMode)
 		{ 
+			SoundEnterBat();
 			isBatMode = true;
 			BatEvent();
 			life -= costTransformToBat;
@@ -480,6 +491,7 @@ void ASpookyScuffleCharacter::UnSetBatMode()
 	{
 		if (isBatMode)
 		{
+			SoundExitBat();
 			isBatMode = false;
 			BatEvent();
 			GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
@@ -508,6 +520,16 @@ void ASpookyScuffleCharacter::tickLostLifeBatForm()
 void ASpookyScuffleCharacter::BatEvent_Implementation()
 {
 
+}
+
+// =============================================== Sound Event Bat ===============================================//
+
+void ASpookyScuffleCharacter::SoundEnterBat_Implementation()
+{
+}
+
+void ASpookyScuffleCharacter::SoundExitBat_Implementation()
+{
 }
 
 // =============================================== Special Attack ===============================================//

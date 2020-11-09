@@ -225,5 +225,25 @@ public:
 		void SoundDrain();
 	void SoundDrain_Implementation();
 
+	// === Sound Lock
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void SoundEnterLock();
+	void SoundEnterLock_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void SoundExitLock();
+	void SoundExitLock_Implementation();
+
+	// === Sound Bat Form
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void SoundEnterBat();
+	void SoundEnterBat_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void SoundExitBat();
+	void SoundExitBat_Implementation();
+
 };
 

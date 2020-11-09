@@ -19,7 +19,7 @@ ADoorEnemy::ADoorEnemy()
 void ADoorEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-
+	savePos = GetActorLocation();
 }
 
 // Called every frame
@@ -40,7 +40,6 @@ void ADoorEnemy::AddToCount()
 
 	if (countToUnlock >= goalToUnlock && !unlock)
 	{
-		savePos = GetActorLocation();
 		StartVibrating();
 		GetWorldTimerManager().SetTimer(timerOpenDoor, this, &ADoorEnemy::OpenTheDoor, GetWorld()->GetDeltaSeconds(), true);
 	}
@@ -67,8 +66,9 @@ void ADoorEnemy::OpenTheDoor()
 			if (followUnlock)
 				player->LockPosition(GetActorLocation());
 			else
+			{
 				player->LockPosition(savePos);
-			
+			}
 		}
 		else
 		{
