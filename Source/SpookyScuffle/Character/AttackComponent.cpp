@@ -24,6 +24,10 @@ void UAttackComponent::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 	AGeneralCharacter* Attacker = Cast<AGeneralCharacter>(GetOwner());
 	AGeneralCharacter* _OtherActor = Cast<AGeneralCharacter>(OtherActor);
 
-	if(Attacker != nullptr && _OtherActor != nullptr)
+	if (Attacker != nullptr && _OtherActor != nullptr)
+	{
+		if (Attacker->GetTeam() != _OtherActor->GetTeam() && _OtherActor->IsAlive())
+			Attacker->hasMissed = false;
 		_OtherActor->ModifyLife(-Attacker->GetDamage(), Attacker->GetTeam(), true);
+	}
 }

@@ -126,8 +126,11 @@ public:
 	virtual void GameOverEvent_Implementation();
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		bool stun = false;
+
+	UPROPERTY(BlueprintReadOnly)
+		bool hasMissed = true;
 
 	// ==================================== Area Damage ==================================== //
 

@@ -47,16 +47,6 @@ void AKnightCharacter::AttackJump(FVector _target, FVector _direction)
 
 void AKnightCharacter::Jumping()
 {
-	currentJumpTime += GetWorld()->GetDeltaSeconds();
-
-	if (currentJumpTime >= jumpTime)
-	{
-		GetWorldTimerManager().ClearTimer(jumpTimeHandler);
-		isAttackJumping = false;
-		GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
-		GetCharacterMovement()->GravityScale = 1;
-		return;
-	}
 
 	if (currentJumpTime <= jumpTime / 2)
 	{
@@ -65,12 +55,20 @@ void AKnightCharacter::Jumping()
 	}
 	else 
 	{
-		zCurrentOffset2 = FMath::Lerp(zCurrentOffset2, zOffset2, 0.2f);
+		zCurrentOffset2 = FMath::Lerp(zCurrentOffset2, zOffset2, 0.3f);
 		offset.Z = zCurrentOffset2;
 	}
-
 	AddActorWorldOffset(offset);
-			
+
+	currentJumpTime += GetWorld()->GetDeltaSeconds();
+	if (currentJumpTime >= jumpTime + GetWorld()->GetDeltaSeconds() * 3)
+	{
+		GetWorldTimerManager().ClearTimer(jumpTimeHandler);
+		isAttackJumping = false;
+		GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
+		GetCharacterMovement()->GravityScale = 1;
+		return;
+	}
 }
 
 void AKnightCharacter::ResetAttackJump()

@@ -148,7 +148,7 @@ void AGeneralCharacter::ResetHit()
 
 void AGeneralCharacter::ActivateAttackComponent()
 {
-
+	hasMissed = true;
 }
 
 void AGeneralCharacter::DeactivateAttackComponent()
