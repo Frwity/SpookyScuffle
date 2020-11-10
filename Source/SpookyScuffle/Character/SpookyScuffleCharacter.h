@@ -21,6 +21,15 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
 		class ACheckPoint* myCheckPoint;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
+		bool invertXAxis = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
+		bool invertZAxis = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
+		float sensibilityX;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
+		float sensibilityZ;
+
 	// ================================== Camera ================================== //
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		bool blockCameraPitch = true;
@@ -181,11 +190,6 @@ protected:
 public:
 
 	ASpookyScuffleCharacter();
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float baseTurnRate;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float baseLookUpRate;
 
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return cameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return followCamera; }

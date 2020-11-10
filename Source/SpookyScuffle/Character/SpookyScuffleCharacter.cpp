@@ -25,13 +25,12 @@
 #include "../LDBlock/TPPoint.h"
 
 
-
 ASpookyScuffleCharacter::ASpookyScuffleCharacter()
 	: ATwoHandedSwordCharacter{}
 {
 	saveType = 0;
-	baseTurnRate = 45.f;
-	baseLookUpRate = 45.f;
+	sensibilityX = 5.f;
+	sensibilityZ = 5.f;
 
 	cameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	cameraBoom->SetupAttachment(RootComponent);
@@ -52,7 +51,6 @@ void ASpookyScuffleCharacter::BeginPlay()
 	saveTimerDL = timerDrainLife;
 	saveMaxAngleLock = angleLock;
 	saveTimerSecuritySP = timerSecuritySP;
-
 }
 
 void ASpookyScuffleCharacter::Tick(float _deltaTime)
@@ -102,7 +100,10 @@ void ASpookyScuffleCharacter::TurnAtRate(float _rate)
 {
 	if (!loadLock)
 	{
-		AddControllerYawInput(_rate * baseTurnRate * GetWorld()->GetDeltaSeconds());
+		if (invertXAxis)
+			AddControllerYawInput(_rate * sensibilityX * -10 * GetWorld()->GetDeltaSeconds());
+		else
+			AddControllerYawInput(_rate * sensibilityX * 10 * GetWorld()->GetDeltaSeconds());
 
 		if (!loadLock && blockCameraPitch && !unlockPitch)
 		{
@@ -117,13 +118,12 @@ void ASpookyScuffleCharacter::TurnAtRate(float _rate)
 			}
 			else
 			{
-
 				if (_newRot.Pitch < axisCam - 360)
 					_newRot.Pitch += speedRotCam * GetWorld()->DeltaTimeSeconds;
 				if (_newRot.Pitch > axisCam - 360)
 					_newRot.Pitch -= speedRotCam * GetWorld()->DeltaTimeSeconds;
 			}
-
+			
 			GetController()->SetControlRotation(_newRot);
 		}
 	}
@@ -134,7 +134,7 @@ void ASpookyScuffleCharacter::LookUpAtRate(float _rate)
 	if (!loadLock)
 	{
 		if (!blockCameraPitch)
-			AddControllerPitchInput(_rate * baseLookUpRate * GetWorld()->GetDeltaSeconds());
+			AddControllerPitchInput(_rate * sensibilityZ * GetWorld()->GetDeltaSeconds());
 		else
 		{
 			if (_rate == 0)
@@ -163,7 +163,12 @@ void ASpookyScuffleCharacter::LookUpAtRate(float _rate)
 
 
 				if (_rate != 0)
-					AddControllerPitchInput(_rate * baseLookUpRate * GetWorld()->GetDeltaSeconds());
+				{
+					if (invertZAxis)
+						AddControllerPitchInput(_rate * sensibilityZ * -10 * GetWorld()->GetDeltaSeconds());
+					else
+						AddControllerPitchInput(_rate * sensibilityZ * 10 * GetWorld()->GetDeltaSeconds());
+				}
 			}
 		}
 	}
