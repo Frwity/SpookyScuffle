@@ -129,12 +129,10 @@ private:
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* cameraBoom;
+		class USpringArmComponent* cameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* followCamera;
-
-	
+		class UCameraComponent* followCamera;
 
 	virtual void Tick(float _deltaTime) override;
 	virtual void BeginPlay() override;
@@ -212,7 +210,7 @@ public:
 
 	//===== Lock
 
-	void LockPosition(FVector pos);
+	void LockPosition(FVector pos,bool moveCam);
 	bool ExitLockCondition();
 
 	// === Sound Attack Special
