@@ -6,6 +6,7 @@
 #include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/SpookyScuffleCharacter.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ADoorEnemy::ADoorEnemy()
@@ -64,10 +65,10 @@ void ADoorEnemy::OpenTheDoor()
 			SetActorLocation(GetActorLocation() + _posDoor);
 
 			if (followUnlock)
-				player->LockPosition(GetActorLocation());
+				player->LockPosition(GetActorLocation(),true);
 			else
 			{
-				player->LockPosition(savePos);
+				player->LockPosition(savePos, true);
 			}
 		}
 		else
