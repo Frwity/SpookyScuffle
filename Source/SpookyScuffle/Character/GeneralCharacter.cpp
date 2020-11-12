@@ -58,7 +58,9 @@ void AGeneralCharacter::Tick(float _deltaTime)
 	Super::Tick(_deltaTime);
 
 	if (invulnerabilityCD >= 0)
+	{
 		invulnerabilityCD -= _deltaTime;
+	}
 }
 
 void AGeneralCharacter::MoveForward(float _value)
@@ -114,6 +116,7 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 			}
 			else
 			{
+				canAttack = false;
 				isHit = true;
 				GetWorldTimerManager().SetTimer(outHandleHit, this, &AGeneralCharacter::ResetHit, recoveryTime, false);
 			}
@@ -141,7 +144,9 @@ void AGeneralCharacter::ResetHit()
 		isHit = true;
 		GetWorldTimerManager().ClearTimer(outHandleHit);
 		GetWorldTimerManager().SetTimer(outHandleHit, this, &AGeneralCharacter::ResetHit, recoveryTime, false);
+		return;
 	}
+	canAttack = true;
 	stun = false;
 	isHit = false;
 }
@@ -160,22 +165,25 @@ void AGeneralCharacter::Attack()
 {
 	if (canAttack)
 	{
+		isAttacking = true;
 		OnAttack.Broadcast();
 		if (!canMoveOnAttack)
 		{
+			GetCharacterMovement()->MovementMode = EMovementMode::MOVE_None;
 			GetCharacterMovement()->MaxWalkSpeed = 0;
 			GetCharacterMovement()->RotationRate = { 0, 0, 0 };
 		}
 		canAttack = false;
-		FTimerHandle _outHandleDash;
-		GetWorldTimerManager().SetTimer(_outHandleDash, this, &AGeneralCharacter::ResetAttack, 1 / attackSpeed, false);
+		GetWorldTimerManager().SetTimer(attackTimeHandler, this, &AGeneralCharacter::ResetAttack, 1 / attackSpeed, false);
 	}
 }
 
 void AGeneralCharacter::EndAttack()
 {
+	GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
 	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
 	GetCharacterMovement()->RotationRate = rotationRate;
+	isAttacking = false;
 }
 
 void AGeneralCharacter::ResetAttack()

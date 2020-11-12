@@ -155,6 +155,7 @@ protected:
 	// === Dash
 	void ActivateDash();
 	void DashMovement();
+	void DashCD();
 	void ResetDashSpeed();
 
 	// === Lock

@@ -217,6 +217,8 @@ void ASpookyScuffleCharacter::ActivateDash()
 
 		if (!isDash && !isBatMode && !drainBlood)
 		{
+			isAttacking = false;
+			canAttack = false;
 			isDash = true;
 			savePosDash = GetActorLocation();
 			isSlowDash = true;
@@ -227,8 +229,6 @@ void ASpookyScuffleCharacter::ActivateDash()
 
 void ASpookyScuffleCharacter::DashMovement()
 {
-	if (isAttacking)
-		return;
 	if (!isCoolDownDash)
 	{
 		// Movement Of Dash
@@ -236,6 +236,7 @@ void ASpookyScuffleCharacter::DashMovement()
 		
 		if ((savePosDash - GetActorLocation()).Size() < distanceDash)
 		{
+			canAttack = false;
 			GetCharacterMovement()->Velocity = GetActorForwardVector() * speedDash * 10;
 			GetCharacterMovement()->MaxAcceleration = speedDash * 10;
 		}
@@ -243,6 +244,7 @@ void ASpookyScuffleCharacter::DashMovement()
 		{
 			isCoolDownDash = true;
 			timerDash = 0;
+			canAttack = true;
 			GetCharacterMovement()->MaxAcceleration = 2048; // default value 
 			GetCharacterMovement()->Velocity = GetActorForwardVector() * 0;
 			GetCharacterMovement()->MaxWalkSpeed -= slowSpeed;
@@ -255,7 +257,7 @@ void ASpookyScuffleCharacter::DashMovement()
 	{
 		// CoolDown Of Dash
 		timerCoolDownDash += GetWorld()->DeltaTimeSeconds;
-	
+
 		if (timerCoolDownDash > coolDownDash)
 		{
 			isCoolDownDash = false;
@@ -264,6 +266,11 @@ void ASpookyScuffleCharacter::DashMovement()
 			GetWorldTimerManager().ClearTimer(outHandleDash);
 		}
 	}
+}
+
+void ASpookyScuffleCharacter::DashCD()
+{
+
 }
 
 void ASpookyScuffleCharacter::ResetDashSpeed()
@@ -475,13 +482,14 @@ void ASpookyScuffleCharacter::SoundExitLock_Implementation()
 
 void ASpookyScuffleCharacter::SetBatMode()
 {
-	if (isSlowDash)
+	if (isSlowDash || isAttacking)
 		return;
 
 	if ((playerMovable && !drainBlood))
 	{
 		if (!isBatMode)
 		{ 
+			canAttack = false;
 			SoundEnterBat();
 			isBatMode = true;
 			BatEvent();
@@ -497,7 +505,7 @@ void ASpookyScuffleCharacter::SetBatMode()
 
 void ASpookyScuffleCharacter::UnSetBatMode()
 {
-	if (isSlowDash)
+	if (isSlowDash || isAttacking)
 		return;
 
 	if ((playerMovable && !drainBlood))
@@ -506,6 +514,7 @@ void ASpookyScuffleCharacter::UnSetBatMode()
 		{
 			SoundExitBat();
 			isBatMode = false;
+			canAttack = true;
 			BatEvent();
 			GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
 		}
@@ -570,6 +579,8 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 	FVector _dirVec = enemyToEat->GetActorLocation() - GetActorLocation();
 	FVector _posBehindEnemy = enemyToEat->GetActorLocation() - (enemyToEat->GetActorForwardVector() * 100);
 
+	enemyToEat->SetCanAttack(false);
+
 	if (_dirVec.Size() < 150)
 		enemyToEat->stun = true;
 
@@ -602,6 +613,7 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 				UnSetBatMode();
 
 			drainBlood = true;
+			enemyToEat->stun = true;
 			SoundEat();
 			enemyToEat->ModifyLife(-GetDamage(), GetTeam(), false);
 			saveLifePLayerOnDrain = life;	
@@ -636,6 +648,7 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 		}
 
 		SoundDrain();
+		enemyToEat->stun = true;
 		enemyToEat->ModifyLife(-GetDamage(), GetTeam(), false);
 	}
 
@@ -661,7 +674,7 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 		return;
 	}
 
-	if (saveLifePLayerOnDrain != life)
+	if (stun)
 	{
 		ResetDrainValue();
 		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
@@ -671,6 +684,7 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 
 void ASpookyScuffleCharacter::ResetDrainValue()
 {
+	enemyToEat->SetCanAttack(true);
 	drainBlood = false;
 	useIsDrain = false;
 	enemyToEat->stun = false;

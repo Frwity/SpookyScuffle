@@ -37,6 +37,9 @@ void ATwoHandedSwordCharacter::BeginPlay()
 
 	leftAttackComponent = Cast<UAttackComponent>(GetDefaultSubobjectByName(TEXT("LeftAttackComponent")));
 	leftAttackComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	rightWeaponMesh->SetupAttachment(GetMesh(), FName("RightWeaponShield"));
+	leftWeaponMesh->SetupAttachment(GetMesh(), FName("LeftWeaponShield"));
 }
 
 void ATwoHandedSwordCharacter::Tick(float _deltaTime)

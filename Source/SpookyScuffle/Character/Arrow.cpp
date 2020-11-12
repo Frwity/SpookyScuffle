@@ -65,7 +65,7 @@ void AArrow::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 
 	if (_target && team != _target->GetTeam())
 	{
-		_target->ModifyLife(-damage, team, true);
+		_target->ModifyLife(-damage, team, false);
 		Destroy();
 	}
 }

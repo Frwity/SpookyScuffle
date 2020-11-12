@@ -80,6 +80,8 @@ protected:
 	class UAreaDamage* areaDamage;
 	FTimerHandle outHandleHit;
 	FTimerHandle timerHandle;
+	FTimerHandle attackTimeHandler;
+
 
 	bool stopTimer = false;
 	float timerCoolDown;
@@ -125,6 +127,7 @@ public:
 		void GameOverEvent();
 	virtual void GameOverEvent_Implementation();
 
+	void SetCanAttack(bool onOff) { canAttack = onOff; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		bool stun = false;
