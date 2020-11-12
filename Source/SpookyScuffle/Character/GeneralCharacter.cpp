@@ -162,6 +162,8 @@ void AGeneralCharacter::LifeDecrease()
 
 		if (myDoor != nullptr)
 			myDoor->AddToCount();
+
+		GetWorldTimerManager().ClearTimer(timerLife);
 	}
 }
 

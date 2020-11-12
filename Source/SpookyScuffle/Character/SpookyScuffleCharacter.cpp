@@ -51,6 +51,7 @@ void ASpookyScuffleCharacter::BeginPlay()
 	saveTimerDL = timerDrainLife;
 	saveMaxAngleLock = angleLock;
 	saveTimerSecuritySP = timerSecuritySP;
+	saveTimerPressBF = timerPressBatForm;
 }
 
 void ASpookyScuffleCharacter::Tick(float _deltaTime)
@@ -478,7 +479,7 @@ void ASpookyScuffleCharacter::SetBatMode()
 	if (isSlowDash)
 		return;
 
-	if ((playerMovable && !drainBlood))
+	if ((playerMovable && !drainBlood) && pressIsOk)
 	{
 		if (!isBatMode)
 		{ 
@@ -505,10 +506,12 @@ void ASpookyScuffleCharacter::UnSetBatMode()
 	{
 		if (isBatMode)
 		{
+			pressIsOk = false;
 			SoundExitBat();
 			isBatMode = false;
 			BatEvent();
 			GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
+			GetWorldTimerManager().SetTimer(pressBat, this, &ASpookyScuffleCharacter::TimerTouchPressBat, GetWorld()->GetDeltaSeconds(), true);
 		}
 	}
 }
@@ -519,16 +522,35 @@ void ASpookyScuffleCharacter::tickLostLifeBatForm()
 
 	if (timerBatLostLife <= 0)
 	{
-		ModifyLife(-costBatForm, E_TEAMS::Enemy, false);
+
+		ModifyLife(-costBatForm * countBat, E_TEAMS::Enemy, false);
 		//life -= costBatForm;
 		if (life <= 0)
 			GameOverEvent();
 		timerBatLostLife = saveTimerBLL;
+
+		if (otherExpo)
+			countBat += countBat;
+		else
+			countBat++;
 	}
 
 	if (!isBatMode)
 	{
 		GetWorldTimerManager().ClearTimer(outHandleBatForm);
+		countBat = 1;
+	}
+}
+
+void ASpookyScuffleCharacter::TimerTouchPressBat()
+{
+	timerPressBatForm -= GetWorld()->DeltaTimeSeconds;
+
+	if (timerPressBatForm <= 0)
+	{
+		pressIsOk = true;
+		GetWorldTimerManager().ClearTimer(outHandleBatForm);
+		timerPressBatForm = saveTimerPressBF;
 	}
 }
 

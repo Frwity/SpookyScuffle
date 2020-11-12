@@ -102,9 +102,17 @@ private:
 		int costTransformToBat = 2;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
 		int costBatForm = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
+		bool otherExpo = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BatForm, meta = (AllowPrivateAccess = "true"))
+		float timerPressBatForm = 0.35f;
 
+	bool pressIsOk = true;
+	int countBat = 1;
 	float saveTimerBLL;
 	FTimerHandle outHandleBatForm;
+	FTimerHandle pressBat;
+	float saveTimerPressBF = 0.f;
 
 	// ================================== Special Attack ================================== //
 
@@ -171,6 +179,7 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 		void BatEvent();
 	void BatEvent_Implementation();
+	void TimerTouchPressBat();
 
 	// === Special Attack
 	void ActivateSpecialAttack();
