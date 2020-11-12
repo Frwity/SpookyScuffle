@@ -381,10 +381,10 @@ void ASpookyScuffleCharacter::LockPosition(FVector pos, bool moveCam)
 	if (moveCam)
 	{
 		// Move Camera to the good Angle when you lock 
-		if (cameraBoom->TargetArmLength > 300)
+		if (cameraBoom->TargetArmLength > 400)
 			cameraBoom->TargetArmLength -= speedCameraLock * GetWorld()->DeltaTimeSeconds;
 
-		if (_camTransform.Y < 100 && _camTransform.Z < 100)
+		if (_camTransform.Y < 230 && _camTransform.Z < 70)
 		{
 			_camTransform.Z += speedCameraLock * GetWorld()->DeltaTimeSeconds;
 			_camTransform.Y += speedCameraLock * GetWorld()->DeltaTimeSeconds;
@@ -485,7 +485,8 @@ void ASpookyScuffleCharacter::SetBatMode()
 			SoundEnterBat();
 			isBatMode = true;
 			BatEvent();
-			life -= costTransformToBat;
+			ModifyLife(-costTransformToBat, E_TEAMS::Enemy, false);
+			//life -= costTransformToBat;
 			if (life <= 0)
 				GameOverEvent();
 			timerBatLostLife = saveTimerBLL;
@@ -518,7 +519,8 @@ void ASpookyScuffleCharacter::tickLostLifeBatForm()
 
 	if (timerBatLostLife <= 0)
 	{
-		life -= costBatForm;
+		ModifyLife(-costBatForm, E_TEAMS::Enemy, false);
+		//life -= costBatForm;
 		if (life <= 0)
 			GameOverEvent();
 		timerBatLostLife = saveTimerBLL;
@@ -690,13 +692,16 @@ void ASpookyScuffleCharacter::SoundDrain_Implementation()
 
 void ASpookyScuffleCharacter::GameOverEvent_Implementation()
 {
+	if (isBatMode)
+		UnSetBatMode();
+
 	playerMovable = false;
 }
 
 void ASpookyScuffleCharacter::YouWinEvent_Implementation()
 {
 	if (isBatMode)
-		SetBatMode();
+		UnSetBatMode();
 
 	youWin = true;
 

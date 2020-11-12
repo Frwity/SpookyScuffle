@@ -89,6 +89,10 @@ protected:
 
 	float walkSpeed;
 	FRotator rotationRate;
+	FTimerHandle timerLife;
+	int saveLifePoint = 0;
+
+	void LifeDecrease();
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float _deltaTime) override;
