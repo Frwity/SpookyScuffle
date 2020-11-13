@@ -54,6 +54,9 @@ void ADoorEnemy::OpenTheDoor()
 		{
 			isGetPlayer = true;
 			player = Cast<ASpookyScuffleCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), ASpookyScuffleCharacter::StaticClass()));
+			
+			if(giveExtraLife)
+				player->MaxLifeAgain();
 		}
 
 		FVector _posDoor;

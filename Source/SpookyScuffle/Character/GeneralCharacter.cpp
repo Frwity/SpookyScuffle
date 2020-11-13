@@ -103,9 +103,7 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 	if (_lifePoint < 0 && team != _team)
 	{
 		invulnerabilityCD = invulnerabilityTime;
-		saveLifePoint += _lifePoint;
-		GetWorldTimerManager().SetTimer(timerLife, this, &AGeneralCharacter::LifeDecrease, GetWorld()->GetDeltaSeconds(), true);
-		//life += _lifePoint;
+		life += _lifePoint;
 
 		if (_stun)
 		{
@@ -140,48 +138,6 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 	}
 }
 
-void AGeneralCharacter::LifeDecrease()
-{
-
-	if (saveLifePoint == 0)
-		GetWorldTimerManager().ClearTimer(timerLife);
-
-	int _decrease = 100;
-
-	if (saveLifePoint < 0)
-	{
-
-		if (life - saveLifePoint <= 0)
-		{
-			isAlive = false;
-			GameOverEvent();
-
-			if (myDoor != nullptr)
-				myDoor->AddToCount();
-
-			GetWorldTimerManager().ClearTimer(timerLife);
-		}
-
-		life -= _decrease;
-		saveLifePoint += _decrease;
-	}
-	else
-	{
-		life += _decrease;
-		saveLifePoint -= _decrease;
-	}
-
-	if (life <= 0)
-	{
-		isAlive = false;
-		GameOverEvent();
-
-		if (myDoor != nullptr)
-			myDoor->AddToCount();
-
-		GetWorldTimerManager().ClearTimer(timerLife);
-	}
-}
 
 void AGeneralCharacter::ResetHit()
 {
@@ -245,6 +201,11 @@ void AGeneralCharacter::GameOverEvent_Implementation()
 void AGeneralCharacter::TargetEvent_Implementation()
 {
 
+}
+
+void AGeneralCharacter::MaxLifeAgain()
+{
+	life = maxLife;
 }
 
 // ================================ OverLap Function ================================ //

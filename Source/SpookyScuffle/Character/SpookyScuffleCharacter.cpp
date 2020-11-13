@@ -52,6 +52,7 @@ void ASpookyScuffleCharacter::BeginPlay()
 	saveMaxAngleLock = angleLock;
 	saveTimerSecuritySP = timerSecuritySP;
 	saveTimerPressBF = timerPressBatForm;
+	saveTimerPressSA = timerPressSA;
 }
 
 void ASpookyScuffleCharacter::Tick(float _deltaTime)
@@ -583,10 +584,11 @@ void ASpookyScuffleCharacter::SoundExitBat_Implementation()
 
 void ASpookyScuffleCharacter::ActivateSpecialAttack()
 {
-	if (enemyToLock != nullptr)
+	if (enemyToLock != nullptr && pressIsOkSA)
 	{
 		useIsDrain = true;
 		drainBlood = false;
+		pressIsOkSA = false;
 	}
 
 	if (useIsDrain && enemyToLock != nullptr)
@@ -640,7 +642,7 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 			drainBlood = true;
 			enemyToEat->stun = true;
 			SoundEat();
-			enemyToEat->ModifyLife(-GetDamage(), GetTeam(), false);
+			//enemyToEat->ModifyLife(-GetDamage(), GetTeam(), false);
 			saveLifePLayerOnDrain = life;	
 		}
 	}
@@ -702,7 +704,6 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 	if (stun)
 	{
 		ResetDrainValue();
-		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
 		return;
 	}
 }
@@ -714,7 +715,24 @@ void ASpookyScuffleCharacter::ResetDrainValue()
 	useIsDrain = false;
 	enemyToEat->stun = false;
 	enemyToEat = nullptr;
+	
+
+	GetWorldTimerManager().SetTimer(pressSA, this, &ASpookyScuffleCharacter::TimerTouchPressSA, GetWorld()->GetDeltaSeconds(), true);
+
 }
+
+void ASpookyScuffleCharacter::TimerTouchPressSA()
+{
+	timerPressSA -= GetWorld()->DeltaTimeSeconds;
+
+	if (timerPressSA <= 0)
+	{
+		pressIsOkSA = true;
+		GetWorldTimerManager().ClearTimer(pressSA);
+		timerPressSA = saveTimerPressSA;
+	}
+}
+
 // =============================================== / Sound Special Attack / ===============================================//
 void ASpookyScuffleCharacter::SoundEat_Implementation()
 {

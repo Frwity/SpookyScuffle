@@ -92,7 +92,6 @@ protected:
 	float walkSpeed;
 	FRotator rotationRate;
 	FTimerHandle timerLife;
-	int saveLifePoint = 0;
 
 	void LifeDecrease();
 
@@ -138,6 +137,8 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 		bool hasMissed = true;
+
+	void MaxLifeAgain();
 
 	// ==================================== Area Damage ==================================== //
 

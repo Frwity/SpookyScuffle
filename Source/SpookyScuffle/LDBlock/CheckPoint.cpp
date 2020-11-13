@@ -77,6 +77,7 @@ void ACheckPoint::SaveDataDoor()
 {
     // Door
     savePosDoor.Empty();
+    saveCountToUnlock.Empty();
 
     TArray<AActor*> _FoundDoors;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADoorEnemy::StaticClass(), _FoundDoors);
@@ -88,6 +89,7 @@ void ACheckPoint::SaveDataDoor()
 
         _gDoor->indexSave = _indexDoor;
         savePosDoor.Add(_gDoor->GetActorLocation());
+        saveCountToUnlock.Add(_gDoor->countToUnlock);
 
         _indexDoor++;
     }
@@ -120,5 +122,6 @@ void ACheckPoint::LoadDataDoor()
         ADoorEnemy* _gDoor = Cast<ADoorEnemy>(_door);
 
         _gDoor->SetActorLocation(savePosDoor[_gDoor->indexSave]);
+        _gDoor->countToUnlock = saveCountToUnlock[_gDoor->indexSave];
     }
 }

@@ -130,7 +130,10 @@ private:
 		float timerDrainLife = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
 		float mutiplySpeedSpecialAttack = 5.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
+		float timerPressSA = 0.2f;
 
+	bool pressIsOkSA = true;
 	bool drainBlood = false;
 	bool stopDrain = false;
 	float timerSecuritySP = 2;
@@ -138,6 +141,8 @@ private:
 	float saveTimerDL;
 	int saveLifePLayerOnDrain;
 	FTimerHandle outHandleSpecialAttack;
+	FTimerHandle pressSA;
+	float saveTimerPressSA = 0.f;
 
 	// ================================== Debug ================================== //
 
@@ -187,6 +192,7 @@ protected:
 	void SpecialAttackMove();
 	void SpecialAttackDrain();
 	void ResetDrainValue();
+	void TimerTouchPressSA();
 
 	// === Debug
 

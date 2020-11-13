@@ -25,11 +25,12 @@ private:
 		float distanceDoorOpen;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Door, meta = (AllowPrivateAccess = "true"))
 		bool followUnlock; 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Door, meta = (AllowPrivateAccess = "true"))
+		bool giveExtraLife = false;
 
-	int countToUnlock = 0;
-	bool unlock = false;
+
 	int goalToUnlock = 0;
-
+	bool unlock = false;
 	FTimerHandle timerOpenDoor;
 	FVector savePos;
 
@@ -43,6 +44,8 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	int countToUnlock = 0;
 
 	void SetGoalToUnlock();
 	void AddToCount();

@@ -35,6 +35,7 @@ protected:
 
 	// door
 	TArray<FVector> savePosDoor;
+	TArray<int> saveCountToUnlock;
 
 	void SaveDataDoor();
 	void LoadDataDoor();
