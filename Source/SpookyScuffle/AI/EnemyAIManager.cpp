@@ -18,7 +18,6 @@ AEnemyAIManager::AEnemyAIManager()
 void AEnemyAIManager::BeginPlay()
 {
 	Super::BeginPlay();
-	isReset = false;
 	player = Cast<AGeneralCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	for (int i = 0; i < 50; ++i)

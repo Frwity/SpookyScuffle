@@ -584,11 +584,11 @@ void ASpookyScuffleCharacter::SoundExitBat_Implementation()
 
 void ASpookyScuffleCharacter::ActivateSpecialAttack()
 {
-	if (enemyToLock != nullptr && pressIsOkSA)
+	if (enemyToLock != nullptr )
 	{
 		useIsDrain = true;
 		drainBlood = false;
-		pressIsOkSA = false;
+		//pressIsOkSA = false;
 	}
 
 	if (useIsDrain && enemyToLock != nullptr)
@@ -602,7 +602,9 @@ void ASpookyScuffleCharacter::ActivateSpecialAttack()
 
 void ASpookyScuffleCharacter::SpecialAttackMove()
 {
-	
+	if (enemyToEat == nullptr)
+		return;
+
 	FVector _dirVec = enemyToEat->GetActorLocation() - GetActorLocation();
 	FVector _posBehindEnemy = enemyToEat->GetActorLocation() - (enemyToEat->GetActorForwardVector() * 100);
 
@@ -610,6 +612,8 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 
 	if (_dirVec.Size() < 150)
 		enemyToEat->stun = true;
+	
+	GEngine->AddOnScreenDebugMessage(1, 1, FColor::Red, TEXT("biteuh"));
 
 	if (_dirVec.Size() < distanceMaxToDrain && !drainBlood)
 	{
@@ -635,6 +639,7 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 		}
 		else
 		{
+			GEngine->AddOnScreenDebugMessage(1, 1, FColor::Yellow, TEXT("pipi"));
 			GetCharacterMovement()->Velocity = { 0,0,0 };
 			if (isBatMode)
 				UnSetBatMode();
@@ -656,6 +661,7 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 
 	if (drainBlood)
 	{
+		GEngine->AddOnScreenDebugMessage(1, 1, FColor::Orange, TEXT("Caca"));
 		SpecialAttackDrain();
 	}
 }
@@ -717,7 +723,7 @@ void ASpookyScuffleCharacter::ResetDrainValue()
 	enemyToEat = nullptr;
 	
 
-	GetWorldTimerManager().SetTimer(pressSA, this, &ASpookyScuffleCharacter::TimerTouchPressSA, GetWorld()->GetDeltaSeconds(), true);
+	//GetWorldTimerManager().SetTimer(pressSA, this, &ASpookyScuffleCharacter::TimerTouchPressSA, GetWorld()->GetDeltaSeconds(), true);
 
 }
 
