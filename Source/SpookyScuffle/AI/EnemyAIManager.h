@@ -43,4 +43,5 @@ public:
 
 	void AddEnemyAI(class AEnemyAIController*);
 	void RemoveEnemyAI(class AEnemyAIController*);
+
 };
