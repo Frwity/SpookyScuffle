@@ -67,6 +67,7 @@ void AGeneralCharacter::MoveForward(float _value)
 {
 	if (stun)
 		return;
+	
 	if ((Controller != NULL) && (_value != 0.0f))
 	{	
 		// find out which way is forward
@@ -167,7 +168,6 @@ void AGeneralCharacter::Attack()
 	if (canAttack)
 	{
 		isAttacking = true;
-		OnAttack.Broadcast();
 		if (!canMoveOnAttack)
 		{
 			GetCharacterMovement()->MovementMode = EMovementMode::MOVE_None;
@@ -175,7 +175,9 @@ void AGeneralCharacter::Attack()
 			GetCharacterMovement()->RotationRate = { 0, 0, 0 };
 		}
 		canAttack = false;
+		GetWorldTimerManager().ClearTimer(attackTimeHandler);
 		GetWorldTimerManager().SetTimer(attackTimeHandler, this, &AGeneralCharacter::ResetAttack, 1 / attackSpeed, false);
+		OnAttack.Broadcast();
 	}
 }
 

@@ -61,7 +61,9 @@ void AKnightCharacter::Jumping()
 	AddActorWorldOffset(offset);
 
 	currentJumpTime += GetWorld()->GetDeltaSeconds();
-	if (currentJumpTime >= jumpTime + GetWorld()->GetDeltaSeconds() * 3)
+	if (currentJumpTime >= jumpTime)
+		GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
+	if (currentJumpTime >= jumpTime + GetWorld()->GetDeltaSeconds() * 5)
 	{
 		GetWorldTimerManager().ClearTimer(jumpTimeHandler);
 		isAttackJumping = false;

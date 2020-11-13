@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 #include "../Character/GeneralCharacter.h"
+#include "../Character/Arrow.h"
 #include "DoorEnemy.h"
 
 // Sets default values
@@ -46,6 +47,12 @@ void ACheckPoint::LoadGameAtCheckPoint()
     {
         LoadDataCharacters();
         LoadDataDoor();
+        TArray<AActor*> _arrows;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AArrow::StaticClass(), _arrows);
+        for (AActor* _arrow : _arrows)
+        {
+            _arrow->Destroy();
+        }
     }
 }
 
