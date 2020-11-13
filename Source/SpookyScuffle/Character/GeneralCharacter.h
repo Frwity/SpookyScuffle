@@ -93,8 +93,6 @@ protected:
 	FRotator rotationRate;
 	FTimerHandle timerLife;
 
-	void LifeDecrease();
-
 	virtual void BeginPlay() override;
 	virtual void Tick(float _deltaTime) override;
 

@@ -20,6 +20,8 @@ protected:
 	bool isTriggered;
 	bool isLock;
 
+	bool end;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AI, meta = (AllowPrivateAccess = "true"))
 		bool isPartOfCrowd = true;
 

@@ -24,6 +24,4 @@ void ASquireAIController::BeginPlay()
 void ASquireAIController::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
-	if (!isAlive)
-		return;
 }

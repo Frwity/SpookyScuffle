@@ -138,7 +138,6 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 	}
 }
 
-
 void AGeneralCharacter::ResetHit()
 {
 	if (!isHit)

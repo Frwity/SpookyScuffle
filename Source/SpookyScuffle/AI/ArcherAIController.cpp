@@ -28,6 +28,4 @@ void AArcherAIController::BeginPlay()
 void AArcherAIController::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
-	if (!isAlive)
-		return;
 }
