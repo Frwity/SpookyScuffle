@@ -486,9 +486,9 @@ void ASpookyScuffleCharacter::SetBatMode()
 	if (isSlowDash || isAttacking)
 		return;
 
-	if ((playerMovable && !drainBlood) && pressIsOk)
+	if ((playerMovable && !drainBlood) )
 	{
-		if (!isBatMode)
+		if (!isBatMode && pressIsOk)
 		{ 
 			canAttack = false;
 			SoundEnterBat();
@@ -520,6 +520,7 @@ void ASpookyScuffleCharacter::UnSetBatMode()
 			canAttack = true;
 			BatEvent();
 			GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
+			//pressIsOk = true;
 			GetWorldTimerManager().SetTimer(pressBat, this, &ASpookyScuffleCharacter::TimerTouchPressBat, GetWorld()->GetDeltaSeconds(), true);
 		}
 	}
@@ -558,7 +559,7 @@ void ASpookyScuffleCharacter::TimerTouchPressBat()
 	if (timerPressBatForm <= 0)
 	{
 		pressIsOk = true;
-		GetWorldTimerManager().ClearTimer(outHandleBatForm);
+		GetWorldTimerManager().ClearTimer(pressBat);
 		timerPressBatForm = saveTimerPressBF;
 	}
 }
