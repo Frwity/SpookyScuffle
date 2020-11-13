@@ -612,8 +612,6 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 
 	if (_dirVec.Size() < 150)
 		enemyToEat->stun = true;
-	
-	GEngine->AddOnScreenDebugMessage(1, 1, FColor::Red, TEXT("biteuh"));
 
 	if (_dirVec.Size() < distanceMaxToDrain && !drainBlood)
 	{
@@ -639,7 +637,6 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 		}
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(1, 1, FColor::Yellow, TEXT("pipi"));
 			GetCharacterMovement()->Velocity = { 0,0,0 };
 			if (isBatMode)
 				UnSetBatMode();
@@ -661,7 +658,6 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 
 	if (drainBlood)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 1, FColor::Orange, TEXT("Caca"));
 		SpecialAttackDrain();
 	}
 }
@@ -682,7 +678,7 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 
 		SoundDrain();
 		enemyToEat->stun = true;
-		enemyToEat->ModifyLife(-GetDamage(), GetTeam(), false);
+		enemyToEat->ModifyLife(-drainHowManyLife, GetTeam(), false);
 	}
 
 	if (!enemyToEat->IsAlive())
