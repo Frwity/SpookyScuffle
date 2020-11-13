@@ -142,6 +142,7 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 
 void AGeneralCharacter::LifeDecrease()
 {
+
 	if (saveLifePoint == 0)
 		GetWorldTimerManager().ClearTimer(timerLife);
 
@@ -149,6 +150,18 @@ void AGeneralCharacter::LifeDecrease()
 
 	if (saveLifePoint < 0)
 	{
+
+		if (life - saveLifePoint <= 0)
+		{
+			isAlive = false;
+			GameOverEvent();
+
+			if (myDoor != nullptr)
+				myDoor->AddToCount();
+
+			GetWorldTimerManager().ClearTimer(timerLife);
+		}
+
 		life -= _decrease;
 		saveLifePoint += _decrease;
 	}
