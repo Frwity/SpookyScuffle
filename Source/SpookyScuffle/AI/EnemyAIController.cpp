@@ -20,6 +20,7 @@ void AEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	end = false;
 	RunBehaviorTree(BehaviourTree);
 
 	player = Cast<AGeneralCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
@@ -30,18 +31,19 @@ void AEnemyAIController::BeginPlay()
 
 	Blackboard->SetValueAsFloat(TEXT("TriggerDistance"), triggerDistance);
 	Blackboard->SetValueAsFloat(TEXT("SafeDistance"), safeDistance);
-	Blackboard->SetValueAsFloat(TEXT("AttackDistance"), attackDistance);	
+	Blackboard->SetValueAsFloat(TEXT("AttackDistance"), attackDistance);
+	Blackboard->SetValueAsBool(TEXT("End"), end);
 }
 
 void AEnemyAIController::Tick(float deltaTime)
 {
-	if (!enemy->IsAlive() && isAlive)
-		enemyAIManager->RemoveEnemyAI(this);
-
 	isAlive = enemy->IsAlive();
 	Blackboard->SetValueAsBool(TEXT("IsAlive"), isAlive);
 	if (!isAlive)
+	{
+		enemyAIManager->RemoveEnemyAI(this);
 		return;
+	}
 
 	isLock = enemy->isLock;
 

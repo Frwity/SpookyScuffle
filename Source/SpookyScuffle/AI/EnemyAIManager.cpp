@@ -18,7 +18,7 @@ AEnemyAIManager::AEnemyAIManager()
 void AEnemyAIManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	isReset = false;
 	player = Cast<AGeneralCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	for (int i = 0; i < 50; ++i)
@@ -33,6 +33,9 @@ void AEnemyAIManager::Tick(float DeltaTime)
 	int _nbEnemy = enemyAIs.Num();
 	FVector _playerPos = player->GetActorLocation();
 	
+	if (_nbEnemy <= 0)
+		return;
+
 	if (_nbEnemy > 0)
 	{
 		// set the first enemy to be the one locked
@@ -146,17 +149,7 @@ void AEnemyAIManager::AddEnemyAI(AEnemyAIController* enemyAI)
 		int _newPos = (FMath::FloorToInt(_angle / (360.0f / _nbEnemy)) + 1);
 
 		enemyAIs.Insert(enemyAI, _newPos);
-		
-		/*if (letPlaceToNewAI)
-		{
-			TArray<AEnemyAIController*> _tempEnemy;
-			for (int i = 0; i < _nbEnemy + 1; ++i)
-			{
-				_tempEnemy.Add(enemyAIs[(i + _newPos) % (_nbEnemy + 1)]);
-			}
-			enemyAIs.Empty();
-			enemyAIs.Append(_tempEnemy);
-		}*/
+	
 	}
 	else
 	{
