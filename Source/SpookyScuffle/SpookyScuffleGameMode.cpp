@@ -25,7 +25,10 @@ void ASpookyScuffleGameMode::BeginPlay()
 {
 	TArray<AActor*> _enemyAIManager;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemyAIManager::StaticClass(), _enemyAIManager);
-	enemyAIManager = Cast<AEnemyAIManager>(_enemyAIManager[0]);
+	if (_enemyAIManager.Num() > 0)
+		enemyAIManager = Cast<AEnemyAIManager>(_enemyAIManager[0]);
+	else
+		enemyAIManager = NewObject<AEnemyAIManager>();
 
 	TArray<AActor*> enemyAIs;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemyAIController::StaticClass(), enemyAIs);
