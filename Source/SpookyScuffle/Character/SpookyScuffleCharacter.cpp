@@ -212,7 +212,7 @@ void ASpookyScuffleCharacter::Attack()
 
 void ASpookyScuffleCharacter::ActivateDash()
 {
-	if (playerMovable)
+	if (playerMovable && !stun)
 	{
 		if (drainBlood)
 			stopDrain = true;
