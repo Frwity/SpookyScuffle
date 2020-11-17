@@ -328,7 +328,6 @@ bool ASpookyScuffleCharacter::CheckEnemyToLock(FVector enemy, FVector posPlayer 
 {
 		if ((enemy - posPlayer).Size() < distanceMaxLock)
 		{
-			//FVector _forwardVec = { GetActorForwardVector().X,GetActorForwardVector().Y, 0};
 			FVector _playerToEnemy = { (enemy - posPlayer).X, (enemy - posPlayer).Y, 0 };
 
 			float  _calcAngle = FVector::DotProduct(forwardVec.GetSafeNormal(), _playerToEnemy.GetSafeNormal());
@@ -352,6 +351,9 @@ bool ASpookyScuffleCharacter::CheckEnemyToLock(FVector enemy, FVector posPlayer 
 void ASpookyScuffleCharacter::LockEnemy()
 {
 	LockPosition(enemyToLock->GetActorLocation(),true);
+
+	if (!enemyToLock->IsAlive())
+		DisableLock();
 
 	if (passToDisable)
 	{
@@ -496,7 +498,7 @@ void ASpookyScuffleCharacter::SetBatMode()
 			isBatMode = true;
 			BatEvent();
 			ModifyLife(-costTransformToBat, E_TEAMS::Enemy, false);
-			//life -= costTransformToBat;
+
 			if (life <= 0)
 				GameOverEvent();
 			timerBatLostLife = saveTimerBLL;
@@ -521,7 +523,6 @@ void ASpookyScuffleCharacter::UnSetBatMode()
 			canAttack = true;
 			BatEvent();
 			GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
-			//pressIsOk = true;
 			GetWorldTimerManager().SetTimer(pressBat, this, &ASpookyScuffleCharacter::TimerTouchPressBat, GetWorld()->GetDeltaSeconds(), true);
 		}
 	}
@@ -584,11 +585,11 @@ void ASpookyScuffleCharacter::SoundExitBat_Implementation()
 
 void ASpookyScuffleCharacter::ActivateSpecialAttack()
 {
-	if (enemyToLock != nullptr )
+	if (enemyToLock != nullptr && pressIsOkSA)
 	{
 		useIsDrain = true;
 		drainBlood = false;
-		//pressIsOkSA = false;
+		pressIsOkSA = false;
 	}
 
 	if (useIsDrain && enemyToLock != nullptr)
@@ -644,7 +645,6 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 			drainBlood = true;
 			enemyToEat->stun = true;
 			SoundEat();
-			//enemyToEat->ModifyLife(-GetDamage(), GetTeam(), false);
 			saveLifePLayerOnDrain = life;	
 		}
 	}
@@ -718,8 +718,7 @@ void ASpookyScuffleCharacter::ResetDrainValue()
 	enemyToEat->stun = false;
 	enemyToEat = nullptr;
 	
-
-	//GetWorldTimerManager().SetTimer(pressSA, this, &ASpookyScuffleCharacter::TimerTouchPressSA, GetWorld()->GetDeltaSeconds(), true);
+	GetWorldTimerManager().SetTimer(pressSA, this, &ASpookyScuffleCharacter::TimerTouchPressSA, GetWorld()->GetDeltaSeconds(), true);
 
 }
 
