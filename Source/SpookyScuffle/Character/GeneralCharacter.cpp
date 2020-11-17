@@ -6,6 +6,7 @@
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Animation/AnimInstance.h"	
@@ -51,6 +52,9 @@ void AGeneralCharacter::BeginPlay()
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AGeneralCharacter::OnBeginOverlap);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AGeneralCharacter::OnOverlapEnd);
 
+	MainDynMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(0), this);
+	GetMesh()->SetMaterial(0, MainDynMaterial);
+
 }
 
 void AGeneralCharacter::Tick(float _deltaTime)
@@ -60,6 +64,15 @@ void AGeneralCharacter::Tick(float _deltaTime)
 	if (invulnerabilityCD >= 0)
 	{
 		invulnerabilityCD -= _deltaTime;
+	}
+
+	if (MainDynMaterial)
+	{
+		float value;
+		MainDynMaterial->GetScalarParameterValue({"Redness"}, OUT value);
+
+		if (value > 0.0f)
+			MainDynMaterial->SetScalarParameterValue("Redness", value - _deltaTime * 2);
 	}
 }
 
@@ -105,6 +118,9 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 	{
 		invulnerabilityCD = invulnerabilityTime;
 		life += _lifePoint;
+
+		if (MainDynMaterial)
+			MainDynMaterial->SetScalarParameterValue("Redness", 1);
 
 		if (_stun)
 		{

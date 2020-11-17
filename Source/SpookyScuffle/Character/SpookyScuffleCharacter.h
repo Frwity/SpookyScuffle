@@ -134,6 +134,7 @@ private:
 		float timerPressSA = 0.2f;
 
 	bool pressIsOkSA = true;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SpecialAttack, meta = (AllowPrivateAccess = "true"))
 	bool drainBlood = false;
 	bool stopDrain = false;
 	float timerSecuritySP = 2;

@@ -606,8 +606,8 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 		return;
 
 	FVector _dirVec = enemyToEat->GetActorLocation() - GetActorLocation();
-	FVector _posBehindEnemy = enemyToEat->GetActorLocation() - (enemyToEat->GetActorForwardVector() * 100);
-
+	FVector _posBehindEnemy = enemyToEat->GetActorLocation() - (enemyToEat->GetActorForwardVector() * enemyToEat->GetActorScale() * 50);
+	_posBehindEnemy.Z = GetActorLocation().Z;
 	enemyToEat->SetCanAttack(false);
 
 	if (_dirVec.Size() < 150)
@@ -621,7 +621,7 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 		SetActorRotation(rotPlayer);
 
 		// go to back of enemy quickly
-		if ((_posBehindEnemy - GetActorLocation()).Size() >= 60) // bug if you change too much the scale of enemy because the forwardvector up his position
+		if ((_posBehindEnemy - GetActorLocation()).Size() >= 10) // bug if you change too much the scale of enemy because the forwardvector up his position
 		{
 			GetCharacterMovement()->Velocity = (_posBehindEnemy - GetActorLocation()).GetSafeNormal()
 				* speedSpecialAttack * mutiplySpeedSpecialAttack;
