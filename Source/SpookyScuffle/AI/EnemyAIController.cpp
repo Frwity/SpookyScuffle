@@ -90,4 +90,5 @@ void AEnemyAIController::Tick(float deltaTime)
 	Blackboard->SetValueAsVector(TEXT("AwayFromPlayer"), enemyPos + ((away - enemyPos).GetSafeNormal() * 500));
 	Blackboard->SetValueAsBool(TEXT("Stun"), enemy->stun);
 	Blackboard->SetValueAsBool(TEXT("IsAFighter"), isAFighter);
+	Blackboard->SetValueAsBool(TEXT("IsAttacking"), enemy->IsAttacking());
 }

@@ -109,6 +109,7 @@ public:
 	virtual bool IsAlive() { return isAlive; }
 	virtual bool IsHit() { return isHit; }
 	virtual E_TEAMS GetTeam() { return team; }
+	virtual bool IsAttacking() { return isAttacking; }
 	virtual void SetStun(bool _stun);
 	
 	virtual void ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun);

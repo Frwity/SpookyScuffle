@@ -7,11 +7,15 @@
 #include "../Character/GeneralCharacter.h"
 #include "AIController.h"
 
+
 EBTNodeResult::Type UMyBTTask_LookAt::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+	APawn* enemy = OwnerComp.GetAIOwner()->GetPawn();
 	FVector targetPos = OwnerComp.GetBlackboardComponent()->GetValueAsVector(BlackboardKey.SelectedKeyName);;
-	FVector enemyPos = Cast<AGeneralCharacter>(OwnerComp.GetAIOwner()->GetPawn())->GetActorLocation();
+	FVector enemyPos = enemy->GetActorLocation();
 	targetPos.Z = enemyPos.Z = 0;
+
+	targetPos = FMath::Lerp(enemyPos + enemy->GetActorForwardVector(), targetPos, 0.003);
 
 	OwnerComp.GetAIOwner()->GetPawn()->SetActorRotation(UKismetMathLibrary::FindLookAtRotation(enemyPos, targetPos));
 
