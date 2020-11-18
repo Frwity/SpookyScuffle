@@ -73,6 +73,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Door, meta = (AllowPrivateAccess = "true"))
 		class ADoorEnemy* myDoor;
 
+	class UMaterialInstanceDynamic* MainDynMaterial;
 
 	// ==================================== Area Damage ==================================== //
 
