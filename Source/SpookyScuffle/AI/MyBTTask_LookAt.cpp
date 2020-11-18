@@ -15,7 +15,7 @@ EBTNodeResult::Type UMyBTTask_LookAt::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	FVector enemyPos = enemy->GetActorLocation();
 	targetPos.Z = enemyPos.Z = 0;
 
-	targetPos = FMath::Lerp(enemyPos + enemy->GetActorForwardVector(), targetPos, 0.003);
+	targetPos = FMath::Lerp(enemyPos + enemy->GetActorForwardVector() * 1, targetPos, 0.007);
 
 	OwnerComp.GetAIOwner()->GetPawn()->SetActorRotation(UKismetMathLibrary::FindLookAtRotation(enemyPos, targetPos));
 

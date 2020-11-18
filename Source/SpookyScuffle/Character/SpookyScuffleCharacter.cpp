@@ -729,6 +729,8 @@ void ASpookyScuffleCharacter::ResetDrainValue()
 
 	drainBlood = false;
 	useIsDrain = false;
+	GetWorldTimerManager().ClearTimer(attackTimeHandler);
+	GetWorldTimerManager().SetTimer(attackTimeHandler, this, &AGeneralCharacter::ResetAttack, 1 / attackSpeed, false);
 	
 	GetWorldTimerManager().SetTimer(pressSA, this, &ASpookyScuffleCharacter::TimerTouchPressSA, GetWorld()->GetDeltaSeconds(), true);
 
