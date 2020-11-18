@@ -155,6 +155,17 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 	}
 }
 
+void AGeneralCharacter::SetStun(bool _stun)
+{
+	stun = _stun;
+	if (_stun)
+	{
+		GetWorldTimerManager().ClearTimer(attackTimeHandler);
+		GetWorldTimerManager().SetTimer(attackTimeHandler, this, &AGeneralCharacter::ResetAttack, recoveryTime, false);
+		canAttack = false;
+	}
+}
+
 void AGeneralCharacter::ResetHit()
 {
 	if (!isHit)
@@ -164,7 +175,7 @@ void AGeneralCharacter::ResetHit()
 		GetWorldTimerManager().SetTimer(outHandleHit, this, &AGeneralCharacter::ResetHit, recoveryTime, false);
 		return;
 	}
-	canAttack = true;
+
 	stun = false;
 	isHit = false;
 }

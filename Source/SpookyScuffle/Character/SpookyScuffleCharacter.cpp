@@ -612,7 +612,7 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 	enemyToEat->SetCanAttack(false);
 
 	if (_dirVec.Size() < 150)
-		enemyToEat->stun = true;
+		enemyToEat->SetStun(true);
 
 	if (_dirVec.Size() < distanceMaxToDrain && !drainBlood)
 	{
@@ -622,7 +622,7 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 		SetActorRotation(rotPlayer);
 
 		// go to back of enemy quickly
-		if ((_posBehindEnemy - GetActorLocation()).Size() >= 10) // bug if you change too much the scale of enemy because the forwardvector up his position
+		if ((_posBehindEnemy - GetActorLocation()).Size() >= 20) // bug if you change too much the scale of enemy because the forwardvector up his position
 		{
 			GetCharacterMovement()->Velocity = (_posBehindEnemy - GetActorLocation()).GetSafeNormal()
 				* speedSpecialAttack * mutiplySpeedSpecialAttack;
@@ -677,7 +677,7 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 		}
 
 		SoundDrain();
-		enemyToEat->stun = true;
+		enemyToEat->SetStun(true);
 		enemyToEat->ModifyLife(-drainHowManyLife, GetTeam(), false);
 	}
 
@@ -712,7 +712,7 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 
 void ASpookyScuffleCharacter::ResetDrainValue()
 {
-	enemyToEat->SetCanAttack(true);
+	//enemyToEat->SetCanAttack(true);
 	drainBlood = false;
 	useIsDrain = false;
 	enemyToEat->stun = false;
