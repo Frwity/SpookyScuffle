@@ -353,7 +353,11 @@ void ASpookyScuffleCharacter::LockEnemy()
 	LockPosition(enemyToLock->GetActorLocation(),true);
 
 	if (!enemyToLock->IsAlive())
+	{
 		DisableLock();
+		ResetDrainValue();
+		//GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
+	}
 
 	if (passToDisable)
 	{
@@ -431,6 +435,7 @@ void ASpookyScuffleCharacter::ExitLock()
 		}
 
 		loadLock = false;
+
 		
 		GetWorldTimerManager().ClearTimer(outHandleExitLock);
 	}
@@ -589,7 +594,6 @@ void ASpookyScuffleCharacter::ActivateSpecialAttack()
 	{
 		useIsDrain = true;
 		drainBlood = false;
-		pressIsOkSA = false;
 	}
 
 	if (useIsDrain && enemyToLock != nullptr)
@@ -646,6 +650,8 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 			enemyToEat->stun = true;
 			SoundEat();
 			saveLifePLayerOnDrain = life;	
+
+			pressIsOkSA = false;
 		}
 	}
 
@@ -697,7 +703,6 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 
 	if (stopDrain)
 	{
-		stopDrain = false;
 		ResetDrainValue();
 		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
 		return;
@@ -712,11 +717,18 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 
 void ASpookyScuffleCharacter::ResetDrainValue()
 {
-	enemyToEat->SetCanAttack(true);
+	if (enemyToEat != nullptr)
+	{
+		enemyToEat->SetCanAttack(true);
+		enemyToEat->stun = false;
+		enemyToEat = nullptr;
+	}
+
+	if(stopDrain)
+		stopDrain = false;
+
 	drainBlood = false;
 	useIsDrain = false;
-	enemyToEat->stun = false;
-	enemyToEat = nullptr;
 	
 	GetWorldTimerManager().SetTimer(pressSA, this, &ASpookyScuffleCharacter::TimerTouchPressSA, GetWorld()->GetDeltaSeconds(), true);
 
