@@ -83,7 +83,6 @@ protected:
 	FTimerHandle timerHandle;
 	FTimerHandle attackTimeHandler;
 
-
 	bool stopTimer = false;
 	float timerCoolDown;
 
