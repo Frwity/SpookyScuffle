@@ -110,10 +110,7 @@ void AEnemyAIManager::Tick(float DeltaTime)
 		{
 			if (!fighterChoosen)
 			{
-				if (firstFighter->IsLock())
-					fighterPos = FMath::RandRange(1, _nbEnemy - 1);
-				else
-					fighterPos = FMath::RandRange(0, _nbEnemy - 1);
+				fighterPos = FMath::RandRange(firstFighter->IsLock() ? 0 : 1, _nbEnemy - 1);
 				fighterChoosen = true;
 			}
 			enemyAIs[fighterPos % (_nbEnemy - 1)]->isAFighter = true;

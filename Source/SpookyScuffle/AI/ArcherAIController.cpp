@@ -9,6 +9,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
+#include "Perception/PawnSensingComponent.h"
 #include "../Character/GeneralCharacter.h"
 #include "../Character/ArcherCharacter.h"
 #include "Engine/Engine.h"
@@ -28,4 +29,5 @@ void AArcherAIController::BeginPlay()
 void AArcherAIController::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
+	Blackboard->SetValueAsBool(TEXT("AsLineOfSight"), Cast<AArcherCharacter>(enemy)->PawnSensingComp->HasLineOfSightTo(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)));
 }

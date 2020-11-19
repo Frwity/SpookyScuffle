@@ -17,7 +17,13 @@ class SPOOKYSCUFFLE_API AArcherCharacter : public ABowmanCharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = NormalAttack, meta = (AllowPrivateAccess = "true"))
 		float attackRange = 0.0f;
 
+
 public:
+
+	AArcherCharacter();
+
+	class UPawnSensingComponent* PawnSensingComp;
+
 
 	float GetAttackRange() { return attackRange; }
 };

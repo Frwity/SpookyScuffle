@@ -63,9 +63,14 @@ void AArrow::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 	AGeneralCharacter* _target = Cast<AGeneralCharacter>(OtherActor);
 
 
-	if (_target && team != _target->GetTeam())
+	if (_target)
 	{
-		_target->ModifyLife(-damage, team, true);
-		Destroy();
+		if( team != _target->GetTeam())
+		{
+			_target->ModifyLife(-damage, team, true);
+			Destroy();
+		}	
 	}
+	if (OtherActor != GetOwner())
+		Destroy();
 }

@@ -2,3 +2,11 @@
 
 
 #include "ArcherCharacter.h"
+#include "Perception/PawnSensingComponent.h"
+
+AArcherCharacter::AArcherCharacter()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComponent"));
+	PawnSensingComp->SetPeripheralVisionAngle(90.f);
+}
