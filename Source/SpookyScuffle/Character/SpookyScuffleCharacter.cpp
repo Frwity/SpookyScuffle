@@ -224,6 +224,7 @@ void ASpookyScuffleCharacter::ActivateDash()
 			isDash = true;
 			savePosDash = GetActorLocation();
 			isSlowDash = true;
+			//GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
 			GetWorldTimerManager().SetTimer(outHandleDash, this, &ASpookyScuffleCharacter::DashMovement, GetWorld()->GetDeltaSeconds(), true);
 		}
 	}
@@ -507,7 +508,7 @@ void ASpookyScuffleCharacter::SetBatMode()
 			if (life <= 0)
 				GameOverEvent();
 			timerBatLostLife = saveTimerBLL;
-			GetCharacterMovement()->MaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed * mutiplySpeedBatMode;
+			//GetCharacterMovement()->MaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed * mutiplySpeedBatMode;
 			GetWorldTimerManager().SetTimer(outHandleBatForm, this, &ASpookyScuffleCharacter::tickLostLifeBatForm, GetWorld()->GetDeltaSeconds(), true);
 		}
 	}

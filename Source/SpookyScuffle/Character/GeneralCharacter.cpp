@@ -78,7 +78,7 @@ void AGeneralCharacter::Tick(float _deltaTime)
 
 void AGeneralCharacter::MoveForward(float _value)
 {
-	if (stun)
+	if (stun || isAttacking)
 		return;
 	
 	if ((Controller != NULL) && (_value != 0.0f))
@@ -95,8 +95,9 @@ void AGeneralCharacter::MoveForward(float _value)
 
 void AGeneralCharacter::MoveRight(float _value)
 {
-	if (stun)
+	if (stun || isAttacking)
 		return;
+
 	if ((Controller != NULL) && (_value != 0.0f))
 	{
 		// find out which way is right
@@ -175,7 +176,8 @@ void AGeneralCharacter::ResetHit()
 		GetWorldTimerManager().SetTimer(outHandleHit, this, &AGeneralCharacter::ResetHit, recoveryTime, false);
 		return;
 	}
-
+	GetWorldTimerManager().ClearTimer(attackTimeHandler);
+	canAttack = true;
 	stun = false;
 	isHit = false;
 }
@@ -197,7 +199,7 @@ void AGeneralCharacter::Attack()
 		isAttacking = true;
 		if (!canMoveOnAttack)
 		{
-			GetCharacterMovement()->MovementMode = EMovementMode::MOVE_None;
+			//GetCharacterMovement()->MovementMode = EMovementMode::MOVE_None;
 			GetCharacterMovement()->MaxWalkSpeed = 0;
 			GetCharacterMovement()->RotationRate = { 0, 0, 0 };
 		}
@@ -210,7 +212,7 @@ void AGeneralCharacter::Attack()
 
 void AGeneralCharacter::EndAttack()
 {
-	GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
+	//GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
 	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
 	GetCharacterMovement()->RotationRate = rotationRate;
 	isAttacking = false;
