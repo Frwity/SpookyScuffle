@@ -687,26 +687,14 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 		}
 
 		SoundDrain();
+		enemyToEat->isDrained = true;
 		enemyToEat->SetStun(true);
 		enemyToEat->ModifyLife(-drainHowManyLife, GetTeam(), false);
 	}
 
-	if (!enemyToEat->IsAlive())
+	if (!enemyToEat->IsAlive() || !(GetCharacterMovement()->Velocity).IsNearlyZero() || stopDrain)
 	{
-		ResetDrainValue();
-		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
-		return;
-	}
-
-	if (!(GetCharacterMovement()->Velocity).IsNearlyZero())
-	{
-		ResetDrainValue();
-		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
-		return;
-	}
-
-	if (stopDrain)
-	{
+		enemyToEat->isDrained = false;
 		ResetDrainValue();
 		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
 		return;
@@ -714,6 +702,8 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 
 	if (stun)
 	{
+		enemyToEat->isDrained = false;
+
 		ResetDrainValue();
 		return;
 	}

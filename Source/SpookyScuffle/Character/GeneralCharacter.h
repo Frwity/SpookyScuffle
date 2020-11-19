@@ -107,10 +107,9 @@ public:
 	virtual int GetDamage() { return damage; }
 	virtual bool IsAlive() { return isAlive; }
 	virtual bool IsHit() { return isHit; }
-	virtual E_TEAMS GetTeam() { return team; }
 	virtual bool IsAttacking() { return isAttacking; }
+	virtual E_TEAMS GetTeam() { return team; }
 	virtual void SetStun(bool _stun);
-	
 	virtual void ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun);
 
 	void ResetHit();
@@ -137,6 +136,8 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 		bool hasMissed = true;
+
+	bool isDrained;
 
 	void MaxLifeAgain();
 

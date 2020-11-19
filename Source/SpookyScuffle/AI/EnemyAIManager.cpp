@@ -69,13 +69,13 @@ void AEnemyAIManager::Tick(float DeltaTime)
 	}
 
 	// set a fighter
-	if (_nbEnemy > 0)
-		firstFighter = enemyAIs[0];
+
+	firstFighter = enemyAIs[0];
 	{
 		int _i = 0;
 		for (AEnemyAIController* _enemyAI : enemyAIs)
 		{
-			if (_enemyAI->IsLock())
+			if (_enemyAI->IsLock() || Cast<AGeneralCharacter>(_enemyAI ->GetPawn())->isDrained)
 			{
 				firstFighter = _enemyAI;
 				break;
@@ -91,9 +91,17 @@ void AEnemyAIManager::Tick(float DeltaTime)
 	else if (_nbEnemy == 2)
 	{
 		if (attackTimer < attackerCooldown)
+		{
 			firstFighter->isAFighter = true;
+			if (Cast<AGeneralCharacter>(firstFighter->GetPawn())->isDrained)
+				enemyAIs[1]->isAFighter = true;
+		}
 		else if (attackTimer < attackerCooldown * 2)
+		{
 			enemyAIs[1]->isAFighter = true;
+			if (Cast<AGeneralCharacter>(enemyAIs[1]->GetPawn())->isDrained)
+				firstFighter->isAFighter = true;
+		}
 		else
 			attackTimer = 0;
 	}
@@ -101,19 +109,22 @@ void AEnemyAIManager::Tick(float DeltaTime)
 	{
 		if (attackTimer < attackerCooldown)
 		{
-			if (firstFighter->IsLock())
-				firstFighter->isAFighter = true;
-			else
+			if (Cast<AGeneralCharacter>(firstFighter->GetPawn())->isDrained)
+			{
 				attackTimer += attackerCooldown;
+				fighterChoosen = false;
+			}
+			else
+				firstFighter->isAFighter = true;
 		}
 		else if (attackTimer < attackerCooldown * 2)
 		{
 			if (!fighterChoosen)
 			{
-				fighterPos = FMath::RandRange(firstFighter->IsLock() ? 0 : 1, _nbEnemy - 1);
+				fighterPos = FMath::RandRange(1, _nbEnemy - 1);
 				fighterChoosen = true;
 			}
-			enemyAIs[fighterPos % (_nbEnemy - 1)]->isAFighter = true;
+			enemyAIs[fighterPos % (_nbEnemy)]->isAFighter = true;
 		}
 		else 
 		{
