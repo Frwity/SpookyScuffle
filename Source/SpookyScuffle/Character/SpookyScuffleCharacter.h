@@ -194,6 +194,12 @@ protected:
 	void SpecialAttackDrain();
 	void ResetDrainValue();
 	void TimerTouchPressSA();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void ActivateSmoke();
+	void ActivateSmoke_Implementation();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void DeactivateSmoke();
+	void DeactivateSmoke_Implementation();
 
 	// === Debug
 
