@@ -621,6 +621,7 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 
 	if (_dirVec.Size() < distanceMaxToDrain && !drainBlood)
 	{
+		ActivateSmoke();
 		FRotator rotPlayer = FRotationMatrix::MakeFromX(FVector(_dirVec)).Rotator();
 		rotPlayer.Pitch = GetActorRotation().Pitch;
 		// rotate the player
@@ -636,6 +637,7 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 			timerSecuritySP -= GetWorld()->DeltaTimeSeconds;
 			if (timerSecuritySP <= 0)
 			{
+				DeactivateSmoke();
 				ResetDrainValue();
 				GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
 				return;
@@ -653,6 +655,7 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 			saveLifePLayerOnDrain = life;	
 
 			pressIsOkSA = false;
+			DeactivateSmoke();
 		}
 	}
 
@@ -749,12 +752,21 @@ void ASpookyScuffleCharacter::TimerTouchPressSA()
 	}
 }
 
-// =============================================== / Sound Special Attack / ===============================================//
+// =============================================== / Sound / Effect - Special Attack / ===============================================//
 void ASpookyScuffleCharacter::SoundEat_Implementation()
 {
 
 }
 void ASpookyScuffleCharacter::SoundDrain_Implementation()
+{
+
+}
+
+void ASpookyScuffleCharacter::ActivateSmoke_Implementation()
+{
+
+}
+void ASpookyScuffleCharacter::DeactivateSmoke_Implementation()
 {
 
 }
