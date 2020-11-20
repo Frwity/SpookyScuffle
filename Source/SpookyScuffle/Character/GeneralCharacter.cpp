@@ -110,10 +110,10 @@ void AGeneralCharacter::MoveRight(float _value)
 	}
 }
 
-void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
+bool AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 {
 	if (invulnerabilityCD >= 0 || !isAlive)
-		return;
+		return false;
 
 	if (_lifePoint < 0 && team != _team)
 	{
@@ -153,7 +153,10 @@ void AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 
 		if (myDoor != nullptr)
 			myDoor->AddToCount();
+
+		return true;
 	}
+	return false;
 }
 
 void AGeneralCharacter::SetStun(bool _stun)

@@ -58,7 +58,8 @@ void ASpookyScuffleCharacter::BeginPlay()
 void ASpookyScuffleCharacter::Tick(float _deltaTime)
 {
 	Super::Tick(_deltaTime);
-
+	if (isAlive)
+		timeAlive += _deltaTime;
 }
 
 void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -192,9 +193,14 @@ void ASpookyScuffleCharacter::MoveRight(float _value)
 	}
 }
 
-void ASpookyScuffleCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
+bool ASpookyScuffleCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
 {
-	Super::ModifyLife(_lifePoint, _team, _stun);
+	if (Super::ModifyLife(_lifePoint, _team, _stun))
+	{
+		death += 1;
+		return true;
+	}
+	return false;
 }
 
 void ASpookyScuffleCharacter::Attack()

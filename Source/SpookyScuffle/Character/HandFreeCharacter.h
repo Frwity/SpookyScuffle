@@ -14,17 +14,7 @@ class SPOOKYSCUFFLE_API AHandFreeCharacter : public AGeneralCharacter
 {
 	GENERATED_BODY()
 	
-protected:
-
-	virtual void BeginPlay() override;
-	virtual void Tick(float _deltaTime) override;
-
-	virtual void MoveForward(float _value) override;
-	virtual void MoveRight(float _value) override;
-
 public:
 	AHandFreeCharacter();
-
-	virtual void ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun) override;
 
 };

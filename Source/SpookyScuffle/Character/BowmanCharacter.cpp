@@ -16,33 +16,6 @@ ABowmanCharacter::ABowmanCharacter()
 
 }
 
-void ABowmanCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void ABowmanCharacter::Tick(float _deltaTime)
-{
-	Super::Tick(_deltaTime);
-
-}
-
-void ABowmanCharacter::MoveForward(float _value)
-{
-	Super::MoveForward(_value);
-}
-
-void ABowmanCharacter::MoveRight(float _value)
-{
-	Super::MoveRight(_value);
-}
-
-void ABowmanCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
-{
-	Super::ModifyLife(_lifePoint, _team, _stun);
-}
-
-
 void ABowmanCharacter::Attack()
 {
 	Super::Attack();

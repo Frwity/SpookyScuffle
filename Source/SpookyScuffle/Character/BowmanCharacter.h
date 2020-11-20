@@ -16,12 +16,6 @@ class SPOOKYSCUFFLE_API ABowmanCharacter : public AGeneralCharacter
 
 protected:
 
-	virtual void BeginPlay() override;
-	virtual void Tick(float _deltaTime) override;
-
-	virtual void MoveForward(float _value) override;
-	virtual void MoveRight(float _value) override;
-
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		FVector targetPos;
 
@@ -30,8 +24,6 @@ protected:
 
 public:
 	ABowmanCharacter();
-
-	virtual void ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun) override;
 
 	void Attack() override;
 

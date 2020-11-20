@@ -29,27 +29,6 @@ void AOneHandedSwordCharacter::BeginPlay()
 	attackComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AOneHandedSwordCharacter::Tick(float _deltaTime)
-{
-	Super::Tick(_deltaTime);
-
-}
-
-void AOneHandedSwordCharacter::MoveForward(float _value)
-{
-	Super::MoveForward(_value);
-}
-
-void AOneHandedSwordCharacter::MoveRight(float _value)
-{
-	Super::MoveRight(_value);
-}
-
-void AOneHandedSwordCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
-{
-	Super::ModifyLife(_lifePoint, _team, _stun);
-}
-
 void AOneHandedSwordCharacter::ActivateAttackComponent()
 {
 	Super::ActivateAttackComponent();
@@ -60,9 +39,4 @@ void AOneHandedSwordCharacter::DeactivateAttackComponent()
 {
 	Super::DeactivateAttackComponent();
 	attackComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-}
-
-void AOneHandedSwordCharacter::Attack()
-{
-	Super::Attack();
 }

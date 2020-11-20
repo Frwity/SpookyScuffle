@@ -4,6 +4,7 @@
 #include "AttackComponent.h"
 #include "Engine/Engine.h"
 #include "GeneralCharacter.h"
+#include "SpookyScuffleCharacter.h"
 
 UAttackComponent::UAttackComponent()
 {
@@ -28,6 +29,11 @@ void UAttackComponent::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 	{
 		if (Attacker->GetTeam() != _OtherActor->GetTeam() && _OtherActor->IsAlive())
 			Attacker->hasMissed = false;
-		_OtherActor->ModifyLife(-Attacker->GetDamage(), Attacker->GetTeam(), true);
+		if (_OtherActor->ModifyLife(-Attacker->GetDamage(), Attacker->GetTeam(), true))
+		{
+			ASpookyScuffleCharacter* player = Cast<ASpookyScuffleCharacter>(Attacker);
+			if (player)
+				player->AddKill();
+		}
 	}
 }

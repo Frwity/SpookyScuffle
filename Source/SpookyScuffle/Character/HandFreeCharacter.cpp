@@ -9,28 +9,3 @@ AHandFreeCharacter::AHandFreeCharacter()
 	: AGeneralCharacter{}
 {
 }
-
-void AHandFreeCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void AHandFreeCharacter::Tick(float _deltaTime)
-{
-	Super::Tick(_deltaTime);
-}
-
-void AHandFreeCharacter::MoveForward(float _value)
-{
-	Super::MoveForward(_value);
-}
-
-void AHandFreeCharacter::MoveRight(float _value)
-{
-	Super::MoveRight(_value);
-}
-
-void AHandFreeCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
-{
-	Super::ModifyLife(_lifePoint, _team, _stun);
-}

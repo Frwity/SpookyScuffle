@@ -17,17 +17,13 @@ class SPOOKYSCUFFLE_API ATwoHandedSwordCharacter : public AGeneralCharacter
 protected:
 
 	virtual void BeginPlay() override;
-	virtual void Tick(float _deltaTime) override;
 
-	virtual void MoveForward(float _value) override;
-	virtual void MoveRight(float _value) override;
 
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* rightWeaponMesh;
 
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* leftWeaponMesh;
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UAttackComponent* rightAttackComponent;
@@ -38,12 +34,8 @@ protected:
 public:	
 	ATwoHandedSwordCharacter();
 
-	virtual void ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun) override;
-
 	virtual void ActivateAttackComponent() override;
 	virtual void DeactivateAttackComponent() override;
-
-	virtual void Attack() override;
 
 	virtual void GameOverEvent_Implementation() override;
 };

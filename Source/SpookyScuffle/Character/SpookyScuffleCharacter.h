@@ -30,6 +30,15 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
 		float sensibilityZ;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
+		int kill = 0;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
+		int death = 0;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Option, meta = (AllowPrivateAccess = "true"))
+		float timeAlive = 0.0f;
+
+
+
 	// ================================== Camera ================================== //
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		bool blockCameraPitch = true;
@@ -219,8 +228,9 @@ public:
 	int GetDamage() final { return damage; }
 	bool IsAlive() final { return isAlive; }
 	E_TEAMS GetTeam() final { return team; }
+	bool ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun) final;
 
-	void ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun) final;
+	void AddKill() { kill += 1; }
 
 	void Attack() final;
 

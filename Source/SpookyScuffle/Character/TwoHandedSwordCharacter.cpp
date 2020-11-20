@@ -42,27 +42,6 @@ void ATwoHandedSwordCharacter::BeginPlay()
 	leftWeaponMesh->SetupAttachment(GetMesh(), FName("LeftWeaponShield"));
 }
 
-void ATwoHandedSwordCharacter::Tick(float _deltaTime)
-{
-	Super::Tick(_deltaTime);
-
-}
-
-void ATwoHandedSwordCharacter::MoveForward(float _value)
-{
-	Super::MoveForward(_value);
-}
-
-void ATwoHandedSwordCharacter::MoveRight(float _value)
-{
-	Super::MoveRight(_value);
-}
-
-void ATwoHandedSwordCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
-{
-	Super::ModifyLife(_lifePoint, _team, _stun);
-}
-
 void ATwoHandedSwordCharacter::ActivateAttackComponent()
 {
 	Super::ActivateAttackComponent();
@@ -75,11 +54,6 @@ void ATwoHandedSwordCharacter::DeactivateAttackComponent()
 	Super::DeactivateAttackComponent();
 	rightAttackComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	leftAttackComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-}
-
-void ATwoHandedSwordCharacter::Attack()
-{
-	Super::Attack();
 }
 
 void ATwoHandedSwordCharacter::GameOverEvent_Implementation()
