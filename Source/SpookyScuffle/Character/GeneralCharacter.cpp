@@ -236,6 +236,15 @@ void AGeneralCharacter::TargetEvent_Implementation()
 
 }
 
+void AGeneralCharacter::MiniTargetEvent_Implementation()
+{
+
+}
+void AGeneralCharacter::UnsetMiniTargetEvent_Implementation()
+{
+
+}
+
 void AGeneralCharacter::MaxLifeAgain()
 {
 	life = maxLife;

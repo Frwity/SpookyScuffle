@@ -161,10 +161,20 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		bool isLock = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		bool lockThisOne = false;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 		void TargetEvent();
 	virtual void TargetEvent_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void MiniTargetEvent();
+	void MiniTargetEvent_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		void UnsetMiniTargetEvent();
+	void UnsetMiniTargetEvent_Implementation();
 
 	UFUNCTION()
 		virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
