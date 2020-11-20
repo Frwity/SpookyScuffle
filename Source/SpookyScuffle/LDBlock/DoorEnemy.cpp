@@ -61,22 +61,35 @@ void ADoorEnemy::OpenTheDoor()
 
 		FVector _posDoor;
 
-		if ((savePos - GetActorLocation()).Size() < distanceDoorOpen)
+		if ((savePos - GetActorLocation()).Size() < distanceDoorOpen )
 		{
 			_posDoor = axisMovement * (speedDoor * GetWorld()->DeltaTimeSeconds);
 
 			SetActorLocation(GetActorLocation() + _posDoor);
 
-			if (followUnlock)
-				player->LockPosition(GetActorLocation(),true);
+			if (!visionReturn)
+			{
+				if (followUnlock)
+					player->LockPosition(GetActorLocation(), true);
+				else
+				{
+					player->LockPosition(savePos, true);
+				}
+			}
 			else
 			{
-				player->LockPosition(savePos, true);
+				player->ExitLockCondition();
 			}
 		}
 		else
 		{
 			StopVibrating();
+
+			if (visionReturn)
+			{
+				unlock = true;
+				GetWorldTimerManager().ClearTimer(timerOpenDoor);
+			}
 
 			if (player->ExitLockCondition())
 			{

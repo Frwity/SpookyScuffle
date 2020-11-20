@@ -27,6 +27,8 @@ private:
 		bool followUnlock; 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Door, meta = (AllowPrivateAccess = "true"))
 		bool giveExtraLife = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Door, meta = (AllowPrivateAccess = "true"))
+		bool visionReturn = false;
 
 
 	int goalToUnlock = 0;
@@ -57,6 +59,13 @@ public:
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 		void StopVibrating() ;
 	void StopVibrating_Implementation() {};
+
+	//UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	//	void CheckBox();
+	//void CheckBox_Implementation() {};
+	//UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	//	void EndCheckBox();
+	//void EndCheckBox_Implementation() {};
 
 	// =============== CheckPoint =============== //
 
