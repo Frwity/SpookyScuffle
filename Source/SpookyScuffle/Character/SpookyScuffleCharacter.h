@@ -89,6 +89,8 @@ private:
 		
 	FTimerHandle outHandleLock;
 	FTimerHandle outHandleExitLock;
+	TArray<AActor*> enemiesTab;
+	class AGeneralCharacter* isEnemyToLock;
 
 	// ================================== Bat Form ================================== //
 
@@ -178,6 +180,10 @@ protected:
 	bool CheckEnemyToLock(FVector enemy, FVector posPlayer, FVector forwardVec);
 	void LockEnemy();
 	void ExitLock();
+
+	void PreviewLock();
+	void FindEnemyPreviewLock();
+	void ConditionPreviewLock();
 
 	// === Bat Form
 	void SetBatMode();

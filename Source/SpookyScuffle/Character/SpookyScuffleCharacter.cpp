@@ -53,12 +53,15 @@ void ASpookyScuffleCharacter::BeginPlay()
 	saveTimerSecuritySP = timerSecuritySP;
 	saveTimerPressBF = timerPressBatForm;
 	saveTimerPressSA = timerPressSA;
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGeneralCharacter::StaticClass(), enemiesTab);
 }
 
 void ASpookyScuffleCharacter::Tick(float _deltaTime)
 {
 	Super::Tick(_deltaTime);
 
+	PreviewLock();
 }
 
 void ASpookyScuffleCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -305,7 +308,6 @@ void ASpookyScuffleCharacter::ActivateLock()
 
 			if (enemy != nullptr && enemy != this && enemy->IsAlive())
 			{
-				
 				if (CheckEnemyToLock(enemy->GetActorLocation(),_camera->GetCameraLocation(), _forwardVec))
 					enemyToLock = enemy;
 			}
@@ -341,9 +343,8 @@ bool ASpookyScuffleCharacter::CheckEnemyToLock(FVector enemy, FVector posPlayer 
 			}
 		}
 		else
-		{
 			return false;
-		}
+		
 
 		return false;
 }
@@ -479,6 +480,87 @@ bool ASpookyScuffleCharacter::ExitLockCondition()
 
 	return false;
 }
+
+// === Preview Lock 
+
+void ASpookyScuffleCharacter::PreviewLock()
+{
+	if (!loadLock)
+	{
+		
+		FindEnemyPreviewLock();
+		
+		ConditionPreviewLock();
+	
+
+		if (isEnemyToLock != nullptr && !isEnemyToLock->IsAlive())
+			isEnemyToLock->UnsetMiniTargetEvent();
+	}
+	else
+	{
+		if (isEnemyToLock != nullptr)
+			isEnemyToLock->UnsetMiniTargetEvent();
+	}
+}
+
+
+void ASpookyScuffleCharacter::FindEnemyPreviewLock()
+{
+	angleLock = saveMaxAngleLock;
+
+	APlayerCameraManager* _camera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
+	FVector _forwardVec = { _camera->GetActorForwardVector().X,_camera->GetActorForwardVector().Y, 0 };
+
+	for (AActor* enemOfList : enemiesTab)
+	{
+		AGeneralCharacter* enemy = Cast<AGeneralCharacter>(enemOfList);
+
+		if (enemy != nullptr && enemy != this && enemy->IsAlive())
+		{
+			if (CheckEnemyToLock(enemy->GetActorLocation(), _camera->GetCameraLocation(), _forwardVec))
+			{
+
+				if (isEnemyToLock != nullptr)
+				{
+					isEnemyToLock->lockThisOne = false;
+					isEnemyToLock->UnsetMiniTargetEvent();
+				}
+
+				isEnemyToLock = enemy;
+			}
+		}
+	}
+}
+
+void ASpookyScuffleCharacter::ConditionPreviewLock()
+{
+	if (isEnemyToLock != nullptr)
+	{
+		APlayerCameraManager* _camera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
+
+		FVector _enemy = isEnemyToLock->GetActorLocation();
+		FVector _posView = _camera->GetCameraLocation();
+
+		// distance
+		isEnemyToLock->lockThisOne = ((isEnemyToLock->GetActorLocation() - _camera->GetCameraLocation()).Size() < distanceMaxLock);
+
+		// angle
+		FVector _playerToEnemy = { (_enemy - _posView).X, (_enemy - _posView).Y, 0 };
+		FVector _forwardVector = { _camera->GetActorForwardVector().X,_camera->GetActorForwardVector().Y, 0 };
+
+		float  _calcAngle = FVector::DotProduct(_forwardVector.GetSafeNormal(), _playerToEnemy.GetSafeNormal());
+		float _newAngle = (acosf(_calcAngle)) * 180 / PI;
+
+		isEnemyToLock->lockThisOne = (_newAngle < saveMaxAngleLock);
+
+		if (isEnemyToLock->lockThisOne)
+			isEnemyToLock->MiniTargetEvent();
+		else
+			isEnemyToLock->UnsetMiniTargetEvent();
+	}
+}
+
+
 // =============================================== Event Sound Lock ===============================================//
 
 void ASpookyScuffleCharacter::SoundEnterLock_Implementation()
