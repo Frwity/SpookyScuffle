@@ -197,9 +197,9 @@ void ASpookyScuffleCharacter::MoveRight(float _value)
 	}
 }
 
-bool ASpookyScuffleCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
+bool ASpookyScuffleCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun, bool _force)
 {
-	if (Super::ModifyLife(_lifePoint, _team, _stun))
+	if (Super::ModifyLife(_lifePoint, _team, _stun, _force))
 	{
 		death += 1;
 		return true;
@@ -361,7 +361,7 @@ void ASpookyScuffleCharacter::LockEnemy()
 {
 	LockPosition(enemyToLock->GetActorLocation(),true);
 
-	if (!enemyToLock->IsAlive())
+	if (enemyToLock && !enemyToLock->IsAlive())
 	{
 		DisableLock();
 		ResetDrainValue();
@@ -690,8 +690,7 @@ void ASpookyScuffleCharacter::ActivateSpecialAttack()
 	{
 		enemyToEat = enemyToLock;
 		timerSecuritySP = saveTimerSecuritySP;
-		GetWorldTimerManager().SetTimer(outHandleSpecialAttack, this, &ASpookyScuffleCharacter::SpecialAttackMove, 
-									GetWorld()->GetDeltaSeconds(), true);
+		GetWorldTimerManager().SetTimer(outHandleSpecialAttack, this, &ASpookyScuffleCharacter::SpecialAttackMove, 0.016666666, true);
 	}
 }
 
@@ -737,8 +736,11 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 			GetCharacterMovement()->Velocity = { 0,0,0 };
 			if (isBatMode)
 				UnSetBatMode();
-
-			drainBlood = true;
+			if (!drainBlood)
+			{
+				GetWorldTimerManager().SetTimer(outHandleDraining, this, &ASpookyScuffleCharacter::SpecialAttackDrain, saveTimerDL, true);
+				drainBlood = true;
+			}
 			enemyToEat->stun = true;
 			SoundEat();
 			saveLifePLayerOnDrain = life;	
@@ -755,36 +757,29 @@ void ASpookyScuffleCharacter::SpecialAttackMove()
 		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
 	}
 
-	if (drainBlood)
-	{
-		SpecialAttackDrain();
-	}
 }
 
 void ASpookyScuffleCharacter::SpecialAttackDrain()
 {
-	timerDrainLife -= GetWorld()->DeltaTimeSeconds;
 
-	if (timerDrainLife <= 0)
+	if (life < maxLife)
 	{
-		timerDrainLife = saveTimerDL;
-
-		if (life < maxLife)
-		{
-			life += drainHowManyLife;
-			saveLifePLayerOnDrain = life;
-		}
-
-		SoundDrain();
-		enemyToEat->isDrained = true;
-		enemyToEat->SetStun(true);
-		enemyToEat->ModifyLife(-drainHowManyLife, GetTeam(), false);
+		life += drainHowManyLife;
+		saveLifePLayerOnDrain = life;
 	}
+
+	
+	enemyToEat->ModifyLife(-drainHowManyLife, GetTeam(), false, true);
+	SoundDrain();
+	enemyToEat->isDrained = true;
+	enemyToEat->SetStun(true);
+
 
 	if (!enemyToEat->IsAlive() || !(GetCharacterMovement()->Velocity).IsNearlyZero() || stopDrain)
 	{
 		enemyToEat->isDrained = false;
 		ResetDrainValue();
+		GetWorldTimerManager().ClearTimer(outHandleDraining);
 		GetWorldTimerManager().ClearTimer(outHandleSpecialAttack);
 		return;
 	}
@@ -792,7 +787,7 @@ void ASpookyScuffleCharacter::SpecialAttackDrain()
 	if (stun)
 	{
 		enemyToEat->isDrained = false;
-
+		GetWorldTimerManager().ClearTimer(outHandleDraining);
 		ResetDrainValue();
 		return;
 	}
@@ -812,6 +807,8 @@ void ASpookyScuffleCharacter::ResetDrainValue()
 
 	drainBlood = false;
 	useIsDrain = false;
+
+	GetWorldTimerManager().ClearTimer(outHandleDraining);
 	GetWorldTimerManager().ClearTimer(attackTimeHandler);
 	GetWorldTimerManager().SetTimer(attackTimeHandler, this, &AGeneralCharacter::ResetAttack, 1 / attackSpeed, false);
 	

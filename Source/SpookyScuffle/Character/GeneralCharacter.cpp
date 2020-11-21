@@ -110,9 +110,9 @@ void AGeneralCharacter::MoveRight(float _value)
 	}
 }
 
-bool AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun)
+bool AGeneralCharacter::ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun, bool _force)
 {
-	if (invulnerabilityCD >= 0 || !isAlive)
+	if ((!_force && invulnerabilityCD >= 0) || !isAlive)
 		return false;
 
 	if (_lifePoint < 0 && team != _team)

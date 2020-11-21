@@ -5,7 +5,9 @@
 #include "TimerManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/World.h"
 #include "Engine/Engine.h"
+
 
 
 void AKnightCharacter::BeginPlay()
@@ -47,6 +49,19 @@ void AKnightCharacter::AttackJump(FVector _target, FVector _direction)
 
 void AKnightCharacter::Jumping()
 {
+	currentJumpTime += GetWorld()->GetDeltaSeconds();
+	FHitResult OutHit;
+
+	if (currentJumpTime >= jumpTime
+	||  GetWorld()->LineTraceSingleByChannel(OUT OutHit, GetActorLocation(), GetActorLocation() - FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 10), ECC_Visibility)
+	&& currentJumpTime > jumpTime / 2)
+	{
+		GetWorldTimerManager().ClearTimer(jumpTimeHandler);
+		isAttackJumping = false;
+		GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Falling;
+		GetCharacterMovement()->GravityScale = 1;
+		return;
+	}
 
 	if (currentJumpTime <= jumpTime / 2)
 	{
@@ -59,18 +74,6 @@ void AKnightCharacter::Jumping()
 		offset.Z = zCurrentOffset2;
 	}
 	AddActorWorldOffset(offset);
-
-	currentJumpTime += GetWorld()->GetDeltaSeconds();
-	if (currentJumpTime >= jumpTime)
-		GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
-	if (currentJumpTime >= jumpTime + GetWorld()->GetDeltaSeconds() * 5)
-	{
-		GetWorldTimerManager().ClearTimer(jumpTimeHandler);
-		isAttackJumping = false;
-		GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
-		GetCharacterMovement()->GravityScale = 1;
-		return;
-	}
 }
 
 void AKnightCharacter::ResetAttackJump()

@@ -153,6 +153,7 @@ private:
 	float saveTimerDL;
 	int saveLifePLayerOnDrain;
 	FTimerHandle outHandleSpecialAttack;
+	FTimerHandle outHandleDraining;
 	FTimerHandle pressSA;
 	float saveTimerPressSA = 0.f;
 
@@ -234,7 +235,7 @@ public:
 	int GetDamage() final { return damage; }
 	bool IsAlive() final { return isAlive; }
 	E_TEAMS GetTeam() final { return team; }
-	bool ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun) final;
+	bool ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun, bool _force = false) final;
 
 	void AddKill() { kill += 1; }
 

@@ -110,7 +110,7 @@ public:
 	virtual bool IsAttacking() { return isAttacking; }
 	virtual E_TEAMS GetTeam() { return team; }
 	virtual void SetStun(bool _stun);
-	virtual bool ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun);
+	virtual bool ModifyLife(int _lifePoint, E_TEAMS _team, bool _stun, bool _force = false);
 
 	void ResetHit();
 
