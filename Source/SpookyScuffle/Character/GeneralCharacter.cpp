@@ -52,8 +52,9 @@ void AGeneralCharacter::BeginPlay()
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AGeneralCharacter::OnBeginOverlap);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AGeneralCharacter::OnOverlapEnd);
 
-	MainDynMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(0), this);
-	GetMesh()->SetMaterial(0, MainDynMaterial);
+	MainDynMaterial = nullptr;
+	//MainDynMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(0), this);
+	//GetMesh()->SetMaterial(0, MainDynMaterial);
 
 }
 
@@ -66,7 +67,7 @@ void AGeneralCharacter::Tick(float _deltaTime)
 		invulnerabilityCD -= _deltaTime;
 	}
 
-	if (MainDynMaterial)
+	if (MainDynMaterial != nullptr)
 	{
 		float value;
 		MainDynMaterial->GetScalarParameterValue({"Redness"}, OUT value);
